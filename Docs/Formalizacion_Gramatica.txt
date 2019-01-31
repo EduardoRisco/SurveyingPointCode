@@ -1,21 +1,21 @@
-entrada: ( lineas ) *
-lineas: num_punto coordenadas código
-num_punto:INT
-coordenadas:FOAT, FLOAT, FLOAT
+entrada: ( líneas ) *
+lineas: núm_punto coordenadas código
+núm_punto: INT
+coordenadas: FLOAT, FLOAT, FLOAT
 INT: [0-9]+
 FLOAT: -?( [0-9]*.[0-9]+)
 ID: [a-zA-Z] +
-código: código_capa código_geométrico
-| código_elemento_singular código_valor_texto
-| código_capa codigo_no_accesible
+código: código_capa CÓDIGO_GEOMÉTRICO
+| CÓDIGO_ELEMENTO_SINGULAR código_valor_texto
+| código_capa código_no_accesible
 | código_elemento_singular
 | código_capa
 código_capa: ID
-código_geometrico: I | IC | C
-código_elemento_singular: TC | TR | TX
-código_valor_texto:FLOAT ID
-| INT ID
-| FLOAT
-| INT
-| ID
-codigo_no_accesible: (FLOAT | INT)+
+CÓDIGO_GEOMÉTRICO: "I" | "IC" | "C"
+CÓDIGO_ELEMENTO_SINGULAR: "TC" | "TR" | "TX"
+código_valor_texto: FLOAT ID
+    | INT ID
+    | FLOAT
+    | INT
+    | ID
+código_no_accesible: (FLOAT | INT)+
