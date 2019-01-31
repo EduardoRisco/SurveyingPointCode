@@ -1,5 +1,6 @@
-entrada: ( líneas ) *
-lineas: núm_punto coordenadas código
+entrada: líneas
+líneas: línea | líneas '\n' línea
+línea: núm_punto coordenadas código
 núm_punto: INT
 coordenadas: FLOAT, FLOAT, FLOAT
 INT: [0-9]+
