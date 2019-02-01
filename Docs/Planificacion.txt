@@ -1,0 +1,148 @@
+
+# PASO 1: Formalizar la entrada
+
+entrada: ( lineas ) *
+lineas: num_punto coordenadas código
+coordenadas: NUM, NUM, NUM
+NUM: [0-9]+
+código: código_capa código_geométrico
+      |  código1 código2
+      |  código_capa código_bloque
+      |  código coordenadas_no_accesibles
+codigo_capa: [a-zA-Z]+
+codigo_geometrico: I | IC | ...
+coordenadas_no_accesibles: (+|-)NUM(+|-)NUM(+|-)NUM
+
+
+# PASO 2: Decidir herramienta
+
+ANTLR 
+PLY 
+
+Hacer un prototipo (aceptar como correcto o fallar)
+
+
+
+2, E, I, 3, 4, 6
+3, E, I, 3, 4, 6
+4, AR, TC 2, 3, 4, 3
+5, E, I, 3, 4, 6
+6, E, I, 3, 4, 6
+
+# PASO3: de texto a lista (u objectos)
+
+lst = [
+{"N": 2, "CC": "E", "CG": "I", "Coord": [1, 3 5]}
+{"N": 3, "CC": "E", "CG": "", "Coord": [1, 3 5]}
+{"N": 4, "CC": "AR", "CG": TC, "Coord": [1, 3 5]}
+{"N": 5, "CC": "E", "CG": "", "Coord": [1, 3 5]}
+{"N": 6, "CC": "AR", "CG": TC, "Coord": [1, 3 5]}
+{"N": 7, "CC": "E", "CG": "I", "Coord": [1, 3 5]}
+{"N": 8, "CC": "E", "CG": "", "Coord": [1, 3 5]}
+]
+
+# PASO 4: de lista de objetos a capas
+
+
+# Para un número indeterminado de entidades
+
+capas = defaultdict(lst)
+
+for e n lst:
+   n, cc, cg, coords = e
+   capas[cc].append(e)
+   
+
+capas["E"] = [
+capas = {
+
+ "E": 
+    [
+    {"N": 2, "CC": "E", "CG": "I", "Coord": [1, 3 5]}
+    {"N": 3, "CC": "E", "CG": "", "Coord": [1, 3 5]}
+    {"N": 5, "CC": "E", "CG": "", "Coord": [1, 3 5]}
+    {"N": 7, "CC": "E", "CG": "I", "Coord": [1, 3 5]}
+    {"N": 8, "CC": "E", "CG": "", "Coord": [1, 3 5]}
+    ],
+ "AR": 
+    [
+    {"N": 4, "CC": "AR", "CG": TC, "Coord": [1, 3 5]}
+    {"N": 6, "CC": "AR", "CG": TC, "Coord": [1, 3 5]}
+    ]
+...
+}
+
+
+# PASO 5: de elemtnos en cada capa a 
+   `entidades` (lineas: lista de coordenadas)
+               (curvas: parámetros de curva)
+lineas = []
+curvas = []
+for k, lst in capas:
+  if k == "E":
+     for e in lst:
+        n, cc, cg, c = e
+        if cg == "I":
+           if aux not null:
+               lineas.append(aux)
+           aux = [e]
+        else if cg == "IC":
+           curvas.....
+           aux = [e]
+           aux.append(e)
+        else: 
+           aux.append(e)
+           ...
+
+  else k == "AR":
+     ......
+
+
+lineas = [ 
+    [
+        {"N": 2, "CC": "E", "CG": "I", "Coord": [1, 3 5]}
+        {"N": 3, "CC": "E", "CG": "", "Coord": [1, 3 5]}
+        {"N": 5, "CC": "E", "CG": "", "Coord": [1, 3 5]}
+    ],
+    [
+        {"N": 7, "CC": "E", "CG": "I", "Coord": [1, 3 5]}
+        {"N": 8, "CC": "E", "CG": "", "Coord": [1, 3 5]}
+    ]
+]
+           
+
+         
+# PASO 6: Procesar entidades, extraer
+   parámetros e invocar las primitivas
+   de dibujo de la bibioteca.
+
+for lin in líneas:
+   primitivaLínea( datos en lin)
+
+for c in curvas:
+   primitivaCurvas( datos en c)
+
+
+
+
+
+
+
+
+
+
+
+
+# Estoy pensando que sólo hay dos entidaes
+líneas = []
+árboles = []
+
+for e n lst:
+   n, cc, cg, c = e
+   if cg = "I":
+      líneas.append(e)
+   else cc = "AR":
+      árboles.append(e)
+   
+
+
