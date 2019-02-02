@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 #
-# Prototipo que comprueba si un archivo tiene el formato correcto o no.
+# Prototipo App.
 #
 # Se requiere PLY (Python Lex-Yacc).
 #
-# J. Eduardo Risco 31-01-2019
+# J. Eduardo Risco 02-02-2019
+#
 
 import ply.lex as lex
 import ply.yacc as yacc
@@ -63,7 +64,8 @@ def t_error(t):
                       (t.lineno, t.value))
 
 
-lex.lex(debug=1)
+lex.lex()
+
 
 # Parser part
 
@@ -128,7 +130,7 @@ def p_codigo_no_accesible(p):
     if len(p) == 3:
 
         if type(p[1]) == tuple:
-            p[0] = p[1]+(p[2],)
+            p[0] = p[1] + (p[2],)
         else:
             p[0] = p[1], p[2]
     else:
@@ -140,31 +142,64 @@ def p_error(p):
         print("Syntax error in imput at '%s'" % p.value)
 
 
-parser = yacc.yacc(debug=1)
+parser = yacc.yacc()
 
 # test
 
 if __name__ == "__main__":
 
+    entrada_ok = 'entrada/ejemplo1.txt'
+    entrada_error = 'entrada/ejemplo2.txt'
+
     try:
         err = False
-        for i in ('entrada/ejemplo1.txt', 'entrada/ejemplo2.txt'):
-            print('')
-            f = open(i)
+        capas = set()  # Conjunto de capas existentes
+        dicc_capas = {}  # Diccionario que almacena los puntos
+
+        f = open(entrada_ok)
+        line = f.readline()
+        n_line = 1
+        while line != "":
+            # Pasamos el parser
+            punto = parser.parse(line)
+            codigo_capa = punto[2]
+            # Deteccón de archivo de entrada erroneo
+            if not punto:
+                err = True
+                break
+
+            # Comprobación que las capas no existan en el diccionario
+            # Si no existen se crean
+            # Y se añade el primer punto a esa capa
+            if codigo_capa not in capas:
+                dicc_capas[codigo_capa] = [punto]
+                capas.add(codigo_capa)
+            else:
+                # Se añaden los puntos que tengan el mismo codigo
+                # A su elemento correspondiente en el diccionario
+                if codigo_capa in dicc_capas:
+                    lista = dicc_capas.get(codigo_capa)
+                    lista.append(punto)
+                    dicc_capas[codigo_capa] = lista
             line = f.readline()
-            n = 1
-            while line != "":
-                p = parser.parse(line)
-                if not p:
-                    err = True
-                line = f.readline()
-                print(p)
-                n = n+1
-                if line == "" and not err:
-                    print('Archivo ok:', i)
-                    print('Número de lineas :', n)
-            f.close()
-            if err:
-                print('Archivo erroneo:', i)
+            n_line += 1
+
+            # Salida archivo correcto
+            if line == "" and not err:
+                print('Archivo ok:', entrada_ok)
+                print('Número de lineas :', n_line)
+                print('El archivo contiene las siguientes capas:', capas)
+                for ptos in dicc_capas:
+                    list_ptos = []
+                    for pto in dicc_capas[ptos]:
+                        list_ptos.append(pto[0])
+                    print('La capa: ', ptos,'contiene los puntos: ', list_ptos)
+        f.close()
+
+        if err:
+            # Salida archivo error
+            print('Archivo erroneo:', entrada_ok)
+
     except (IOError, NameError) as e:
         print(e)
+
