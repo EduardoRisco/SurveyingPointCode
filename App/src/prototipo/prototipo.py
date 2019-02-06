@@ -162,6 +162,10 @@ if __name__ == "__main__":
         err = False
         capas = set()  # Conjunto de capas existentes
         dicc_capas = {}  # Diccionario que almacena los puntos
+        lineas = []
+        curvas = []
+        linea = []
+        curva = []
 
         f = open(entrada)
         line = f.readline()
@@ -169,10 +173,12 @@ if __name__ == "__main__":
         while line != "":
             # Pasamos el parser
             punto = parser.parse(line)
+            print(punto)
             # Deteccón de archivo de entrada erroneo
             if not punto:
                 err = True
                 break
+            # print(punto)
             codigo_capa = punto[2]
             # Comprobación que las capas no existan en el diccionario
             # si no existen se crean
@@ -190,23 +196,75 @@ if __name__ == "__main__":
             line = f.readline()
             n_line += 1
 
+        # Extracción de lineas y curvas
+
+        for ptos in dicc_capas:
+            linea_iniciada = False
+            curva_iniciada = False
+            for pto in dicc_capas.get(ptos):
+                if pto[2] not in ('TC', 'TR', 'TX'):
+                    if len(pto) > 3:
+                        if pto[3] == 'I':
+                            # Si la linea está iniciada
+                            if linea_iniciada:
+                                # Si encuentro 'I' cierro la linea y empiezo otra
+                                lineas.append(linea)
+                                linea = []
+                                linea.append(pto)
+                                linea_iniciada = True
+                            # Si no existe linea en esa capa, se crea la 1ª linea
+                            else:
+                                linea = []
+                                linea.append(pto)
+                                linea_iniciada = True
+                        elif pto[3] == 'IC':
+                            # Si la curva está iniciada
+                            if curva_iniciada:
+                                # Si encuentro 'IC' cierro la curva y empiezo otra
+                                curvas.append(curva)
+                                curva = []
+                                curva.append(pto)
+                                curva_iniciada = True
+                            # Si no existe curva en esa capa, se crea la 1ª curva
+                            else:
+                                curva = []
+                                curva.append(pto)
+                                curva_iniciada = True
+                        # Se añaden puntos a la curva
+                        elif pto[3] == 'C' and curva_iniciada:
+                            curva.append(pto)
+                    # Se añaden puntos a la linea
+                    elif linea_iniciada:
+                        linea.append(pto)
+            # Si no hay mas elementos en la capa, cerramos lineas y curvas
+            if len(linea) != 0:
+                lineas.append(linea)
+                linea = []
+            if len(curva) != 0:
+                curvas.append(curva)
+                curva = []
+
         f.close()
 
         # Salida archivo correcto
         if line == "" and not err:
             print('Archivo ok:', entrada)
-            print('Número de lineas :', n_line)
+            print('Número de puntos en el archivo :', n_line)
             print('El archivo contiene las siguientes capas:', capas)
             for ptos in dicc_capas:
                 list_ptos = []
                 for pto in dicc_capas[ptos]:
                     list_ptos.append(pto[0])
                 print('La capa: ', ptos, 'contiene los puntos: ', list_ptos)
+            print('número de lineas :', len(lineas),
+                  'número de curvas :', len(curvas))
+
         else:
             # Salida archivo error
             print('Archivo erroneo:', entrada)
 
     except (IOError, NameError) as e:
         print(e)
+
 
 
