@@ -250,15 +250,15 @@ if __name__ == "__main__":
                 for pto in dicc_capas[ptos]:
                     list_ptos.append(pto[0])
                 print('La capa: ', ptos, 'contiene los puntos: ', list_ptos)
-            print('número de lineas :', len(lineas),
-                  'número de curvas :', len(curvas))
+            print('El archivo de campo contiene:', len(lineas),
+                  'lineas y', len(curvas), 'curvas')
 
             # Test generación dxf
             # Estudio de funciones biblioteca exdxf
 
             dwg = ezdxf.new('AC1015')
 
-            # Se crea el espacio modelo dode se añaden todos los elementos del dibujo
+            # Se crea el espacio modelo donde se añaden todos los elementos del dibujo
             msp = dwg.modelspace()
 
             # Tratamiento de lineas
@@ -269,6 +269,15 @@ if __name__ == "__main__":
                     lin_coord.append(coord_puntos[1])
                 # Funcion para añadir lineas al modelo (polylineas)
                 msp.add_lwpolyline(lin_coord)
+
+            # Tratamiento de curvas
+            for ptos in curvas:
+                lin_coord = []
+                for coord_puntos in ptos:
+                    # Se extraen solo las corrdenadas del punto (x,y,z)
+                    lin_coord.append(coord_puntos[1])
+                # Funcion para añadir curvas al modelo
+                msp.add_spline(lin_coord)
 
             dwg.saveas("salida/test_dibujo.dxf")
 
