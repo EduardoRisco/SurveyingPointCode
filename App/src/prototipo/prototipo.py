@@ -4,11 +4,13 @@
 #
 # Se requiere PLY (Python Lex-Yacc).
 #
-# J. Eduardo Risco 02-02-2019
+# J. Eduardo Risco 7-02-2019
 #
 
 import ply.lex as lex
 import ply.yacc as yacc
+
+import ezdxf
 
 # Lexer part
 
@@ -31,9 +33,7 @@ reserved = {
 }
 
 
-# noinspection PySingleQuotedDocstring
 def t_ID(t):
-    # noinspection PySingleQuotedDocstring,PySingleQuotedDocstring
     r'[a-zA-Z]+'
     t.type = reserved.get(t.value, 'ID')
     return t
@@ -57,7 +57,6 @@ t_ignore = r' '
 
 
 def t_newline(t):
-    # noinspection PySingleQuotedDocstring
     r'\n+'
     t.lexer.lineno += t.value.count("\n")
 
@@ -69,7 +68,6 @@ def t_error(t):
 
 lex.lex()
 
-
 # Parser part
 
 
@@ -79,13 +77,11 @@ def p_linea(p):
 
 
 def p_coordenadas(p):
-    # noinspection PySingleQuotedDocstring
     ''' coordenadas : FLOAT COMA FLOAT COMA FLOAT '''
     p[0] = p[1], p[3], p[5]
 
 
 def p_codigo(p):
-    # noinspection PySingleQuotedDocstring
     ''' codigo : codigo_capa codigo_geometrico
                    | codigo_elemento_singular codigo_valor_texto
                    | codigo_capa codigo_no_accesible
@@ -99,13 +95,11 @@ def p_codigo(p):
 
 
 def p_codigo_capa(p):
-    # noinspection PySingleQuotedDocstring
     ''' codigo_capa : ID '''
     p[0] = p[1]
 
 
 def p_codigo_geometrico(p):
-    # noinspection PySingleQuotedDocstring
     ''' codigo_geometrico : COD_GEOM '''
     p[0] = p[1]
 
@@ -155,8 +149,8 @@ parser = yacc.yacc()
 
 if __name__ == "__main__":
 
-    entrada = 'entrada/ejemplo1.txt'
-    #entrada = 'entrada/ejemplo2.txt'
+    entrada = 'entrada/ejemplo1.txt'  # ejemplo correcto
+    # entrada = 'entrada/ejemplo2.txt' # ejemplo incorrecto
 
     try:
         err = False
@@ -173,7 +167,7 @@ if __name__ == "__main__":
         while line != "":
             # Pasamos el parser
             punto = parser.parse(line)
-            print(punto)
+            # print(punto)
             # Deteccón de archivo de entrada erroneo
             if not punto:
                 err = True
@@ -237,10 +231,10 @@ if __name__ == "__main__":
                     elif linea_iniciada:
                         linea.append(pto)
             # Si no hay mas elementos en la capa, cerramos lineas y curvas
-            if len(linea) != 0:
+            if linea:
                 lineas.append(linea)
                 linea = []
-            if len(curva) != 0:
+            if curva:
                 curvas.append(curva)
                 curva = []
 
@@ -258,6 +252,25 @@ if __name__ == "__main__":
                 print('La capa: ', ptos, 'contiene los puntos: ', list_ptos)
             print('número de lineas :', len(lineas),
                   'número de curvas :', len(curvas))
+
+            # Test generación dxf
+            # Estudio de funciones biblioteca exdxf
+
+            dwg = ezdxf.new('AC1015')
+
+            # Se crea el espacio modelo dode se añaden todos los elementos del dibujo
+            msp = dwg.modelspace()
+
+            # Tratamiento de lineas
+            for ptos in lineas:
+                lin_coord = []
+                for coord_puntos in ptos:
+                    # Se extraen solo las corrdenadas del punto (x,y,z)
+                    lin_coord.append(coord_puntos[1])
+                # Funcion para añadir lineas al modelo (polylineas)
+                msp.add_lwpolyline(lin_coord)
+
+            dwg.saveas("salida/test_dibujo.dxf")
 
         else:
             # Salida archivo error
