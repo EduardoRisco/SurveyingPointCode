@@ -279,6 +279,16 @@ if __name__ == "__main__":
                 # Funcion para añadir curvas al modelo
                 msp.add_spline(lin_coord)
 
+            l = 0
+            c = 0
+            for el in dwg.entities:
+                if type(el) == ezdxf.modern.lwpolyline.LWPolyline:
+                    l = l+1
+                elif type(el) == ezdxf.modern.spline.Spline:
+                    c = c+1
+            print('Se han añadido', l, 'lineas, ',
+                  c, 'curvas, al archivo dxf creado')
+
             dwg.saveas("salida/test_dibujo.dxf")
 
         else:
@@ -287,6 +297,3 @@ if __name__ == "__main__":
 
     except (IOError, NameError) as e:
         print(e)
-
-
-
