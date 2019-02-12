@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if filename %}
+    <h1>Archivo cargado con exito</h1>
+    
+    {% else %}
+    <h1>error al cargar el archivo</h1>
+    {% endif %}
+{% endblock %}
