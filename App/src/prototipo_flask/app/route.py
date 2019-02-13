@@ -3,6 +3,7 @@ from flask import render_template, request, flash, redirect, url_for, send_from_
 from werkzeug.utils import secure_filename
 import os
 
+from app.conversor import genera_dxf
 
 ALLOWED_EXTENSIONS = set(["txt", "csv"])
 
@@ -28,13 +29,26 @@ def upload_file():
         if f and allowed_file(f.filename):
             filename = secure_filename(f.filename)
             f.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
-            
-            return redirect(url_for("get_file", filename=filename))
+            # Se genera y se guarda el archivo dxf
+
+            genera_dxf("./tmp/"+filename)
+            os.remove("./tmp/"+filename)
+            return redirect(url_for("downloads"))
         return "Seleccione un archivo tipo: .txt o .csv."
 
     return render_template('upload.html', title='Carga Archivos')
 
 
-@app.route("/uploads/<filename>")
-def get_file(filename):
-    return render_template('uploads.html', title='Uploads', filename=filename)
+@app.route("/download", methods=["GET", "POST"])
+def downloads():
+    if request.method == "POST":
+        return redirect(url_for("download_file", filename='salida.dxf'))
+    return render_template('download.html')
+
+
+@app.route('/download_files/<filename>')
+def download_file(filename):
+    try:
+        return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
+    except Exception as e:
+        return str(e)
