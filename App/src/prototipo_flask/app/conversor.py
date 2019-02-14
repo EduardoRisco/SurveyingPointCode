@@ -162,9 +162,11 @@ def genera_dxf(entrada):
         while line != "":
             # Pasamos el parser
             punto = parser.parse(line)
-            # Deteccón de archivo de entrada erroneo
+            # Detección de archivo de entrada erroneo
             if not punto:
                 err = True
+				# Parada en este punto, decidiremos si continuamos 
+				# leyendo el archivo
                 break
             # print(punto)
             codigo_capa = punto[2]
@@ -175,7 +177,7 @@ def genera_dxf(entrada):
                 dicc_capas[codigo_capa] = [punto]
                 capas.add(codigo_capa)
             else:
-                # Se añaden los puntos que tengan el mismo codigo
+                # Se añaden los puntos que tengan el mismo código
                 # a su elemento correspondiente en el diccionario
                 if codigo_capa in dicc_capas:
                     lista = dicc_capas.get(codigo_capa)
@@ -184,7 +186,7 @@ def genera_dxf(entrada):
             line = f.readline()
             n_line += 1
 
-        # Extracción de lineas y curvas
+        # Extracción de líneas y curvas
 
         for ptos in dicc_capas:
             linea_iniciada = False
@@ -194,14 +196,14 @@ def genera_dxf(entrada):
                 if pto[2] not in ('TC', 'TR', 'TX'):
                     if len(pto) > 3:
                         if pto[3] == 'I':
-                            # Si la linea está iniciada
+                            # Si la C está iniciada
                             if linea_iniciada:
-                                # Si encuentro 'I' cierro la linea y empiezo otra
+                                # Si encuentro 'I' cierro la línea y empiezo otra
                                 lineas.append(linea)
                                 linea = []
                                 linea.append(pto)
                                 linea_iniciada = True
-                            # Si no existe linea en esa capa, se crea la 1ª linea
+                            # Si no existe línea en esa capa, se crea la 1ª línea
                             else:
                                 linea = []
                                 linea.append(pto)
@@ -222,10 +224,10 @@ def genera_dxf(entrada):
                         # Se añaden puntos a la curva
                         elif pto[3] == 'C' and curva_iniciada:
                             curva.append(pto)
-                    # Se añaden puntos a la linea
+                    # Se añaden puntos a la línea
                     elif linea_iniciada:
                         linea.append(pto)
-            # Si no hay mas elementos en la capa, cerramos lineas y curvas
+            # Si no hay mas elementos en la capa, cerramos líneas y curvas
             if linea:
                 lineas.append(linea)
                 linea = []
@@ -242,13 +244,13 @@ def genera_dxf(entrada):
             # Se crea el espacio modelo donde se añaden todos los elementos del dibujo
             msp = dwg.modelspace()
 
-            # Tratamiento de lineas
+            # Tratamiento de líneas
             for ptos in lineas:
                 lin_coord = []
                 for coord_puntos in ptos:
                     # Se extraen solo las coordenadas del punto (x,y,z)
                     lin_coord.append(coord_puntos[1])
-                # Funcion para añadir lineas al modelo (polylineas)
+                # Función para añadir líneas al modelo (polylineas)
                 msp.add_lwpolyline(lin_coord)
 
             # Tratamiento de curvas
@@ -257,7 +259,7 @@ def genera_dxf(entrada):
                 for coord_puntos in ptos:
                     # Se extraen solo las coordenadas del punto (x,y,z)
                     lin_coord.append(coord_puntos[1])
-                # Funcion para añadir curvas al modelo
+                # Función para añadir curvas al modelo
                 msp.add_spline(lin_coord)
 
             #test    
