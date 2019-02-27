@@ -1,30 +1,24 @@
-<html>
+</html>
 
+<!DOCTYPE html>
+<html lang="es">
 <head>
-  {% if title %}
-  <title>{{ title }} - SurveyingPointCode</title>
-  {% else %}
-  <title>Welcome to SurveyingPointCode</title>
-  {% endif %}
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for("static", filename="base.css") }}">
 </head>
-
 <body>
-  <div>SurveyingPointCode :
-    
-    <a href="{{ url_for('login') }}">Login</a>
-    <a href="{{ url_for('upload_file') }}">Upload</a>
-    <a href="{{ url_for('downloads') }}">Download</a>
-  </div>
-    {% with messages = get_flashed_messages() %}
-  {% if messages %}
-  <ul>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-  {% endwith %}
-  {% block content %}{% endblock %}
-</body>
+<div>SurveyingPointCode :
+    <ul class="user-info">
+        
+        {% if current_user.is_anonymous %}
+            <a href="{{ url_for('login') }}">Login</a>
+        {% else %}
+            <a href="{{ url_for('logout') }}">Logout</a>
+        {% endif %}
 
+    </ul>
+</div>
+{% block content %}{% endblock %}
+</body>
 </html>
