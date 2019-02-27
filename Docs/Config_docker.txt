@@ -16,12 +16,12 @@ hostname=postgres
 network=pgnetwork
 usuario=tfg
 passw=f04f1b4d7734f0dc3c4da46f19c0a9f49b56
-crea una bbdd nueva=SPCODE
+crea una bbdd nueva=tfg
 puerto=5432
 volumen de persistencia=pg_data
 "IPAddress": "172.18.0.2"
 
-sudo docker run --name=postgis --hostname=postgres --network=pgnetwork -d -e POSTGRES_USER=tfg -e POSTGRES_PASS=f04f1b4d7734f0dc3c4da46f19c0a9f49b56 -e POSTGRES_DBNAME=spcode -e ALLOW_IP_RANGE=0.0.0.0/0 -p 5432:5432 -v pg_data:/var/lib/postgresql --restart=always mdillon/postgis
+sudo docker run --name=postgis --hostname=postgres --network=pgnetwork -d -e POSTGRES_USER=tfg -e POSTGRES_PASS=f04f1b4d7734f0dc3c4da46f19c0a9f49b56 -e POSTGRES_DBNAME=tfg -e ALLOW_IP_RANGE=0.0.0.0/0 -p 5432:5432 -v pg_data:/var/lib/postgresql --restart=always mdillon/postgis
 
 -- Contenedor pgadmin4:
 nombre=pgadmin4
