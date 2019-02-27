@@ -1,0 +1,36 @@
+-- Contenedor de PostgreSQL con postgis
+sudo docker pull mdillon/postgis
+-- Contenedor de pgadmin4 , para administrar la bbdd
+sudo docker pull dpage/pgadmin4
+
+-- creamos volumenes para la persistencia de datos, uno para postgre y el otro para pgadmin
+sudo docker volume create  --driver local --name=pg_data
+sudo docker volume create --driver local --name=pga4volume
+
+--creamos una conexion entre contenedores
+sudo docker network create --driver bridge pgnetwork
+
+-- Contenedor postgis:
+nombre=postgis
+hostname=postgres
+network=pgnetwork
+usuario=tfg
+passw=f04f1b4d7734f0dc3c4da46f19c0a9f49b56
+crea una bbdd nueva=SPCODE
+puerto=5432
+volumen de persistencia=pg_data
+"IPAddress": "172.18.0.2"
+
+sudo docker run --name=postgis --hostname=postgres --network=pgnetwork -d -e POSTGRES_USER=tfg -e POSTGRES_PASS=f04f1b4d7734f0dc3c4da46f19c0a9f49b56 -e POSTGRES_DBNAME=spcode -e ALLOW_IP_RANGE=0.0.0.0/0 -p 5432:5432 -v pg_data:/var/lib/postgresql --restart=always mdillon/postgis
+
+-- Contenedor pgadmin4:
+nombre=pgadmin4
+hostname=pgadmin4
+network=pgnetwork
+usuario=j_tfg@gmail.com
+passw=tfg
+puerto=5432
+volumen de persistencia=pga4volume
+
+
+sudo docker run --publish 80:80 --volume=pga4volume:/var/lib/pgadmin --name=pgadmin4 --hostname=pgadmin4 --network=pgnetwork --detach -e "PGADMIN_DEFAULT_EMAIL=j_tfg@gmail" -e "PGADMIN_DEFAULT_PASSWORD=tfg" -d dpage/pgadmin4
