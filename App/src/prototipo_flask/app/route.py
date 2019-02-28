@@ -16,7 +16,7 @@ ALLOWED_EXTENSIONS = set(["txt", "csv"])
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
+db.create_all()
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
