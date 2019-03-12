@@ -1,24 +1,21 @@
-</html>
-
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for("static", filename="base.css") }}">
-</head>
-<body>
-<div>SurveyingPointCode :
-    <ul class="user-info">
-        
-        {% if current_user.is_anonymous %}
-            <a href="{{ url_for('login') }}">Login</a>
-        {% else %}
-            <a href="{{ url_for('logout') }}">Logout</a>
-        {% endif %}
-
-    </ul>
-</div>
-{% block content %}{% endblock %}
-</body>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <title>Home</title>
+      <link rel="stylesheet" media="screen" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   </head>
+   <body>
+      <div class="container">
+         <br>
+         <center>
+            <h1>SurveyingPointCode</h1>
+            <br>
+            <br>
+         </center>
+      </div>
+      {% block content %}{% endblock %}
+   </body>
 </html>

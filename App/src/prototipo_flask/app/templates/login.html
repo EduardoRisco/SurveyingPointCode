@@ -1,30 +1,65 @@
 {% extends "base.html" %}
-
-{% block title %}Login{% endblock %}
-
-{% block content %}
-    <div>
-        <form action="" method="post" novalidate>
-            {{ form.hidden_tag() }}
-            <div>
-                {{ form.email.label }}
-                {{ form.email }}<br>
-                {% for error in form.email.errors %}
-                <span style="color: red;">{{ error }}</span>
-                {% endfor %}
-            </div>
-            <div>
-                {{ form.password.label }}
-                {{ form.password }}<br>
-                {% for error in form.password.errors %}
-                <span style="color: red;">{{ error }}</span>
-                {% endfor %}
-            </div>
-            <div>{{ form.remember_me() }} {{ form.remember_me.label }}</div>
-            <div>
-                {{ form.submit() }}
-            </div>
-        </form>
-    </div>
-    <div>¿No tienes una cuenta? <a href="{{ url_for('register') }}">Crea una cuenta</a></div>
-{% endblock %}
+<head>
+   <title>Login</title>
+</head>
+<body>
+   {% block content %}
+   <center>
+      <h2>Allows to automate the delineation process in CAD, by coding points in a topographic survey</h2>
+   </center>
+   <div class="container">
+   <br>
+   <div class="row align-items-center justify-content-center">
+      <div class="col-sm-3 my-1">
+         <form  action="" method="post" role="form" novalidate>
+            {{ form.hidden_tag()  }}
+            <div class="form-group">
+               {{ form.email.label }}
+               <input type="email" class="form-control" id="email" name="email" placeholder="Enter email." required>
+               {% for error in form.email.errors %}
+               <span style="color: red;">[{{ error }}]</span>
+               {% endfor %}
+               <br>
+               {{ form.password.label }}
+               <input type="password" class="form-control" id="password" name="password" placeholder="Password." required>
+               {% for error in form.password.errors %}
+               <span style="color: red;">[{{ error }}]</span>
+               {% endfor %}
+               <div class="checkbox">
+                  <label><input type="checkbox"> Remember me</label>
+               </div>
+               <br>													   
+               <center>
+                  <button type="submit" class="btn btn-success">Submit</button>
+               </center>
+         </form>
+         <br>
+         {% with messages = get_flashed_messages(with_categories=true) %}
+         {% if messages %}
+         {% for message in messages %}
+         {% if "Error" not in message[1]: %}
+         <div class="alert alert-info">
+         <strong></strong> {{ message[1] }}
+         </div>
+         {% endif %}
+         {% if "Error" in message[1]: %}
+         <div class="alert alert-danger">
+         <strong></strong> {{ message[1] }}
+         </div>
+         {% endif %}
+         {% endfor %}
+         {% endif %}
+         {% endwith %}
+         </div>
+         <br>
+      </div>
+   </div>
+   <div>
+      <center>
+         Not Registered ? <a href="{{ url_for('register') }}">Create an account</a>
+   </div>
+   </center>
+   <p class="mt-5 mb-3 text-muted text-center">SurveyingPointCode by J.Eduardo Risco &copy; 2018-2019</p>
+   {% endblock %}
+</body>
+</html>

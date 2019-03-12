@@ -1,37 +1,81 @@
 {% extends "base.html" %}
-
-{% block content %}
-    <h1>Register</h1>
-    <form action="" method="post">
-        {{ form.hidden_tag() }}
-        <p>
+<head>
+   <title>Register</title>
+</head>
+<body>
+   {% block content %}
+   <div class="container">
+      <div class="row align-items-center justify-content-center">
+         <div class="col-sm-3 my-1">
+            <center>
+               <h1>Register</h1>
+               <br>
+            </center>
+         </div>
+      </div>
+      <div class=container">
+         <div class="row align-items-center justify-content-center">
+            <div class="col-sm-3 my-1">
+               {% with messages = get_flashed_messages(with_categories=true) %}
+               {% if messages %}
+               {% for message in messages %}
+               {% if "Error" not in message[1]: %}
+               <div class="alert alert-info">
+                  <strong>Success! </strong> {{ message[1] }}
+               </div>
+               {% endif %}
+               {% if "Error" in message[1]: %}
+               <div class="alert alert-danger">
+                  <strong>Error: </strong> {{ message[1] }}
+               </div>
+               {% endif %}
+               {% endfor %}
+               {% endif %}
+               {% endwith %}
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="container">
+   <br>
+   <div class="row align-items-center justify-content-center">
+   <div class="col-sm-3 my-1">
+      <form  action="" method="post" role="form" novalidate>
+         {{ form.hidden_tag()  }}
+         <div class="form-group">
             {{ form.username.label }}<br>
-            {{ form.username(size=32) }}<br>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Enter username." required>
             {% for error in form.username.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
-        <p>
-            {{ form.email.label }}<br>
-            {{ form.email(size=64) }}<br>
+            <br>
+            {{ form.email.label }}
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter email." required>
             {% for error in form.email.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}<br>
+            <br>
+            {{ form.password.label }}
+            <input type="password" class="form-control" id="password" name="password" placeholder="Password." required>
             {% for error in form.password.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
-        <p>
-            {{ form.password2.label }}<br>
-            {{ form.password2(size=32) }}<br>
+            <br>
+            {{ form.password2.label }}
+            <input type="password" class="form-control" id="password2" name="password2" placeholder="Password." required>
             {% for error in form.password2.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
-{% endblock %}
+            <br>
+            <center>
+               <button type="submit" class="btn btn-success">Register</button>
+            </center>
+      </form>
+      <br>
+      </div>
+   </div>
+   {% endblock %}
+</body>
+</html>
+COPY TO CLIPBOARD	 SELECT ALL
+© FreeFormatter.com - FREEFORMATTER is a d/

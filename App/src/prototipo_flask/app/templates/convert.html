@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+<head>
+   <title>Convert file</title>
+</head>
+<body>
+   {% block content %}
+   <div class="container">
+      <div class="row align-items-start justify-content-center">
+         <div class="col-sm-6 my-1">
+            <center>
+               <h1>Convert File to DXF</h1>
+               <br>
+            </center>
+         </div>
+      </div>
+      <div class="container">
+         <div class="d-inline-flex p-2">
+            <div class="col-sm-2 my-1">
+               <form  action="" method="post"  novalidate>
+                  <table class="table table-sm">
+                     <thead>
+                        <tr>
+                           <th scope="col">Code Point</th>
+                           <th scope="col">Layer Cad</th>
+                           <th scope="col">Color</th>
+                           <th scope="col">Symbol</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        {% for c in capas -%}
+                        <tr>
+                           <td>{{c}}</td>
+                           <td><input name="CapaCad" type="text"></input></td>
+                           <td><input name="Color" type="color"></input></td>
+                           <td><input name="Symbol" type="text"></input></td>
+                        </tr>
+                        {% endfor -%}
+                     </tbody>
+                  </table>
+                  <center>
+                     <br>
+                     <button type="submit" class="btn btn-success">Convert</button>
+                  </center>
+               </form>
+               <br>
+            </div>
+         </div>
+         <div class="d-inline-flex p-2">
+            <div class="col-sm-8 my-1">
+               {% with messages = get_flashed_messages(with_categories=true) %}
+               {% if messages %}
+               {% for message in messages %}
+               {% if "Error" not in message[1]: %}
+               <div class="alert alert-info">
+                  <strong></strong> {{ message[1] }}
+               </div>
+               {% endif %}
+               {% if "Error" in message[1]: %}
+               <div class="alert alert-danger">
+                  <strong></strong> {{ message[1] }}
+               </div>
+               {% endif %}
+               {% endfor %}
+               {% endif %}
+               {% endwith %}
+               {% if errores %}
+               <div class="alert alert-info" role="alert">
+                  Error in lines: {{errores}}
+               </div>
+               <br>
+               <center>
+                  <a href="{{ url_for('upload_file') }}" class="btn btn-info" role="button">Reload File</a>
+               </center>
+               {% endif %}
+            </div>
+         </div>
+      </div>
+   </div>
+   </div>
+   {% endblock %}
+COPY TO CLIPBOARD	 SELECT ALL
+© FreeFormatter.com - FREEFORMATTER is a d
