@@ -4,7 +4,7 @@
 #
 # Se requiere PLY (Python Lex-Yacc).
 #
-# J. Eduardo Risco 12-02-2019
+# J. Eduardo Risco 12-03-2019
 #
 
 import ply.lex as lex
@@ -140,12 +140,19 @@ def p_codigo_no_accesible(p):
 
 def p_error(p):
     if p:
-        print("Syntax error in imput at '%s'" % p.value)
+        return  p.value
 
 
-def genera_dxf(entrada):
+def upload_txt(entrada):
 
     try:
+        global errores
+        global lineas
+        global curvas
+        global line
+        global err
+        global capas
+
         parser = yacc.yacc()
         err = False
         capas = set()  # Conjunto de capas existentes
@@ -155,38 +162,40 @@ def genera_dxf(entrada):
         puntos = []
         linea = []
         curva = []
+        errores=[]
 
         f = open(entrada)
         line = f.readline()
-        n_line = 1
+        n_line = 0
+
         while line != "":
+            n_line += 1
             # Pasamos el parser
             punto = parser.parse(line)
-            # Detección de archivo de entrada erroneo
+            # Deteccón de archivo de entrada erroneo
             if not punto:
                 err = True
-				# Parada en este punto, decidiremos si continuamos 
-				# leyendo el archivo
-                break
-            # print(punto)
-            codigo_capa = punto[2]
-            # Comprobación que las capas no existan en el diccionario
-            # si no existen se crean
-            # y se añade el primer punto a esa capa
-            if codigo_capa not in capas:
-                dicc_capas[codigo_capa] = [punto]
-                capas.add(codigo_capa)
-            else:
-                # Se añaden los puntos que tengan el mismo código
-                # a su elemento correspondiente en el diccionario
-                if codigo_capa in dicc_capas:
-                    lista = dicc_capas.get(codigo_capa)
-                    lista.append(punto)
-                    dicc_capas[codigo_capa] = lista
-            line = f.readline()
-            n_line += 1
+                # Captura de errores
+                errores.append(n_line)
 
-        # Extracción de líneas y curvas
+            else:
+                codigo_capa = punto[2]
+                # Comprobación que las capas no existan en el diccionario
+                # si no existen se crean
+                # y se añade el primer punto a esa capa
+                if codigo_capa not in capas:
+                    dicc_capas[codigo_capa] = [punto]
+                    capas.add(codigo_capa)
+                else:
+                    # Se añaden los puntos que tengan el mismo codigo
+                    # a su elemento correspondiente en el diccionario
+                    if codigo_capa in dicc_capas:
+                        lista = dicc_capas.get(codigo_capa)
+                        lista.append(punto)
+                        dicc_capas[codigo_capa] = lista
+            line = f.readline()
+
+        # Extracción de lineas y curvas
 
         for ptos in dicc_capas:
             linea_iniciada = False
@@ -196,14 +205,14 @@ def genera_dxf(entrada):
                 if pto[2] not in ('TC', 'TR', 'TX'):
                     if len(pto) > 3:
                         if pto[3] == 'I':
-                            # Si la C está iniciada
+                            # Si la linea está iniciada
                             if linea_iniciada:
-                                # Si encuentro 'I' cierro la línea y empiezo otra
+                                # Si encuentro 'I' cierro la linea y empiezo otra
                                 lineas.append(linea)
                                 linea = []
                                 linea.append(pto)
                                 linea_iniciada = True
-                            # Si no existe línea en esa capa, se crea la 1ª línea
+                            # Si no existe linea en esa capa, se crea la 1ª linea
                             else:
                                 linea = []
                                 linea.append(pto)
@@ -224,10 +233,10 @@ def genera_dxf(entrada):
                         # Se añaden puntos a la curva
                         elif pto[3] == 'C' and curva_iniciada:
                             curva.append(pto)
-                    # Se añaden puntos a la línea
+                    # Se añaden puntos a la linea
                     elif linea_iniciada:
                         linea.append(pto)
-            # Si no hay mas elementos en la capa, cerramos líneas y curvas
+            # Si no hay mas elementos en la capa, cerramos lineas y curvas
             if linea:
                 lineas.append(linea)
                 linea = []
@@ -237,6 +246,18 @@ def genera_dxf(entrada):
 
         f.close()
 
+        print(get_errors())
+        print(get_capas())
+        
+
+    except (IOError, NameError) as e:
+        print(e)    
+
+
+def genera_dxf():
+
+    
+
         # Salida archivo correcto
         if line == "" and not err:
             dwg = ezdxf.new('AC1015')
@@ -244,13 +265,13 @@ def genera_dxf(entrada):
             # Se crea el espacio modelo donde se añaden todos los elementos del dibujo
             msp = dwg.modelspace()
 
-            # Tratamiento de líneas
+            # Tratamiento de lineas
             for ptos in lineas:
                 lin_coord = []
                 for coord_puntos in ptos:
                     # Se extraen solo las coordenadas del punto (x,y,z)
                     lin_coord.append(coord_puntos[1])
-                # Función para añadir líneas al modelo (polylineas)
+                # Funcion para añadir lineas al modelo (polylineas)
                 msp.add_lwpolyline(lin_coord)
 
             # Tratamiento de curvas
@@ -259,7 +280,7 @@ def genera_dxf(entrada):
                 for coord_puntos in ptos:
                     # Se extraen solo las coordenadas del punto (x,y,z)
                     lin_coord.append(coord_puntos[1])
-                # Función para añadir curvas al modelo
+                # Funcion para añadir curvas al modelo
                 msp.add_spline(lin_coord)
 
             #test    
@@ -279,7 +300,19 @@ def genera_dxf(entrada):
 
         else:
             # Salida archivo error
-            print('Archivo erroneo:', entrada)
+            print('Archivo erroneo')
+            print(get_errors())
+            print(get_capas())
+          
 
-    except (IOError, NameError) as e:
-        print(e)
+def get_errors():
+
+    if errores:
+        return errores        
+    return False
+
+def get_capas():
+
+    if capas:
+        return capas        
+    return False    
