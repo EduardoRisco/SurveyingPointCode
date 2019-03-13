@@ -140,7 +140,7 @@ def p_codigo_no_accesible(p):
 
 def p_error(p):
     if p:
-        return  p.value
+        return p.value
 
 
 def upload_txt(entrada):
@@ -151,18 +151,19 @@ def upload_txt(entrada):
         global curvas
         global line
         global err
-        global capas
+        global capas_topografia
 
         parser = yacc.yacc()
         err = False
-        capas = set()  # Conjunto de capas existentes
+        capas_topografia = set()  # Conjunto de capas existentes
         dicc_capas = {}  # Diccionario que almacena los puntos
         lineas = []
         curvas = []
         puntos = []
         linea = []
         curva = []
-        errores=[]
+        errores = []
+        codigo_capa = ""
 
         f = open(entrada)
         line = f.readline()
@@ -179,13 +180,19 @@ def upload_txt(entrada):
                 errores.append(n_line)
 
             else:
-                codigo_capa = punto[2]
+                # Obtención del código de capa
+                if len(punto) == 4 and (punto[2] == "TR" or punto[2] == "TC"):
+                    codigo_capa = punto[3]
+                elif punto[2] == "TX":
+                    codigo_capa = punto[3][1]
+                else:
+                    codigo_capa = punto[2]
                 # Comprobación que las capas no existan en el diccionario
                 # si no existen se crean
                 # y se añade el primer punto a esa capa
-                if codigo_capa not in capas:
+                if codigo_capa not in capas_topografia:
                     dicc_capas[codigo_capa] = [punto]
-                    capas.add(codigo_capa)
+                    capas_topografia.add(codigo_capa)
                 else:
                     # Se añaden los puntos que tengan el mismo codigo
                     # a su elemento correspondiente en el diccionario
@@ -248,71 +255,69 @@ def upload_txt(entrada):
 
         print(get_errors())
         print(get_capas())
-        
 
     except (IOError, NameError) as e:
-        print(e)    
+        print(e)
 
 
 def genera_dxf():
 
-    
-
         # Salida archivo correcto
-        if line == "" and not err:
-            dwg = ezdxf.new('AC1015')
+    if line == "" and not err:
+        dwg = ezdxf.new('AC1015')
 
-            # Se crea el espacio modelo donde se añaden todos los elementos del dibujo
-            msp = dwg.modelspace()
+        # Se crea el espacio modelo donde se añaden todos los elementos del dibujo
+        msp = dwg.modelspace()
 
-            # Tratamiento de lineas
-            for ptos in lineas:
-                lin_coord = []
-                for coord_puntos in ptos:
+        # Tratamiento de lineas
+        for ptos in lineas:
+            lin_coord = []
+            for coord_puntos in ptos:
                     # Se extraen solo las coordenadas del punto (x,y,z)
-                    lin_coord.append(coord_puntos[1])
-                # Funcion para añadir lineas al modelo (polylineas)
-                msp.add_lwpolyline(lin_coord)
+                lin_coord.append(coord_puntos[1])
+            # Funcion para añadir lineas al modelo (polylineas)
+            msp.add_lwpolyline(lin_coord)
 
-            # Tratamiento de curvas
-            for ptos in curvas:
-                lin_coord = []
-                for coord_puntos in ptos:
-                    # Se extraen solo las coordenadas del punto (x,y,z)
-                    lin_coord.append(coord_puntos[1])
-                # Funcion para añadir curvas al modelo
-                msp.add_spline(lin_coord)
+        # Tratamiento de curvas
+        for ptos in curvas:
+            lin_coord = []
+            for coord_puntos in ptos:
+                # Se extraen solo las coordenadas del punto (x,y,z)
+                lin_coord.append(coord_puntos[1])
+            # Funcion para añadir curvas al modelo
+            msp.add_spline(lin_coord)
 
-            #test    
+        # test
 
-            l = 0
-            c = 0
-            for el in dwg.entities:
-                if type(el) == ezdxf.modern.lwpolyline.LWPolyline:
-                    l = l+1
-                elif type(el) == ezdxf.modern.spline.Spline:
-                    c = c+1
-            print('Se han añadido', l, 'lineas, ',
-                  c, 'curvas, al archivo dxf creado')
+        l = 0
+        c = 0
+        for el in dwg.entities:
+            if type(el) == ezdxf.modern.lwpolyline.LWPolyline:
+                l = l+1
+            elif type(el) == ezdxf.modern.spline.Spline:
+                c = c+1
+        print('Se han añadido', l, 'lineas, ',
+              c, 'curvas, al archivo dxf creado')
 
-            dwg.saveas("./tmp/salida.dxf")
+        dwg.saveas("./tmp/salida.dxf")
 
+    else:
+        # Salida archivo error
+        print('Archivo erroneo')
+        print(get_errors())
+        print(get_capas())
 
-        else:
-            # Salida archivo error
-            print('Archivo erroneo')
-            print(get_errors())
-            print(get_capas())
-          
 
 def get_errors():
 
     if errores:
-        return errores        
+        return errores
     return False
+
 
 def get_capas():
 
-    if capas:
-        return capas        
-    return False    
+    if capas_topografia:
+        return capas_topografia
+    return False
+  
