@@ -1,0 +1,14 @@
+E,Edificio,(38, 140, 89)
+A,Acera,0
+FA,Farola,2
+TEL,Telecomunicaciones,3
+RE,Red_Electrica,161
+SAN,Saneamiento,220
+M,Muro,1
+B,Bordillo,0
+B1,Bordillo,0
+R,Relleno,0
+ARB,Arbol,60
+C,Calzada,141
+C1,Calzada,141
+

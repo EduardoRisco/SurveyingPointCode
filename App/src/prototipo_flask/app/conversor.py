@@ -3,14 +3,16 @@
 # Prototipo App, conversor a dxf
 #
 # Se requiere PLY (Python Lex-Yacc).
+# Se requiere ezdxf.
 #
-# J. Eduardo Risco 12-03-2019
+# J. Eduardo Risco 15-03-2019
 #
 
 import ply.lex as lex
 import ply.yacc as yacc
 
 import ezdxf
+from app.geometric_tools import create_layers
 
 # Lexer part
 
@@ -124,7 +126,7 @@ def p_codigo_valor_texto(p):
 
 def p_codigo_no_accesible(p):
     ''' codigo_no_accesible : FLOAT
-                            | INT 
+                            | INT
                             | codigo_no_accesible FLOAT
                             | codigo_no_accesible INT  '''
 
@@ -262,12 +264,19 @@ def upload_txt(entrada):
 
 def genera_dxf():
 
-        # Salida archivo correcto
+    # Ejemplo de archivo de usuario , código de campo-capa, capa de cad y color de capa
+    file_user = [['E', 'Edificio', (38, 140, 89)], ['A', 'Acera', 0], ['FA', 'Farola', 2], ['TEL', 'Telecomunicaciones', 3], ['RE', 'Red_Electrica', 161], ['SAN', 'Saneamiento', 220], [
+        'M', 'Muro', 1], ['B', 'Bordillo', 0], ['B1', 'Bordillo', 0], ['R', 'Relleno', 0], ['ARB', 'Arbol', 60], ['C', 'Calzada', 141], ['C1', 'Calzada', 141]]
+
+    # Salida archivo correcto
     if line == "" and not err:
-        dwg = ezdxf.new('AC1015')
+        dwg = ezdxf.new('AC1018')
 
         # Se crea el espacio modelo donde se añaden todos los elementos del dibujo
         msp = dwg.modelspace()
+
+        # Crear capas necesarias
+        create_layers(dwg, file_user)
 
         # Tratamiento de lineas
         for ptos in lineas:
@@ -276,7 +285,7 @@ def genera_dxf():
                     # Se extraen solo las coordenadas del punto (x,y,z)
                 lin_coord.append(coord_puntos[1])
             # Funcion para añadir lineas al modelo (polylineas)
-            msp.add_lwpolyline(lin_coord)
+            msp.add_lwpolyline(lin_coord,)
 
         # Tratamiento de curvas
         for ptos in curvas:
@@ -320,4 +329,3 @@ def get_capas():
     if capas_topografia:
         return capas_topografia
     return False
-  

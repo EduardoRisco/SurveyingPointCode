@@ -21,6 +21,7 @@ capas = []
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
+db.create_all()
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
@@ -31,7 +32,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user is None or not user.check_password(form.password.data):
-            flash('Error: Invalid username or password')
+            flash('Error: Invalid email or password')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
@@ -61,22 +62,31 @@ def register():
 @login_required
 def upload_file():
     if request.method == "POST":
-        if not "file" in request.files:
-            flash("Error: No file selected.")
-        f = request.files["file"]
+        if not "file_surveying" in request.files:
+            flash("Error: topographic data file not selected.")
+        if not "file_config" in request.files:
+            f_config = ""
+        else:
+            f_config = request.files["file_config"]
+        f = request.files["file_surveying"]
         if f.filename == "":
-            flash("Error: No file selected.")
+            flash("Error: topographic data file not selected.")
         if f and allowed_file(f.filename):
             filename = secure_filename(f.filename)
+
+            if f_config and allowed_file(f_config.filename):
+                filename_config = secure_filename(f_config.filename)
+                f_config.save(os.path.join(
+                    app.config["UPLOAD_FOLDER"], filename_config))
             f.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
             # Se genera y se guarda el archivo dxf
             upload_txt("./tmp/"+filename)
             # os.remove("./tmp/"+filename)
             if get_errors():
                 flash(
-                    'Error: This file has the following errors. Do you want to continue?')
+                    'Error: topographic data file has the following errors. Do you want to continue?')
             return redirect(url_for("convert_file_dxf"))
-        flash("Error: Select a type file: .txt o .csv.")
+        flash("Error: the topografic data file type must be: .txt o .csv.")
     return render_template('upload.html', title='Carga Archivos')
 
 
