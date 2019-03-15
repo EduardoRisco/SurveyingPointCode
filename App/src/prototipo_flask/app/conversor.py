@@ -12,7 +12,7 @@ import ply.lex as lex
 import ply.yacc as yacc
 
 import ezdxf
-from app.geometric_tools import create_layers
+from app.geometric_tools import create_layers,create_point
 
 # Lexer part
 
@@ -154,6 +154,7 @@ def upload_txt(entrada):
         global line
         global err
         global capas_topografia
+        global puntos
 
         parser = yacc.yacc()
         err = False
@@ -257,6 +258,7 @@ def upload_txt(entrada):
 
         print(get_errors())
         print(get_capas())
+ 
 
     except (IOError, NameError) as e:
         print(e)
@@ -277,7 +279,10 @@ def genera_dxf():
 
         # Crear capas necesarias
         create_layers(dwg, file_user)
+        # Añadir puntos al modelo
+        create_point(msp,puntos)
 
+        
         # Tratamiento de lineas
         for ptos in lineas:
             lin_coord = []

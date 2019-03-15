@@ -28,9 +28,15 @@ def create_layers(dwg, file_user):
         dwg.layers.new(name=l[0], dxfattribs={'color': color})
 
     # Capas obligatorias
-    dwg.layers.new('Points', dxfattribs={'color': 0})   
-    dwg.layers.new('Altitude', dxfattribs={'color': 0}) 
-    dwg.layers.new('Label', dxfattribs={'color': 0}) 
+    dwg.layers.new('Points', dxfattribs={'color': 0})
+    dwg.layers.new('Altitude', dxfattribs={'color': 0})
+    dwg.layers.new('Label', dxfattribs={'color': 0})
 
 
-
+def create_point(msp, points):
+    ''' 
+    Función que añade todos los puntos al modelo, en la capa 'Points'.
+    '''
+    
+    for p in points:
+        msp.add_point((p[1][0], p[1][1]), dxfattribs={'layer': 'Points'})
