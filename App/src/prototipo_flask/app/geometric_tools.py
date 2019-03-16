@@ -16,11 +16,11 @@ def create_layers(dwg, file_user):
     usuario, añadiendolas al modelo.
     '''
 
-    layer = set()
+    layer_color = set()
     for i in file_user:
-        layer.add((i[1], i[2]))
-
-    for l in layer:
+        layer_color.add((i[1], i[2]))
+   
+    for l in layer_color:
         if isinstance(l[1], tuple):
             color = (l[1][0]*6/256)*36 + (l[1][1]*6/256)*6 + (l[1][2]*6/256)
         else:
@@ -33,15 +33,32 @@ def create_layers(dwg, file_user):
     dwg.layers.new('Label', dxfattribs={'color': 5})
 
 
-def create_point(dwg,msp, points):
+def create_points(dwg, msp, points):
     ''' 
     Función que añade todos los puntos al modelo, en la capa 'Points',
     la altitud en la capa 'Altitude' y el código en la capa 'Label'.
     '''
+    # Definición de estilos de texto, elevación y etiqueta
     dwg.styles.new('elevation', dxfattribs={'font': 'arial.ttf', 'width': 0.5})
     dwg.styles.new('label', dxfattribs={'font': 'times.ttf', 'width': 0.8})
 
     for p in points:
         msp.add_point((p[1][0], p[1][1]), dxfattribs={'layer': 'Points'})
-        msp.add_text( p[1][2], dxfattribs={'style': 'elevation', 'height': 0.35,'layer': 'Altitude'}).set_pos(((p[1][0]+0.5, p[1][1]+0.5)), align='LEFT')
-        msp.add_text( p[2], dxfattribs={'style': 'label', 'height': 0.35,'layer': 'Label'}).set_pos(((p[1][0]-0.5, p[1][1]-0.5)), align='RIGHT')
+        msp.add_text(p[1][2], dxfattribs={'style': 'elevation', 'height': 0.35, 'layer': 'Altitude'}).set_pos(
+            ((p[1][0]+0.5, p[1][1]+0.5)), align='LEFT')
+        msp.add_text(p[2], dxfattribs={'style': 'label', 'height': 0.35, 'layer': 'Label'}).set_pos(
+            ((p[1][0]-0.5, p[1][1]-0.5)), align='RIGHT')
+
+
+def create_circles(msp, circulos,file_user):
+    ''' 
+    Función que crea los circulos con el radio definido por el 
+    usuario , y los añade al modelo, en la capa correspondiente.
+    '''
+    for c in circulos:
+        for l in file_user:
+            if c[3][1]==l[0]:
+                layer=l[1]
+
+        msp.add_circle((c[1][0], c[1][1]), c[3][0],
+                       dxfattribs={'layer': layer})

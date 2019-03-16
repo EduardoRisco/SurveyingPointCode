@@ -12,7 +12,7 @@ import ply.lex as lex
 import ply.yacc as yacc
 
 import ezdxf
-from app.geometric_tools import create_layers,create_point
+from app.geometric_tools import create_layers,create_points,create_circles
 
 # Lexer part
 
@@ -155,6 +155,7 @@ def upload_txt(entrada):
         global err
         global capas_topografia
         global puntos
+        global circulos
 
         parser = yacc.yacc()
         err = False
@@ -166,6 +167,7 @@ def upload_txt(entrada):
         linea = []
         curva = []
         errores = []
+        circulos=[]
         codigo_capa = ""
 
         f = open(entrada)
@@ -246,6 +248,10 @@ def upload_txt(entrada):
                     # Se añaden puntos a la linea
                     elif linea_iniciada:
                         linea.append(pto)
+                # Crear lista con circulos        
+                elif pto[2]=='TX':
+                    circulos.append(pto)
+
             # Si no hay mas elementos en la capa, cerramos lineas y curvas
             if linea:
                 lineas.append(linea)
@@ -258,6 +264,7 @@ def upload_txt(entrada):
 
         print(get_errors())
         print(get_capas())
+        print(circulos)
  
 
     except (IOError, NameError) as e:
@@ -280,7 +287,9 @@ def genera_dxf():
         # Crear capas necesarias
         create_layers(dwg, file_user)
         # Añadir puntos al modelo
-        create_point(dwg,msp,puntos)
+        create_points(dwg,msp,puntos)
+
+        create_circles(msp,circulos,file_user)
 
         
         # Tratamiento de lineas
