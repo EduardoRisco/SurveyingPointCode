@@ -280,7 +280,7 @@ def genera_dxf():
         # Crear capas necesarias
         create_layers(dwg, file_user)
         # Añadir puntos al modelo
-        create_point(msp,puntos)
+        create_point(dwg,msp,puntos)
 
         
         # Tratamiento de lineas
