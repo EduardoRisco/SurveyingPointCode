@@ -12,7 +12,7 @@ import ply.lex as lex
 import ply.yacc as yacc
 
 import ezdxf
-from app.geometric_tools import create_layers,create_points,create_circles
+from app.geometric_tools import create_layers, create_points,create_circles, create_lines
 
 # Lexer part
 
@@ -167,7 +167,7 @@ def upload_txt(entrada):
         linea = []
         curva = []
         errores = []
-        circulos=[]
+        circulos = []
         codigo_capa = ""
 
         f = open(entrada)
@@ -248,8 +248,8 @@ def upload_txt(entrada):
                     # Se añaden puntos a la linea
                     elif linea_iniciada:
                         linea.append(pto)
-                # Crear lista con circulos        
-                elif pto[2]=='TX':
+                # Crear lista con circulos
+                elif pto[2] == 'TX':
                     circulos.append(pto)
 
             # Si no hay mas elementos en la capa, cerramos lineas y curvas
@@ -265,7 +265,6 @@ def upload_txt(entrada):
         print(get_errors())
         print(get_capas())
         print(circulos)
- 
 
     except (IOError, NameError) as e:
         print(e)
@@ -273,7 +272,7 @@ def upload_txt(entrada):
 
 def genera_dxf():
 
-    # Ejemplo de archivo de usuario , código de campo-capa, capa de cad y color de capa
+    # Ejemplo de archivo de usuario , código de campo-capa, capa de cad y color de capa.
     file_user = [['E', 'Edificio', (38, 140, 89)], ['A', 'Acera', 0], ['FA', 'Farola', 2], ['TEL', 'Telecomunicaciones', 3], ['RE', 'Red_Electrica', 161], ['SAN', 'Saneamiento', 220], [
         'M', 'Muro', 1], ['B', 'Bordillo', 0], ['B1', 'Bordillo', 0], ['R', 'Relleno', 0], ['ARB', 'Arbol', 60], ['C', 'Calzada', 141], ['C1', 'Calzada', 141]]
 
@@ -281,25 +280,17 @@ def genera_dxf():
     if line == "" and not err:
         dwg = ezdxf.new('AC1018')
 
-        # Se crea el espacio modelo donde se añaden todos los elementos del dibujo
+        # Crear el espacio modelo donde se añaden todos los elementos del dibujo.
         msp = dwg.modelspace()
 
-        # Crear capas necesarias
+        # Crear capas necesarias.
         create_layers(dwg, file_user)
-        # Añadir puntos al modelo
-        create_points(dwg,msp,puntos)
-
-        create_circles(msp,circulos,file_user)
-
-        
-        # Tratamiento de lineas
-        for ptos in lineas:
-            lin_coord = []
-            for coord_puntos in ptos:
-                    # Se extraen solo las coordenadas del punto (x,y,z)
-                lin_coord.append(coord_puntos[1])
-            # Funcion para añadir lineas al modelo (polylineas)
-            msp.add_lwpolyline(lin_coord,)
+        # Añadir puntos al modelo.
+        create_points(dwg, msp, puntos)
+        # Añadir círculos al modelo. 
+        create_circles(msp, circulos, file_user)
+        # Añadir lineas al modelo.
+        create_lines(msp, lineas, file_user)
 
         # Tratamiento de curvas
         for ptos in curvas:
