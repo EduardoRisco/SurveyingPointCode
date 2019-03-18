@@ -12,7 +12,7 @@ import ply.lex as lex
 import ply.yacc as yacc
 
 import ezdxf
-from app.geometric_tools import create_layers, create_points,create_circles, create_lines
+from app.geometric_tools import create_layers, create_points, create_circles, create_lines, create_curves
 
 # Lexer part
 
@@ -276,7 +276,7 @@ def genera_dxf():
     file_user = [['E', 'Edificio', (38, 140, 89)], ['A', 'Acera', 0], ['FA', 'Farola', 2], ['TEL', 'Telecomunicaciones', 3], ['RE', 'Red_Electrica', 161], ['SAN', 'Saneamiento', 220], [
         'M', 'Muro', 1], ['B', 'Bordillo', 0], ['B1', 'Bordillo', 0], ['R', 'Relleno', 0], ['ARB', 'Arbol', 60], ['C', 'Calzada', 141], ['C1', 'Calzada', 141]]
 
-    # Salida archivo correcto
+    # Salida archivo correcto #### Pendiente de modificar en función de los errores obtenidos
     if line == "" and not err:
         dwg = ezdxf.new('AC1018')
 
@@ -287,19 +287,12 @@ def genera_dxf():
         create_layers(dwg, file_user)
         # Añadir puntos al modelo.
         create_points(dwg, msp, puntos)
-        # Añadir círculos al modelo. 
+        # Añadir círculos al modelo.
         create_circles(msp, circulos, file_user)
         # Añadir lineas al modelo.
         create_lines(msp, lineas, file_user)
-
-        # Tratamiento de curvas
-        for ptos in curvas:
-            lin_coord = []
-            for coord_puntos in ptos:
-                # Se extraen solo las coordenadas del punto (x,y,z)
-                lin_coord.append(coord_puntos[1])
-            # Funcion para añadir curvas al modelo
-            msp.add_spline(lin_coord)
+        # Añadir lineas al modelo.
+        create_curves(msp, curvas, file_user)
 
         # test
 

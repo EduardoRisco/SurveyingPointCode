@@ -88,3 +88,20 @@ def create_lines(msp, lines, file_user):
             if code_line == l[0]:
                 layer = l[1]
         msp.add_lwpolyline(lin_coord, dxfattribs={'layer': layer})
+
+
+def create_curves(msp, curves, file_user):
+    ''' 
+   Función que crea las curvas definidas por el usuario,
+   y las añade al modelo, en la capa correspondiente.
+   '''
+
+    for p in curves:
+        code_line = p[0][2]
+        lin_coord = []
+        for coord_points in p:
+            lin_coord.append(coord_points[1])
+        for l in file_user:
+            if code_line == l[0]:
+                layer = l[1]
+        msp.add_spline(lin_coord, dxfattribs={'layer': layer})
