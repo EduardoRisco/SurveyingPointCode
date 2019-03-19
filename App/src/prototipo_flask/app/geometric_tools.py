@@ -125,20 +125,11 @@ def create_square(msp, squares, file_user):
         coord_a_y = point_a[1][1]
         coord_b_x = point_b[1][0]
         coord_b_y = point_b[1][1]
-        inc_x = coord_b_x-coord_a_x
-        inc_y = coord_b_y-coord_a_y
 
         line.append((coord_a_x, coord_a_y))
         line.append((coord_b_x, coord_b_y))
-        angle = math.atan((inc_x)/(inc_y))
-        distance = math.sqrt((inc_x)**2+(inc_y)**2)
 
-        if inc_x > 0 and inc_y > 0:
-            azimut = math.degrees(angle)
-        elif inc_x > 0 and inc_y < 0 or inc_x < 0 and inc_y < 0:
-            azimut = math.degrees(angle)+180
-        else:
-            azimut = math.degrees(angle)+360
+        azimut, distance = calculate_azimut_distance(point_a, point_b)
         azimut = azimut+90
 
         for l in file_user:
@@ -179,22 +170,12 @@ def create_rectangles(msp, rectangles, file_user):
         coord_b_y = point_b[1][1]
         coord_c_x = point_c[1][0]
         coord_c_y = point_c[1][1]
-        inc_x = coord_b_x-coord_a_x
-        inc_y = coord_b_y-coord_a_y
 
         line.append((coord_a_x, coord_a_y))
         line.append((coord_b_x, coord_b_y))
         line.append((coord_c_x, coord_c_y))
 
-        angle = math.atan((inc_x)/(inc_y))
-        distance = math.sqrt((inc_x)**2+(inc_y)**2)
-
-        if inc_x > 0 and inc_y > 0:
-            azimut = math.degrees(angle)
-        elif inc_x > 0 and inc_y < 0 or inc_x < 0 and inc_y < 0:
-            azimut = math.degrees(angle)+180
-        else:
-            azimut = math.degrees(angle)+360
+        azimut, distance = calculate_azimut_distance(point_a, point_b)
         azimut = azimut+180
 
         for l in file_user:
@@ -206,3 +187,27 @@ def create_rectangles(msp, rectangles, file_user):
         line.append((coord_d_x, coord_d_y))
         line.append((coord_a_x, coord_a_y))
         msp.add_lwpolyline(line, dxfattribs={'layer': layer})
+
+
+def calculate_azimut_distance(a, b):
+    '''
+    Función retorna el azimut y la distancia calculados entre dos puntos.
+    '''
+
+    coord_a_x = a[1][0]
+    coord_a_y = a[1][1]
+    coord_b_x = b[1][0]
+    coord_b_y = b[1][1]
+    inc_x = coord_b_x-coord_a_x
+    inc_y = coord_b_y-coord_a_y
+
+    angle = math.atan((inc_x)/(inc_y))
+    distance = math.sqrt((inc_x)**2+(inc_y)**2)
+
+    if inc_x > 0 and inc_y > 0:
+        azimut = math.degrees(angle)
+    elif inc_x > 0 and inc_y < 0 or inc_x < 0 and inc_y < 0:
+        azimut = math.degrees(angle)+180
+    else:
+        azimut = math.degrees(angle)+360
+    return azimut, distance
