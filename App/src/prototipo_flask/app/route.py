@@ -21,7 +21,9 @@ capas = []
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
 db.create_all()
+
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
@@ -84,13 +86,16 @@ def upload_file():
             # os.remove("./tmp/"+filename)
             if get_errors():
                 flash(
-                    'Error: topographic data file has the following errors. Do you want to continue?')
+                    'Error: topographic data file has the following errors. Check the file')
+                return render_template('upload.html', title='Carga Archivos') 
             if get_errors_square():
-                     flash(
-                    'Error: The number of points with "TC" code is not multiple of 2.')    
+                flash(
+                    'Error: The number of points with "TC" code is not multiple of 2. Check the file')
+                return render_template('upload.html', title='Carga Archivos')
             if get_errors_rectangle():
-                     flash(
-                    'Error: The number of points with "TR" code is not multiple of 3.')            
+                flash(
+                    'Error: The number of points with "TR" code is not multiple of 3. Check the file')
+                return render_template('upload.html', title='Carga Archivos')
             return redirect(url_for("convert_file_dxf"))
         flash("Error: the topografic data file type must be: .txt o .csv.")
     return render_template('upload.html', title='Carga Archivos')
