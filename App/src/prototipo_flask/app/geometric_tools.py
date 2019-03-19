@@ -31,6 +31,7 @@ def create_layers(dwg, file_user):
 
     # Capas obligatorias
     dwg.layers.new('Points', dxfattribs={'color': 0})
+    dwg.layers.new('Number_Points', dxfattribs={'color': 0})
     dwg.layers.new('Altitude', dxfattribs={'color': 0})
     dwg.layers.new('Label', dxfattribs={'color': 5})
 
@@ -41,8 +42,8 @@ def create_points(dwg, msp, points):
     la altitud en la capa 'Altitude' y el código en la capa 'Label'.
     '''
     # Definición de estilos de texto, elevación y etiqueta
-    dwg.styles.new('elevation', dxfattribs={'font': 'arial.ttf', 'width': 0.5})
-    dwg.styles.new('label', dxfattribs={'font': 'times.ttf', 'width': 0.8})
+    dwg.styles.new('elevation', dxfattribs={'font': 'arial.ttf', 'width': 0.1})
+    dwg.styles.new('label', dxfattribs={'font': 'times.ttf', 'width': 0.5})
 
     for p in points:
         msp.add_point((p[1][0], p[1][1]), dxfattribs={'layer': 'Points'})
@@ -57,6 +58,12 @@ def create_points(dwg, msp, points):
             'style': 'label',
             'height': 0.35,
             'layer': 'Label'
+        }).set_pos(((p[1][0] + 0.35, p[1][1] + 0.90)), align='LEFT')
+        msp.add_text(p[0],
+                     dxfattribs={
+            'style': 'elevation',
+            'height': 0.40,
+            'layer': 'Number_Points'
         }).set_pos(((p[1][0] - 0.35, p[1][1] - 0.35)), align='RIGHT')
 
 
