@@ -157,9 +157,7 @@ def upload_txt(entrada):
         global puntos
         global circulos
         global cuadrados
-        global errores_cuadrados
         global rectangulos
-        global errores_rectangulos
 
         parser = yacc.yacc()
         err = False
@@ -175,8 +173,6 @@ def upload_txt(entrada):
         cuadrados = []
         rectangulos = []
         codigo_capa = ""
-        errores_cuadrados = False
-        errores_rectangulos = False
 
         f = open(entrada)
         line = f.readline()
@@ -273,11 +269,6 @@ def upload_txt(entrada):
             if curva:
                 curvas.append(curva)
                 curva = []
-        print('cuadrados',len(cuadrados))
-        if len(cuadrados) % 2 != 0:
-            errores_cuadrados = True
-        if len(rectangulos) % 3 != 0:
-            errores_rectangulos = True
 
         f.close()
 
@@ -346,15 +337,15 @@ def get_errors():
 
 def get_errors_square():
 
-    if errores_cuadrados:
+    if len(cuadrados) % 2 != 0:
         return True
     return False
 
 
 def get_errors_rectangle():
 
-    if errores_rectangulos:
-        return True
+    if len(rectangulos) % 3 != 0:
+       return True
     return False
 
 
