@@ -12,7 +12,7 @@ import ply.lex as lex
 import ply.yacc as yacc
 
 import ezdxf
-from app.geometric_tools import create_layers, create_points, create_circles, create_lines, create_curves, create_square
+from app.geometric_tools import create_layers, create_points, create_circles, create_lines, create_curves, create_square, create_rectangles
 
 # Lexer part
 
@@ -158,6 +158,8 @@ def upload_txt(entrada):
         global circulos
         global cuadrados
         global errores_cuadrados
+        global rectangulos
+        global errores_rectangulos
 
         parser = yacc.yacc()
         err = False
@@ -170,9 +172,11 @@ def upload_txt(entrada):
         curva = []
         errores = []
         circulos = []
-        cuadrados=[]
+        cuadrados = []
+        rectangulos = []
         codigo_capa = ""
-        errores_cuadrados=False
+        errores_cuadrados = False
+        errores_rectangulos = False
 
         f = open(entrada)
         line = f.readline()
@@ -255,9 +259,12 @@ def upload_txt(entrada):
                 # Crear lista con circulos
                 elif pto[2] == 'TX':
                     circulos.append(pto)
-                # Crear lista con cuadrados    
-                elif pto[2]=='TC':
-                    cuadrados.append(pto)    
+                # Crear lista con cuadrados
+                elif pto[2] == 'TC':
+                    cuadrados.append(pto)
+                # Crear lista con rectangulos
+                elif pto[2] == 'TR':
+                    rectangulos.append(pto)
 
             # Si no hay mas elementos en la capa, cerramos lineas y curvas
             if linea:
@@ -266,15 +273,16 @@ def upload_txt(entrada):
             if curva:
                 curvas.append(curva)
                 curva = []
-           
-        if len(cuadrados )%2 !=0:
-            errores_cuadrados=True        
+        print('cuadrados',len(cuadrados))
+        if len(cuadrados) % 2 != 0:
+            errores_cuadrados = True
+        if len(rectangulos) % 3 != 0:
+            errores_rectangulos = True
 
         f.close()
 
         print(get_errors())
         print(get_capas())
-        
 
     except (IOError, NameError) as e:
         print(e)
@@ -305,7 +313,8 @@ def genera_dxf():
         create_curves(msp, curvas, file_user)
         # Añadir cuadrados al modelo.
         create_square(msp, cuadrados, file_user)
-
+        # Añadir rectangulos al modelo.
+        create_rectangles(msp, rectangulos, file_user)
 
         # test
 
@@ -328,7 +337,6 @@ def genera_dxf():
         print(get_capas())
 
 
-
 def get_errors():
 
     if errores:
@@ -340,7 +348,14 @@ def get_errors_square():
 
     if errores_cuadrados:
         return True
-    return False    
+    return False
+
+
+def get_errors_rectangle():
+
+    if errores_rectangulos:
+        return True
+    return False
 
 
 def get_capas():

@@ -51,13 +51,13 @@ def create_points(dwg, msp, points):
             'style': 'elevation',
             'height': 0.35,
             'layer': 'Altitude'
-        }).set_pos(((p[1][0] + 0.5, p[1][1] + 0.5)), align='LEFT')
+        }).set_pos(((p[1][0] + 0.35, p[1][1] + 0.35)), align='LEFT')
         msp.add_text(p[2],
                      dxfattribs={
             'style': 'label',
             'height': 0.35,
             'layer': 'Label'
-        }).set_pos(((p[1][0] - 0.5, p[1][1] - 0.5)), align='RIGHT')
+        }).set_pos(((p[1][0] - 0.35, p[1][1] - 0.35)), align='RIGHT')
 
 
 def create_circles(msp, circles, file_user):
@@ -130,10 +130,8 @@ def create_square(msp, squares, file_user):
 
         line.append((coord_a_x, coord_a_y))
         line.append((coord_b_x, coord_b_y))
-        angle = math.atan(
-            (point_b[1][0]-point_a[1][0])/(point_b[1][1]-point_a[1][1]))
-        distance = math.sqrt(
-            (point_b[1][0]-point_a[1][0])**2+(point_b[1][1]-point_a[1][1])**2)
+        angle = math.atan((inc_x)/(inc_y))
+        distance = math.sqrt((inc_x)**2+(inc_y)**2)
 
         if inc_x > 0 and inc_y > 0:
             azimut = math.degrees(angle)
@@ -156,7 +154,55 @@ def create_square(msp, squares, file_user):
             coord_b_x = coord_c_x
             coord_b_y = coord_c_y
             azimut = azimut+90
-            
+
         line.append((point_a[1][0], point_a[1][1]))
         msp.add_lwpolyline(line, dxfattribs={'layer': layer})
-    
+
+
+def create_rectangles(msp, rectangles, file_user):
+    '''
+    Función que crea los rectangulos definidos por el usuario,
+    y los añade al modelo, en la capa correspondiente.
+    '''
+
+    layer = ''
+
+    for i in range(0, len(rectangles), 3):
+        code_line = rectangles[i][3]
+        line = []
+        point_a = rectangles[i]
+        point_b = rectangles[i+1]
+        point_c = rectangles[i+2]
+        coord_a_x = point_a[1][0]
+        coord_a_y = point_a[1][1]
+        coord_b_x = point_b[1][0]
+        coord_b_y = point_b[1][1]
+        coord_c_x = point_c[1][0]
+        coord_c_y = point_c[1][1]
+        inc_x = coord_b_x-coord_a_x
+        inc_y = coord_b_y-coord_a_y
+
+        line.append((coord_a_x, coord_a_y))
+        line.append((coord_b_x, coord_b_y))
+        line.append((coord_c_x, coord_c_y))
+
+        angle = math.atan((inc_x)/(inc_y))
+        distance = math.sqrt((inc_x)**2+(inc_y)**2)
+
+        if inc_x > 0 and inc_y > 0:
+            azimut = math.degrees(angle)
+        elif inc_x > 0 and inc_y < 0 or inc_x < 0 and inc_y < 0:
+            azimut = math.degrees(angle)+180
+        else:
+            azimut = math.degrees(angle)+360
+        azimut = azimut+180
+
+        for l in file_user:
+            if code_line == l[0]:
+                layer = l[1]
+
+        coord_d_x = coord_c_x + (math.sin(math.radians(azimut))*distance)
+        coord_d_y = coord_c_y + (math.cos(math.radians(azimut))*distance)
+        line.append((coord_d_x, coord_d_y))
+        line.append((coord_a_x, coord_a_y))
+        msp.add_lwpolyline(line, dxfattribs={'layer': layer})
