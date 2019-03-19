@@ -266,7 +266,7 @@ def upload_txt(entrada):
             if curva:
                 curvas.append(curva)
                 curva = []
-        print('errorescuadrados',len(cuadrados))        
+           
         if len(cuadrados )%2 !=0:
             errores_cuadrados=True        
 
@@ -301,9 +301,9 @@ def genera_dxf():
         create_circles(msp, circulos, file_user)
         # Añadir lineas al modelo.
         create_lines(msp, lineas, file_user)
-        # Añadir lineas al modelo.
+        # Añadir curvas al modelo.
         create_curves(msp, curvas, file_user)
-
+        # Añadir cuadrados al modelo.
         create_square(msp, cuadrados, file_user)
 
 
