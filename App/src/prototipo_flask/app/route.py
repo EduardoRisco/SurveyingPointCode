@@ -11,7 +11,7 @@ from app.forms import RegistrationForm, LoginForm
 from app import db
 
 
-from app.conversor import genera_dxf, upload_txt, get_capas, get_errors
+from app.conversor import genera_dxf, upload_txt, get_capas, get_errors, get_errors_square
 
 ALLOWED_EXTENSIONS = set(["txt", "csv"])
 errores = []
@@ -85,6 +85,9 @@ def upload_file():
             if get_errors():
                 flash(
                     'Error: topographic data file has the following errors. Do you want to continue?')
+            if get_errors_square():
+                     flash(
+                    'Error: The number of points with "TC" code is not multiple of 2.')    
             return redirect(url_for("convert_file_dxf"))
         flash("Error: the topografic data file type must be: .txt o .csv.")
     return render_template('upload.html', title='Carga Archivos')
