@@ -1,17 +1,17 @@
 
 import os
-from app import app
-from flask import render_template, request, flash, redirect, url_for, send_from_directory, send_file
-from flask_login import LoginManager, logout_user, current_user, login_user, login_required
+from flask import render_template, request, flash, redirect, url_for
+from flask import send_from_directory, send_file
+from flask_login import LoginManager, logout_user, current_user
+from flask_login import login_user, login_required
 from werkzeug.urls import url_parse
 from werkzeug.utils import secure_filename
-from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from app.forms import RegistrationForm, LoginForm
-from app import db
+from app import db, app
+from app.conversor import genera_dxf, upload_txt, get_capas, get_errors
+from app.conversor import get_errors_square, get_errors_rectangle
 
-
-from app.conversor import genera_dxf, upload_txt, get_capas, get_errors, get_errors_square, get_errors_rectangle
 
 ALLOWED_EXTENSIONS = set(["txt", "csv"])
 errores = []
@@ -19,7 +19,8 @@ capas = []
 
 
 def allowed_file(filename):
-    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+    return "." in filename and filename.rsplit(
+        ".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 db.create_all()
@@ -64,9 +65,9 @@ def register():
 @login_required
 def upload_file():
     if request.method == "POST":
-        if not "file_surveying" in request.files:
+        if "file_surveying" not in request.files:
             flash("Error: topographic data file not selected.")
-        if not "file_config" in request.files:
+        if "file_config" not in request.files:
             f_config = ""
         else:
             f_config = request.files["file_config"]
@@ -82,19 +83,22 @@ def upload_file():
                     app.config["UPLOAD_FOLDER"], filename_config))
             f.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
             # Se genera y se guarda el archivo dxf
-            upload_txt("./tmp/"+filename)
+            upload_txt("./tmp/" + filename)
             # os.remove("./tmp/"+filename)
             if get_errors():
                 flash(
-                    'Error: topographic data file has the following errors. Check the file')
-                return render_template('upload.html', title='Carga Archivos') 
+                    'Error: topographic data file has the following errors. \
+                         Check the file')
+                return render_template('upload.html', title='Carga Archivos')
             if get_errors_square():
                 flash(
-                    'Error: The number of points with "TC" code is not multiple of 2. Check the file')
+                    'Error: The number of points with "TC" code is not \
+                        multiple of 2. Check the file')
                 return render_template('upload.html', title='Carga Archivos')
             if get_errors_rectangle():
                 flash(
-                    'Error: The number of points with "TR" code is not multiple of 3. Check the file')
+                    'Error: The number of points with "TR" code is not \
+                        multiple of 3. Check the file')
                 return render_template('upload.html', title='Carga Archivos')
             return redirect(url_for("convert_file_dxf"))
         flash("Error: the topografic data file type must be: .txt o .csv.")
@@ -105,9 +109,13 @@ def upload_file():
 @login_required
 def convert_file_dxf():
     if request.method == "POST":
-        genera_dxf()
+        genera_dxf("./tmp/salida.dxf")
         return redirect(url_for("downloads"))
-    return render_template('convert.html', title='Conversion DXF', capas=get_capas(), errores=get_errors())
+    return render_template(
+        'convert.html',
+        title='Conversion DXF',
+        capas=get_capas(),
+        errores=get_errors())
 
 
 @app.route("/download", methods=["GET", "POST"])
@@ -122,7 +130,10 @@ def downloads():
 @login_required
 def download_file(filename):
     try:
-        return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
+        return send_from_directory(
+            app.config['UPLOAD_FOLDER'],
+            filename,
+            as_attachment=True)
     except Exception as e:
         return str(e)
 

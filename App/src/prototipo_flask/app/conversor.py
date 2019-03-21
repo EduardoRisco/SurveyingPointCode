@@ -13,8 +13,8 @@ import ply.yacc as yacc
 
 import ezdxf
 from app.geometric_tools import create_layers, create_points, create_circles
-from app.geometric_tools import create_lines, create_curves, create_squares, create_rectangles
-
+from app.geometric_tools import create_lines, create_curves, create_squares 
+from app.geometric_tools import create_rectangles
 # Lexer part
 
 tokens = (
