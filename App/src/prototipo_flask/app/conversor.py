@@ -309,17 +309,17 @@ def genera_dxf(download_folder):
 
         # Creating required layers.
         create_layers(dwg, file_user)
-        # Adding points to the model.
+        # Adding points to model.
         create_points(dwg, msp, puntos)
-        # Adding circles to the model.
+        # Adding circles to model.
         create_circles(msp, circulos, file_user)
-        # Adding lines to the model.
+        # Adding lines to model.
         create_lines(msp, lineas, file_user)
-        # Adding curves to the model.
+        # Adding curves to model.
         create_curves(msp, curvas, file_user)
-        # Adding squares to the model.
+        # Adding squares to model.
         create_squares(msp, cuadrados, file_user)
-        # Adding rectangles to the model.
+        # Adding rectangles to model.
         create_rectangles(msp, rectangulos, file_user)
 
         # test

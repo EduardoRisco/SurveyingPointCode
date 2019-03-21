@@ -15,7 +15,7 @@ import ezdxf
 def create_layers(dwg, file_user):
     '''
     This function  reads a file ,creates the layers defined by the
-    user, adding them to the model.
+    user, adding them to model.
     '''
 
     layer_color = set()
