@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-# Prototipo App, Funciones geométricas, capas y simbolos.
+# Prototype App, Geometric functions, layers and symbols.
 #
-# Se requiere ezdxf.
+# Required ezdxf.
 #
 # J. Eduardo Risco 20-03-2019
 #
@@ -10,13 +10,12 @@
 import math
 import ezdxf
 
-### Funciones con capas ###
-
+### Layers  ###
 
 def create_layers(dwg, file_user):
     '''
-    Función que lee un archivo y crea las capas definidas por el
-    usuario, añadiendolas al modelo.
+    This function  reads a file ,creates the layers defined by the
+    user, adding them to the model.
     '''
 
     layer_color = set()
@@ -31,21 +30,21 @@ def create_layers(dwg, file_user):
             color = l[1]
         dwg.layers.new(name=l[0], dxfattribs={'color': color})
 
-    # Capas obligatorias
+    # Obligatory layers 
     dwg.layers.new('Points', dxfattribs={'color': 0})
     dwg.layers.new('Number_Points', dxfattribs={'color': 0})
     dwg.layers.new('Altitude', dxfattribs={'color': 0})
     dwg.layers.new('Label', dxfattribs={'color': 5})
 
-### Funciones con elementos geométricos ###
 
+### Geometrical ###
 
 def create_points(dwg, msp, points):
     '''
-    Función que añade todos los puntos al modelo, en la capa 'Points',
-    la altitud en la capa 'Altitude' y el código en la capa 'Label'.
+    This function insert all the points in the 'Points' layer,
+    the altitude in the 'Altitude' layer and the code in the 'Label' layer.
     '''
-    # Definición de estilos de texto, elevación y etiqueta
+    # Defining Text, Elevation, and Label Styles
     dwg.styles.new('elevation', dxfattribs={'font': 'arial.ttf', 'width': 0.1})
     dwg.styles.new('label', dxfattribs={'font': 'times.ttf', 'width': 0.5})
 
@@ -73,8 +72,8 @@ def create_points(dwg, msp, points):
 
 def create_circles(msp, circles, file_user):
     '''
-    Función que crea los circulos con el radio definido por el
-    usuario , y los añade al modelo, en la capa correspondiente.
+    This function creates circles with radius defined by the
+    user, and adds them to the model, in the corresponding layer.
     '''
     layer = ''
     for c in circles:
@@ -88,9 +87,9 @@ def create_circles(msp, circles, file_user):
 
 def create_lines(msp, lines, file_user):
     '''
-   Función que crea las lineas definidas por el usuario,
-   y las añade al modelo, en la capa correspondiente.
-   Resuelve también el caso de puntos no medidos y los incorpora a la linea.
+   This function creates user-defined lines,and adds them to the model,
+   in the corresponding layer.It also solves the case of unmeasured points
+   and incorporates them into the line.
    '''
 
     for p in lines:
@@ -135,8 +134,8 @@ def create_lines(msp, lines, file_user):
 
 def create_curves(msp, curves, file_user):
     '''
-    Función que crea las curvas definidas por el usuario,
-    y las añade al modelo, en la capa correspondiente.
+    This function creates user-defined curves,
+    and adds them to the model, in the corresponding layer.
     '''
 
     for p in curves:
@@ -150,10 +149,10 @@ def create_curves(msp, curves, file_user):
         msp.add_spline(lin_coord, dxfattribs={'layer': layer})
 
 
-def create_square(msp, squares, file_user):
+def create_squares(msp, squares, file_user):
     '''
-    Función que crea los cuadrados definidos por el usuario,
-    y los añade al modelo, en la capa correspondiente.
+    This function creates user-defined squares,
+    and adds them to the model, in the corresponding layer.
     '''
     layer = ''
 
@@ -193,8 +192,8 @@ def create_square(msp, squares, file_user):
 
 def create_rectangles(msp, rectangles, file_user):
     '''
-    Función que crea los rectangulos definidos por el usuario,
-    y los añade al modelo, en la capa correspondiente.
+    This function creates user-defined rectangles,
+    and adds them to the model, in the corresponding layer.
     '''
 
     layer = ''
@@ -231,12 +230,12 @@ def create_rectangles(msp, rectangles, file_user):
         line.append((coord_a_x, coord_a_y))
         msp.add_lwpolyline(line, dxfattribs={'layer': layer})
 
-### Funciones matemáticas ###
+### Mathematical ###
 
 
 def calculate_azimut_distance(a, b):
     '''
-    Función retorna el azimut y la distancia calculados entre dos puntos.
+    Function returns the calculated azimuth and distance between two points.
     '''
 
     coord_a_x = a[1][0]
@@ -260,8 +259,8 @@ def calculate_azimut_distance(a, b):
 
 def calculate_increment_x_y(azimut, distance):
     '''
-    Función retorna el incremento de 'x' y de 'y' , a partir
-    de un azimut y una distancia.
+    Function returns the increment of 'x' and 'y' from
+    of an azimuth and a distanc
     '''
 
     inc_x = (math.sin(math.radians(azimut)) * distance)
@@ -271,8 +270,7 @@ def calculate_increment_x_y(azimut, distance):
 
 def calculate_angle(azimut, distance):
     '''
-    Función retorna la variación del azimut en fución
-    del signo de la distancia introducida.
+    Function returns azimuth variation using distance sign 
     '''
 
     if distance >= 0:

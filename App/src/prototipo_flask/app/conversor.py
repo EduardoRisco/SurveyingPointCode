@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 #
-# Prototipo App, conversor a dxf
+# Prototype App, converter to dxf
 #
-# Se requiere PLY (Python Lex-Yacc).
-# Se requiere ezdxf.
+# Required PLY (Python Lex-Yacc).
+# Required ezdxf.
 #
-# J. Eduardo Risco 15-03-2019
+# J. Eduardo Risco 21-03-2019
 #
 
 import ply.lex as lex
 import ply.yacc as yacc
 
 import ezdxf
-from app.geometric_tools import create_layers, create_points, create_circles, create_lines, create_curves, create_square, create_rectangles
+from app.geometric_tools import create_layers, create_points, create_circles
+from app.geometric_tools import create_lines, create_curves, create_squares, create_rectangles
 
 # Lexer part
 
@@ -146,6 +147,9 @@ def p_error(p):
 
 
 def upload_txt(entrada):
+    '''This function reads a file with topographic survey data, 
+    translating the points codes in several geometric elements.
+    '''
 
     try:
         global errores
@@ -161,8 +165,8 @@ def upload_txt(entrada):
 
         parser = yacc.yacc()
         err = False
-        capas_topografia = set()  # Conjunto de capas existentes
-        dicc_capas = {}  # Diccionario que almacena los puntos
+        capas_topografia = set()
+        dicc_capas = {}
         lineas = []
         curvas = []
         puntos = []
@@ -180,39 +184,38 @@ def upload_txt(entrada):
 
         while line != "":
             n_line += 1
-            # Pasamos el parser
+            # Using the parser
             punto = parser.parse(line)
-            # Deteccón de archivo de entrada erroneo
+            # Detection of incorrect input file
             if not punto:
                 err = True
-                # Captura de errores
+                # Capturing Errors
                 errores.append([n_line, line])
 
             else:
-                # Obtención del código de capa
+                # Getting the layer code
                 if len(punto) == 4 and (punto[2] == "TR" or punto[2] == "TC"):
                     codigo_capa = punto[3]
                 elif punto[2] == "TX":
                     codigo_capa = punto[3][1]
                 else:
                     codigo_capa = punto[2]
-                # Comprobación que las capas no existan en el diccionario
-                # si no existen se crean
-                # y se añade el primer punto a esa capa
+                # Verification that the layers do not exist in the dictionary
+                # if they do not exist they are created
+                # and the first point is added to that layer
                 if codigo_capa not in capas_topografia:
                     dicc_capas[codigo_capa] = [punto]
                     capas_topografia.add(codigo_capa)
                 else:
-                    # Se añaden los puntos que tengan el mismo codigo
-                    # a su elemento correspondiente en el diccionario
+                    # Add points having the same code to their
+                    # corresponding element in the dictionary
                     if codigo_capa in dicc_capas:
                         lista = dicc_capas.get(codigo_capa)
                         lista.append(punto)
                         dicc_capas[codigo_capa] = lista
             line = f.readline()
 
-        # Extracción de lineas y curvas
-
+        # Decoding of lines, curves and other elements
         for ptos in dicc_capas:
             linea_iniciada = False
             curva_iniciada = False
@@ -222,54 +225,53 @@ def upload_txt(entrada):
                     if len(pto) > 3 and not isinstance(pto[3],
                                                        (tuple, int, float)):
                         if pto[3] == 'I':
-                            # Si la linea está iniciada
                             if linea_iniciada:
-                                # Si encuentro 'I' cierro la linea y empiezo
-                                # otra
+                                # If another 'I' is found, the line closes
+                                # and another line begins.
                                 lineas.append(linea)
                                 linea = []
                                 linea.append(pto)
                                 linea_iniciada = True
-                            # Si no existe linea en esa capa, se crea la 1ª
-                            # linea
+                            # If there is no line in that layer,
+                            # the first line will be created.
                             else:
                                 linea = []
                                 linea.append(pto)
                                 linea_iniciada = True
                         elif pto[3] == 'IC':
-                            # Si la curva está iniciada
                             if curva_iniciada:
-                                # Si encuentro 'IC' cierro la curva y empiezo
-                                # otra
+                                # If another 'IC' is found, the curve closes
+                                # and another curve begins.
                                 curvas.append(curva)
                                 curva = []
                                 curva.append(pto)
                                 curva_iniciada = True
-                            # Si no existe curva en esa capa, se crea la 1ª
-                            # curva
+                            # If there is no curve in that layer,
+                            # the first curve will be created.
                             else:
                                 curva = []
                                 curva.append(pto)
                                 curva_iniciada = True
-                        # Se añaden puntos a la curva
+                        # Add points to the curve
                         elif pto[3] == 'C' and curva_iniciada:
                             curva.append(pto)
                     elif len(pto) == 4 and linea_iniciada:
                         linea.append(pto)
-                    # Se añaden puntos a la linea
+                    # Add points to the line
                     elif linea_iniciada:
                         linea.append(pto)
-                # Crear lista con circulos
+                # Save existing circles
                 elif pto[2] == 'TX':
                     circulos.append(pto)
-                # Crear lista con cuadrados
+                # Save existing squares
                 elif pto[2] == 'TC':
                     cuadrados.append(pto)
-                # Crear lista con rectangulos
+                # Save existing rectangles
                 elif pto[2] == 'TR':
                     rectangulos.append(pto)
 
-            # Si no hay mas elementos en la capa, cerramos lineas y curvas
+            # If there are no more elements in the layer,
+            # lines and curves are closed.
             if linea:
                 lineas.append(linea)
                 linea = []
@@ -283,48 +285,41 @@ def upload_txt(entrada):
         print(e)
 
 
-def genera_dxf():
+def genera_dxf(download_folder):
+    '''
+    This function generates a dxf file.
+    '''
 
-    # Ejemplo de archivo de usuario , código de campo-capa, capa de cad y
-    # color de capa.
+    # Example of user file, topographical code, cad layer and layer color.
     file_user = [
-        [
-            'E', 'Edificio', (38, 140, 89)], [
-            'A', 'Acera', 0], [
-                'FA', 'Farola', 2], [
-                    'TEL', 'Telecomunicaciones', 3], [
-                        'RE', 'Red_Electrica', 161], [
-                            'SAN', 'Saneamiento', 220], [
-                                'M', 'Muro', 1], [
-                                    'B', 'Bordillo', 0], [
-                                        'B1', 'Bordillo', 0], [
-                                            'R', 'Relleno', 0], [
-                                                'ARB', 'Arbol', 60], [
-                                                    'C', 'Calzada', 141], [
-                                                        'C1', 'Calzada', 141]]
+        ['E', 'Edificio', (38, 140, 89)], ['A', 'Acera', 0],
+        ['FA', 'Farola', 2], ['TEL', 'Telecomunicaciones', 3],
+        ['RE', 'Red_Electrica', 161], ['SAN', 'Saneamiento', 220],
+        ['M', 'Muro', 1], ['B', 'Bordillo', 0],
+        ['B1', 'Bordillo', 0], ['R', 'Relleno', 0],
+        ['ARB', 'Arbol', 60], ['C', 'Calzada', 141],
+        ['C1', 'Calzada', 141]]
 
-    # Salida archivo correcto #### Pendiente de modificar en función de los
-    # errores obtenidos
+    #### Pendiente de modificar en función de los errores obtenidos ####
     if line == "" and not err:
         dwg = ezdxf.new('AC1018')
 
-        # Crear el espacio modelo donde se añaden todos los elementos del
-        # dibujo.
+        # Create the model space.
         msp = dwg.modelspace()
 
-        # Crear capas necesarias.
+        # Creating required layers.
         create_layers(dwg, file_user)
-        # Añadir puntos al modelo.
+        # Adding points to the model.
         create_points(dwg, msp, puntos)
-        # Añadir círculos al modelo.
+        # Adding circles to the model.
         create_circles(msp, circulos, file_user)
-        # Añadir lineas al modelo.
+        # Adding lines to the model.
         create_lines(msp, lineas, file_user)
-        # Añadir curvas al modelo.
+        # Adding curves to the model.
         create_curves(msp, curvas, file_user)
-        # Añadir cuadrados al modelo.
-        create_square(msp, cuadrados, file_user)
-        # Añadir rectangulos al modelo.
+        # Adding squares to the model.
+        create_squares(msp, cuadrados, file_user)
+        # Adding rectangles to the model.
         create_rectangles(msp, rectangulos, file_user)
 
         # test
@@ -339,16 +334,19 @@ def genera_dxf():
         print('Se han añadido', l, 'lineas, ',
               c, 'curvas, al archivo dxf creado')
 
-        dwg.saveas("./tmp/salida.dxf")
+        dwg.saveas(download_folder)
 
     else:
-        # Salida archivo error
+        # Error file output
         print('Archivo erroneo')
         print(get_errors())
         print(get_capas())
 
 
 def get_errors():
+    '''
+    This function returns the errors of the input file
+    '''
 
     if errores:
         return errores
@@ -356,6 +354,10 @@ def get_errors():
 
 
 def get_errors_square():
+    '''
+    This function returns error, if the number of elements
+    defined to form squares, is not correct.
+    '''
 
     if len(cuadrados) % 2 != 0:
         return True
@@ -363,6 +365,10 @@ def get_errors_square():
 
 
 def get_errors_rectangle():
+    '''
+    This function returns error, if the number of elements
+    defined to form rectangles, is not correct.
+    '''
 
     if len(rectangulos) % 3 != 0:
         return True
@@ -370,6 +376,9 @@ def get_errors_rectangle():
 
 
 def get_capas():
+    '''
+    This function returns a list with topographic codes. 
+    '''
 
     if capas_topografia:
         return capas_topografia
