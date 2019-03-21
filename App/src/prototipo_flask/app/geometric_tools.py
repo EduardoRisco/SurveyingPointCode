@@ -4,11 +4,13 @@
 #
 # Se requiere ezdxf.
 #
-# J. Eduardo Risco 15-03-2019
+# J. Eduardo Risco 20-03-2019
 #
 
 import math
 import ezdxf
+
+### Funciones con capas ###
 
 
 def create_layers(dwg, file_user):
@@ -34,6 +36,8 @@ def create_layers(dwg, file_user):
     dwg.layers.new('Number_Points', dxfattribs={'color': 0})
     dwg.layers.new('Altitude', dxfattribs={'color': 0})
     dwg.layers.new('Label', dxfattribs={'color': 5})
+
+### Funciones con elementos geométricos ###
 
 
 def create_points(dwg, msp, points):
@@ -86,13 +90,43 @@ def create_lines(msp, lines, file_user):
     '''
    Función que crea las lineas definidas por el usuario,
    y las añade al modelo, en la capa correspondiente.
+   Resuelve también el caso de puntos no medidos y los incorpora a la linea.
    '''
 
     for p in lines:
         code_line = p[0][2]
         lin_coord = []
-        for coord_points in p:
-            lin_coord.append(coord_points[1])
+        for i, coord_points in enumerate(p):
+            if len(coord_points) > 3 and isinstance(
+                    coord_points[3], (tuple, int, float)) and i >= 1:
+                point_a = p[i - 1]
+                point_b = p[i]
+                coord_a_x = point_a[1][0]
+                coord_a_y = point_a[1][1]
+                coord_b_x = point_b[1][0]
+                coord_b_y = point_b[1][1]
+                azimut, d = calculate_azimut_distance(
+                    point_a, point_b)
+                if isinstance(coord_points[3], (int, float)):
+                    azimut = calculate_angle(azimut, coord_points[3])
+                    inc_x, inc_y = calculate_increment_x_y(
+                        azimut, abs(coord_points[3]))
+                    coord_c_x = coord_a_x + inc_x
+                    coord_c_y = coord_a_y + inc_y
+                    lin_coord.append((coord_c_x, coord_c_y))
+                else:
+                    lin_coord.append(point_b[1])
+                    for s in coord_points[3]:
+                        azimut = calculate_angle(azimut, s)
+                        inc_x, inc_y = calculate_increment_x_y(azimut, abs(s))
+                        coord_c_x = coord_b_x + inc_x
+                        coord_c_y = coord_b_y + inc_y
+                        lin_coord.append((coord_c_x, coord_c_y))
+                        coord_b_x = coord_c_x
+                        coord_b_y = coord_c_y
+
+            if coord_points[1] not in lin_coord:
+                lin_coord.append(coord_points[1])
         for l in file_user:
             if code_line == l[0]:
                 layer = l[1]
@@ -127,7 +161,7 @@ def create_square(msp, squares, file_user):
         code_line = squares[i][3]
         line = []
         point_a = squares[i]
-        point_b = squares[i+1]
+        point_b = squares[i + 1]
         coord_a_x = point_a[1][0]
         coord_a_y = point_a[1][1]
         coord_b_x = point_b[1][0]
@@ -135,23 +169,23 @@ def create_square(msp, squares, file_user):
 
         line.append((coord_a_x, coord_a_y))
         line.append((coord_b_x, coord_b_y))
-
         azimut, distance = calculate_azimut_distance(point_a, point_b)
-        azimut = azimut+90
+        azimut = azimut + 90
 
         for l in file_user:
             if code_line == l[0]:
                 layer = l[1]
 
         for n in range(2):
-            coord_c_x = coord_b_x + (math.sin(math.radians(azimut))*distance)
-            coord_c_y = coord_b_y + (math.cos(math.radians(azimut))*distance)
+            inc_x, inc_y = calculate_increment_x_y(azimut, distance)
+            coord_c_x = coord_b_x + inc_x
+            coord_c_y = coord_b_y + inc_y
             line.append((coord_c_x, coord_c_y))
             coord_a_x = coord_b_x
             coord_a_y = coord_b_y
             coord_b_x = coord_c_x
             coord_b_y = coord_c_y
-            azimut = azimut+90
+            azimut = azimut + 90
 
         line.append((point_a[1][0], point_a[1][1]))
         msp.add_lwpolyline(line, dxfattribs={'layer': layer})
@@ -169,8 +203,8 @@ def create_rectangles(msp, rectangles, file_user):
         code_line = rectangles[i][3]
         line = []
         point_a = rectangles[i]
-        point_b = rectangles[i+1]
-        point_c = rectangles[i+2]
+        point_b = rectangles[i + 1]
+        point_c = rectangles[i + 2]
         coord_a_x = point_a[1][0]
         coord_a_y = point_a[1][1]
         coord_b_x = point_b[1][0]
@@ -183,17 +217,21 @@ def create_rectangles(msp, rectangles, file_user):
         line.append((coord_c_x, coord_c_y))
 
         azimut, distance = calculate_azimut_distance(point_a, point_b)
-        azimut = azimut+180
+        azimut = azimut + 180
 
         for l in file_user:
             if code_line == l[0]:
                 layer = l[1]
 
-        coord_d_x = coord_c_x + (math.sin(math.radians(azimut))*distance)
-        coord_d_y = coord_c_y + (math.cos(math.radians(azimut))*distance)
+        inc_x, inc_y = calculate_increment_x_y(azimut, distance)
+
+        coord_d_x = coord_c_x + inc_x
+        coord_d_y = coord_c_y + inc_y
         line.append((coord_d_x, coord_d_y))
         line.append((coord_a_x, coord_a_y))
         msp.add_lwpolyline(line, dxfattribs={'layer': layer})
+
+### Funciones matemáticas ###
 
 
 def calculate_azimut_distance(a, b):
@@ -205,16 +243,40 @@ def calculate_azimut_distance(a, b):
     coord_a_y = a[1][1]
     coord_b_x = b[1][0]
     coord_b_y = b[1][1]
-    inc_x = coord_b_x-coord_a_x
-    inc_y = coord_b_y-coord_a_y
+    inc_x = coord_b_x - coord_a_x
+    inc_y = coord_b_y - coord_a_y
 
-    angle = math.atan((inc_x)/(inc_y))
-    distance = math.sqrt((inc_x)**2+(inc_y)**2)
+    angle = math.atan((inc_x) / (inc_y))
+    distance = math.sqrt((inc_x)**2 + (inc_y)**2)
 
     if inc_x > 0 and inc_y > 0:
         azimut = math.degrees(angle)
     elif inc_x > 0 and inc_y < 0 or inc_x < 0 and inc_y < 0:
-        azimut = math.degrees(angle)+180
+        azimut = math.degrees(angle) + 180
     else:
-        azimut = math.degrees(angle)+360
+        azimut = math.degrees(angle) + 360
     return azimut, distance
+
+
+def calculate_increment_x_y(azimut, distance):
+    '''
+    Función retorna el incremento de 'x' y de 'y' , a partir
+    de un azimut y una distancia.
+    '''
+
+    inc_x = (math.sin(math.radians(azimut)) * distance)
+    inc_y = (math.cos(math.radians(azimut)) * distance)
+    return inc_x, inc_y
+
+
+def calculate_angle(azimut, distance):
+    '''
+    Función retorna la variación del azimut en fución
+    del signo de la distancia introducida.
+    '''
+
+    if distance >= 0:
+        azimut = azimut + 90
+    else:
+        azimut = azimut - 90
+    return azimut

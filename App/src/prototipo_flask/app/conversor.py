@@ -132,7 +132,7 @@ def p_codigo_no_accesible(p):
 
     if len(p) == 3:
 
-        if type(p[1]) == tuple:
+        if isinstance(p[1], tuple):
             p[0] = p[1] + (p[2],)
         else:
             p[0] = p[1], p[2]
@@ -186,7 +186,7 @@ def upload_txt(entrada):
             if not punto:
                 err = True
                 # Captura de errores
-                errores.append(n_line)
+                errores.append([n_line, line])
 
             else:
                 # Obtención del código de capa
@@ -219,16 +219,19 @@ def upload_txt(entrada):
             for pto in dicc_capas.get(ptos):
                 puntos.append(pto)
                 if pto[2] not in ('TC', 'TR', 'TX'):
-                    if len(pto) > 3:
+                    if len(pto) > 3 and not isinstance(pto[3],
+                                                       (tuple, int, float)):
                         if pto[3] == 'I':
                             # Si la linea está iniciada
                             if linea_iniciada:
-                                # Si encuentro 'I' cierro la linea y empiezo otra
+                                # Si encuentro 'I' cierro la linea y empiezo
+                                # otra
                                 lineas.append(linea)
                                 linea = []
                                 linea.append(pto)
                                 linea_iniciada = True
-                            # Si no existe linea en esa capa, se crea la 1ª linea
+                            # Si no existe linea en esa capa, se crea la 1ª
+                            # linea
                             else:
                                 linea = []
                                 linea.append(pto)
@@ -236,12 +239,14 @@ def upload_txt(entrada):
                         elif pto[3] == 'IC':
                             # Si la curva está iniciada
                             if curva_iniciada:
-                                # Si encuentro 'IC' cierro la curva y empiezo otra
+                                # Si encuentro 'IC' cierro la curva y empiezo
+                                # otra
                                 curvas.append(curva)
                                 curva = []
                                 curva.append(pto)
                                 curva_iniciada = True
-                            # Si no existe curva en esa capa, se crea la 1ª curva
+                            # Si no existe curva en esa capa, se crea la 1ª
+                            # curva
                             else:
                                 curva = []
                                 curva.append(pto)
@@ -249,6 +254,8 @@ def upload_txt(entrada):
                         # Se añaden puntos a la curva
                         elif pto[3] == 'C' and curva_iniciada:
                             curva.append(pto)
+                    elif len(pto) == 4 and linea_iniciada:
+                        linea.append(pto)
                     # Se añaden puntos a la linea
                     elif linea_iniciada:
                         linea.append(pto)
@@ -272,24 +279,37 @@ def upload_txt(entrada):
 
         f.close()
 
-        print(get_errors())
-        print(get_capas())
-
     except (IOError, NameError) as e:
         print(e)
 
 
 def genera_dxf():
 
-    # Ejemplo de archivo de usuario , código de campo-capa, capa de cad y color de capa.
-    file_user = [['E', 'Edificio', (38, 140, 89)], ['A', 'Acera', 0], ['FA', 'Farola', 2], ['TEL', 'Telecomunicaciones', 3], ['RE', 'Red_Electrica', 161], ['SAN', 'Saneamiento', 220], [
-        'M', 'Muro', 1], ['B', 'Bordillo', 0], ['B1', 'Bordillo', 0], ['R', 'Relleno', 0], ['ARB', 'Arbol', 60], ['C', 'Calzada', 141], ['C1', 'Calzada', 141]]
+    # Ejemplo de archivo de usuario , código de campo-capa, capa de cad y
+    # color de capa.
+    file_user = [
+        [
+            'E', 'Edificio', (38, 140, 89)], [
+            'A', 'Acera', 0], [
+                'FA', 'Farola', 2], [
+                    'TEL', 'Telecomunicaciones', 3], [
+                        'RE', 'Red_Electrica', 161], [
+                            'SAN', 'Saneamiento', 220], [
+                                'M', 'Muro', 1], [
+                                    'B', 'Bordillo', 0], [
+                                        'B1', 'Bordillo', 0], [
+                                            'R', 'Relleno', 0], [
+                                                'ARB', 'Arbol', 60], [
+                                                    'C', 'Calzada', 141], [
+                                                        'C1', 'Calzada', 141]]
 
-    # Salida archivo correcto #### Pendiente de modificar en función de los errores obtenidos
+    # Salida archivo correcto #### Pendiente de modificar en función de los
+    # errores obtenidos
     if line == "" and not err:
         dwg = ezdxf.new('AC1018')
 
-        # Crear el espacio modelo donde se añaden todos los elementos del dibujo.
+        # Crear el espacio modelo donde se añaden todos los elementos del
+        # dibujo.
         msp = dwg.modelspace()
 
         # Crear capas necesarias.
@@ -312,10 +332,10 @@ def genera_dxf():
         l = 0
         c = 0
         for el in dwg.entities:
-            if type(el) == ezdxf.modern.lwpolyline.LWPolyline:
-                l = l+1
-            elif type(el) == ezdxf.modern.spline.Spline:
-                c = c+1
+            if isinstance(el, ezdxf.modern.lwpolyline.LWPolyline):
+                l = l + 1
+            elif isinstance(el, ezdxf.modern.spline.Spline):
+                c = c + 1
         print('Se han añadido', l, 'lineas, ',
               c, 'curvas, al archivo dxf creado')
 
@@ -345,7 +365,7 @@ def get_errors_square():
 def get_errors_rectangle():
 
     if len(rectangulos) % 3 != 0:
-       return True
+        return True
     return False
 
 
