@@ -8,13 +8,14 @@
 # J. Eduardo Risco 21-03-2019
 #
 
+import ezdxf
 import ply.lex as lex
 import ply.yacc as yacc
 
-import ezdxf
-from app.geometric_tools import create_layers, create_points, create_circles
-from app.geometric_tools import create_lines, create_curves, create_squares 
-from app.geometric_tools import create_rectangles
+from app.geometric_tools import (create_circles, create_curves, create_layers,
+                                 create_lines, create_points,
+                                 create_rectangles, create_squares)
+
 # Lexer part
 
 tokens = (
@@ -310,7 +311,7 @@ def genera_dxf(download_folder):
         # Creating required layers.
         create_layers(dwg, file_user)
         # Adding points to model.
-        create_points(dwg, msp, puntos)
+        create_points(dwg, msp, get_points())
         # Adding circles to model.
         create_circles(msp, circulos, file_user)
         # Adding lines to model.
@@ -334,16 +335,21 @@ def genera_dxf(download_folder):
         print('Se han añadido', l, 'lineas, ',
               c, 'curvas, al archivo dxf creado')
 
+        print('capas',len(dwg.layers))    
+
+        for e in msp:
+            print(e.dxftype())
+
         dwg.saveas(download_folder)
 
     else:
         # Error file output
         print('Archivo erroneo')
-        print(get_errors())
+        print(get_errors_upload())
         print(get_capas())
 
 
-def get_errors():
+def get_errors_upload():
     '''
     This function returns the errors of the input file
     '''
@@ -383,3 +389,12 @@ def get_capas():
     if capas_topografia:
         return capas_topografia
     return False
+
+def get_points():
+    '''
+    This function returns a points list . 
+    '''
+    if get_errors_upload():
+        return False
+    else:
+        return puntos

@@ -2,8 +2,8 @@ import unittest
 
 import ezdxf
 
-from SurveyingPointCode.app.conversor import genera_dxf, upload_txt
-from SurveyingPointCode.app.geometric_tools import create_layers
+from SurveyingPointCode.app.conversor import genera_dxf, upload_txt, get_points
+from SurveyingPointCode.app.geometric_tools import create_layers, create_points
 
 FAILURE = 'incorrect value'
 # File config user
@@ -27,6 +27,8 @@ msp = dwg.modelspace()
 create_layers(dwg, file_user)
 
 
+
+
 class SurveyingPointCode(unittest.TestCase):
 
     def test_create_layers_number(self):
@@ -37,6 +39,21 @@ class SurveyingPointCode(unittest.TestCase):
         for layer in dwg.layers:
             self.assertIn(layer.dxf.name, layers, FAILURE)
 
+    def test_create_points_number_file_correct(self):
+        upload_txt("test/input_files/Example_1.txt")
+        create_points(dwg, msp, get_points())
+        n_file=len(get_points())
+        n=0
+        for e in msp:
+            if e.dxftype()=='POINT':
+                n=n+1
+
+        self.assertEqual(n,n_file,FAILURE) 
+        self.assertNotEqual(n,0,FAILURE)       
+
+
+
 
 if __name__ == '__main__':
     unittest.main()
+    
