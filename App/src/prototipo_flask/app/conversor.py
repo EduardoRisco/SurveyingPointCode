@@ -319,7 +319,7 @@ def genera_dxf(download_folder):
         # Adding curves to model.
         create_curves(msp, get_curves(), file_user)
         # Adding squares to model.
-        create_squares(msp, cuadrados, file_user)
+        create_squares(msp, get_squares(), file_user)
         # Adding rectangles to model.
         create_rectangles(msp, rectangulos, file_user)
 
@@ -426,3 +426,14 @@ def get_lines():
         return False
     else:
         return lineas
+
+def get_squares():
+    '''
+    This function returns a squares list . 
+    '''
+    if get_errors_upload() and get_errors_square():
+        return False
+    else:
+        return cuadrados
+
+

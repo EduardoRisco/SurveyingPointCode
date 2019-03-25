@@ -12,12 +12,14 @@ import ezdxf
 
 from prototipo_flask.app.conversor import (genera_dxf, get_circles,
                                               get_curves, get_lines,
-                                              get_points, upload_txt)
+                                              get_points, get_squares,
+                                              upload_txt)
 from prototipo_flask.app.geometric_tools import (create_circles,
                                                     create_curves,
                                                     create_layers,
                                                     create_lines,
-                                                    create_points)
+                                                    create_points,
+                                                    create_squares)
 
 FAILURE = 'incorrect value'
 # File config user
@@ -100,6 +102,17 @@ class SurveyingPointCode(unittest.TestCase):
                 n = n+1
         self.assertEqual(n, 5, FAILURE)
         self.assertNotEqual(n, 0, FAILURE)
+
+    
+    def test_create_squares_number(self):
+        msp = dwg.modelspace()
+        create_squares(msp, get_squares(), file_user)
+        n=0
+        for e in msp:    
+            if e.dxftype() == 'LWPOLYLINE' and e.dxf.count==5 :
+                n = n+1
+        self.assertEqual(n, 4, FAILURE)
+        self.assertNotEqual(n, 0, FAILURE)    
 
 
 
