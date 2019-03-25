@@ -12,13 +12,14 @@ import ezdxf
 
 from prototipo_flask.app.conversor import (genera_dxf, get_circles,
                                               get_curves, get_lines,
-                                              get_points, get_squares,
-                                              upload_txt)
+                                              get_points, get_rectangles,
+                                              get_squares, upload_txt)
 from prototipo_flask.app.geometric_tools import (create_circles,
                                                     create_curves,
                                                     create_layers,
                                                     create_lines,
                                                     create_points,
+                                                    create_rectangles,
                                                     create_squares)
 
 FAILURE = 'incorrect value'
@@ -47,7 +48,6 @@ n_points = len(get_points())
 n_texts = n_points*3
 create_circles(msp, get_circles(), file_user)
 create_curves(msp, get_curves(), file_user)
-
 
 
 class SurveyingPointCode(unittest.TestCase):
@@ -96,24 +96,32 @@ class SurveyingPointCode(unittest.TestCase):
     def test_create_lines_number(self):
         msp = dwg.modelspace()
         create_lines(msp, get_lines(), file_user)
-        n=0
-        for e in msp:    
+        n = 0
+        for e in msp:
             if e.dxftype() == 'LWPOLYLINE':
                 n = n+1
         self.assertEqual(n, 5, FAILURE)
         self.assertNotEqual(n, 0, FAILURE)
 
-    
     def test_create_squares_number(self):
         msp = dwg.modelspace()
         create_squares(msp, get_squares(), file_user)
-        n=0
-        for e in msp:    
-            if e.dxftype() == 'LWPOLYLINE' and e.dxf.count==5 :
+        n = 0
+        for e in msp:
+            if e.dxftype() == 'LWPOLYLINE' and e.dxf.count == 5:
                 n = n+1
         self.assertEqual(n, 4, FAILURE)
-        self.assertNotEqual(n, 0, FAILURE)    
+        self.assertNotEqual(n, 0, FAILURE)
 
+    def test_create_rectangles_number(self):
+        msp = dwg.modelspace()
+        create_rectangles(msp, get_rectangles(), file_user)
+        n = 0
+        for e in msp:
+            if e.dxftype() == 'LWPOLYLINE' and e.dxf.count == 5:
+                n = n+1
+        self.assertEqual(n, 1, FAILURE)
+        self.assertNotEqual(n, 0, FAILURE)
 
 
 if __name__ == '__main__':

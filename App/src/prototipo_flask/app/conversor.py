@@ -148,7 +148,8 @@ def p_error(p):
 
 
 def upload_txt(entrada):
-    '''This function reads a file with topographic survey data,
+    '''
+    This function reads a file with topographic survey data,
     translating the points codes in several geometric elements.
     '''
 
@@ -157,7 +158,6 @@ def upload_txt(entrada):
         global lineas
         global curvas
         global line
-        global err
         global capas_topografia
         global puntos
         global circulos
@@ -302,7 +302,7 @@ def genera_dxf(download_folder):
         ['C1', 'Calzada', 141]]
 
     #### Pendiente de modificar en función de los errores obtenidos ####
-    if line == "" and not err:
+    if line == "" and not get_errors_upload():
         dwg = ezdxf.new('AC1018')
 
         # Create the model space.
@@ -321,7 +321,7 @@ def genera_dxf(download_folder):
         # Adding squares to model.
         create_squares(msp, get_squares(), file_user)
         # Adding rectangles to model.
-        create_rectangles(msp, rectangulos, file_user)
+        create_rectangles(msp, get_rectangles(), file_user)
 
         # test
 
@@ -335,7 +335,11 @@ def genera_dxf(download_folder):
                 c = c + 1
         print('Se han añadido', l, 'lineas, ',
               c, 'curvas, al archivo dxf creado')
-
+        for e in msp:
+            if e.dxftype() == 'LWPOLYLINE':
+                print(e.get_points())
+                if e.closed:
+                     print('ok')    
 
         dwg.saveas(download_folder)
 
@@ -435,5 +439,14 @@ def get_squares():
         return False
     else:
         return cuadrados
+
+def get_rectangles():
+    '''
+    This function returns a rectangles list . 
+    '''
+    if get_errors_upload() and get_errors_rectangle():
+        return False
+    else:
+        return rectangulos       
 
 
