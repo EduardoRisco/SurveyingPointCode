@@ -43,11 +43,11 @@ dwg = ezdxf.new('AC1018')
 msp = dwg.modelspace()
 create_layers(dwg, file_user)
 upload_txt("test/input_files/Example_1.txt")
-create_points(dwg, msp, get_points())
-n_points = len(get_points())
-n_texts = n_points*3
-create_circles(msp, get_circles(), file_user)
-create_curves(msp, get_curves(), file_user)
+
+
+
+
+
 
 
 class SurveyingPointCode(unittest.TestCase):
@@ -61,6 +61,8 @@ class SurveyingPointCode(unittest.TestCase):
             self.assertIn(layer.dxf.name, layers, FAILURE)
 
     def test_create_points_number_file_correct(self):
+        create_points(dwg, msp, get_points())
+        n_points = len(get_points())
         n = 0
         for e in msp:
             if e.dxftype() == 'POINT':
@@ -69,6 +71,8 @@ class SurveyingPointCode(unittest.TestCase):
         self.assertNotEqual(n, 0, FAILURE)
 
     def test_create_points_texts_file_correct(self):
+        n_points = len(get_points())
+        n_texts = n_points*3
         n = 0
         for e in msp:
             if e.dxftype() == 'TEXT':
@@ -77,7 +81,7 @@ class SurveyingPointCode(unittest.TestCase):
         self.assertNotEqual(n, 0, FAILURE)
 
     def test_create_circles_number(self):
-
+        create_circles(msp, get_circles(), file_user)
         n = 0
         for e in msp:
             if e.dxftype() == 'CIRCLE':
@@ -86,6 +90,7 @@ class SurveyingPointCode(unittest.TestCase):
         self.assertNotEqual(n, 0, FAILURE)
 
     def test_create_splines_number(self):
+        create_curves(msp, get_curves(), file_user)
         n = 0
         for e in msp:
             if e.dxftype() == 'SPLINE':
@@ -123,6 +128,15 @@ class SurveyingPointCode(unittest.TestCase):
         self.assertEqual(n, 1, FAILURE)
         self.assertNotEqual(n, 0, FAILURE)
 
+    def test_not_create_circles(self):
+        dwg1 = ezdxf.new('AC1018')
+        msp1 = dwg1.modelspace()
+        upload_txt("test/input_files/Example_2.txt")
+        create_circles(msp1, get_circles(), file_user)
+       
+        for e in msp1:
+            self.assertEqual(e.dxftype(),"CIRCLE",FAILURE)       
+   
 
 if __name__ == '__main__':
     unittest.main()
