@@ -16,6 +16,17 @@ from app.geometric_tools import (create_circles, create_curves, create_layers,
                                  create_lines, create_points,
                                  create_rectangles, create_squares)
 
+capas_topografia = set()
+dicc_capas = {}
+errores = []
+circulos = []
+cuadrados = []
+rectangulos = []
+lineas = []
+curvas = []
+puntos = []
+
+
 # Lexer part
 
 tokens = (
@@ -154,29 +165,11 @@ def upload_txt(entrada):
     '''
 
     try:
-        global errores
-        global lineas
-        global curvas
-        global line
-        global capas_topografia
-        global puntos
-        global circulos
-        global cuadrados
-        global rectangulos
 
         parser = yacc.yacc()
         err = False
-        capas_topografia = set()
-        dicc_capas = {}
-        lineas = []
-        curvas = []
-        puntos = []
         linea = []
         curva = []
-        errores = []
-        circulos = []
-        cuadrados = []
-        rectangulos = []
         codigo_capa = ""
 
         f = open(entrada)
@@ -215,73 +208,74 @@ def upload_txt(entrada):
                         lista.append(punto)
                         dicc_capas[codigo_capa] = lista
             line = f.readline()
-
-        # Decoding of lines, curves and other elements
-        for ptos in dicc_capas:
-            linea_iniciada = False
-            curva_iniciada = False
-            for pto in dicc_capas.get(ptos):
-                puntos.append(pto)
-                if pto[2] not in ('TC', 'TR', 'TX'):
-                    if len(pto) > 3 and not isinstance(pto[3],
-                                                       (tuple, int, float)):
-                        if pto[3] == 'I':
-                            if linea_iniciada:
-                                # If another 'I' is found, the line closes
-                                # and another line begins.
-                                lineas.append(linea)
-                                linea = []
-                                linea.append(pto)
-                                linea_iniciada = True
-                            # If there is no line in that layer,
-                            # the first line will be created.
-                            else:
-                                linea = []
-                                linea.append(pto)
-                                linea_iniciada = True
-                        elif pto[3] == 'IC':
-                            if curva_iniciada:
-                                # If another 'IC' is found, the curve closes
-                                # and another curve begins.
-                                curvas.append(curva)
-                                curva = []
-                                curva.append(pto)
-                                curva_iniciada = True
-                            # If there is no curve in that layer,
-                            # the first curve will be created.
-                            else:
-                                curva = []
-                                curva.append(pto)
-                                curva_iniciada = True
-                        # Add points to the curve
-                        elif pto[3] == 'C' and curva_iniciada:
-                            curva.append(pto)
-                    elif len(pto) == 4 and linea_iniciada:
-                        linea.append(pto)
-                    # Add points to the line
-                    elif linea_iniciada:
-                        linea.append(pto)
-                # Save existing circles
-                elif pto[2] == 'TX':
-                    circulos.append(pto)
-                # Save existing squares
-                elif pto[2] == 'TC':
-                    cuadrados.append(pto)
-                # Save existing rectangles
-                elif pto[2] == 'TR':
-                    rectangulos.append(pto)
-
-            # If there are no more elements in the layer,
-            # lines and curves are closed.
-            if linea:
-                lineas.append(linea)
-                linea = []
-            if curva:
-                curvas.append(curva)
-                curva = []
-
         f.close()
 
+        if errores:
+            return get_errors_upload()
+        else:
+           # Decoding of lines, curves and other elements
+            for ptos in dicc_capas:
+                linea_iniciada = False
+                curva_iniciada = False
+                for pto in dicc_capas.get(ptos):
+                    puntos.append(pto)
+                    if pto[2] not in ('TC', 'TR', 'TX'):
+                        if len(pto) > 3 and not isinstance(pto[3],
+                                                           (tuple, int, float)):
+                            if pto[3] == 'I':
+                                if linea_iniciada:
+                                    # If another 'I' is found, the line closes
+                                    # and another line begins.
+                                    lineas.append(linea)
+                                    linea = []
+                                    linea.append(pto)
+                                    linea_iniciada = True
+                                # If there is no line in that layer,
+                                # the first line will be created.
+                                else:
+                                    linea = []
+                                    linea.append(pto)
+                                    linea_iniciada = True
+                            elif pto[3] == 'IC':
+                                if curva_iniciada:
+                                    # If another 'IC' is found, the curve closes
+                                    # and another curve begins.
+                                    curvas.append(curva)
+                                    curva = []
+                                    curva.append(pto)
+                                    curva_iniciada = True
+                                # If there is no curve in that layer,
+                                # the first curve will be created.
+                                else:
+                                    curva = []
+                                    curva.append(pto)
+                                    curva_iniciada = True
+                            # Add points to the curve
+                            elif pto[3] == 'C' and curva_iniciada:
+                                curva.append(pto)
+                        elif len(pto) == 4 and linea_iniciada:
+                            linea.append(pto)
+                        # Add points to the line
+                        elif linea_iniciada:
+                            linea.append(pto)
+                    # Save existing circles
+                    elif pto[2] == 'TX':
+                        circulos.append(pto)
+                    # Save existing squares
+                    elif pto[2] == 'TC':
+                        cuadrados.append(pto)
+                    # Save existing rectangles
+                    elif pto[2] == 'TR':
+                        rectangulos.append(pto)
+
+                # If there are no more elements in the layer,
+                # lines and curves are closed.
+                if linea:
+                    lineas.append(linea)
+                    linea = []
+                if curva:
+                    curvas.append(curva)
+                    curva = []
     except (IOError, NameError) as e:
         print(e)
 
@@ -302,7 +296,7 @@ def genera_dxf(download_folder):
         ['C1', 'Calzada', 141]]
 
     #### Pendiente de modificar en función de los errores obtenidos ####
-    if line == "" and not get_errors_upload():
+    if not get_errors_upload():
         dwg = ezdxf.new('AC1018')
 
         # Create the model space.
@@ -323,31 +317,10 @@ def genera_dxf(download_folder):
         # Adding rectangles to model.
         create_rectangles(msp, get_rectangles(), file_user)
 
-        # test
-
-        l = 0
-        c = 0
-        for el in dwg.entities:
-            if isinstance(el, ezdxf.modern.lwpolyline.LWPolyline):
-
-                l = l + 1
-            elif isinstance(el, ezdxf.modern.spline.Spline):
-                c = c + 1
-        print('Se han añadido', l, 'lineas, ',
-              c, 'curvas, al archivo dxf creado')
-        for e in msp:
-            if e.dxftype() == 'LWPOLYLINE':
-                print(e.get_points())
-                if e.closed:
-                     print('ok')    
 
         dwg.saveas(download_folder)
 
-    else:
-        # Error file output
-        print('Archivo erroneo')
-        print(get_errors_upload())
-        print(get_capas())
+
 
 
 def get_errors_upload():
@@ -431,6 +404,7 @@ def get_lines():
     else:
         return lineas
 
+
 def get_squares():
     '''
     This function returns a squares list . 
@@ -440,6 +414,7 @@ def get_squares():
     else:
         return cuadrados
 
+
 def get_rectangles():
     '''
     This function returns a rectangles list . 
@@ -447,6 +422,4 @@ def get_rectangles():
     if get_errors_upload() and get_errors_rectangle():
         return False
     else:
-        return rectangulos       
-
-
+        return rectangulos
