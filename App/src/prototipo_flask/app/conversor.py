@@ -317,7 +317,7 @@ def genera_dxf(download_folder):
         # Adding lines to model.
         create_lines(msp, lineas, file_user)
         # Adding curves to model.
-        create_curves(msp, curvas, file_user)
+        create_curves(msp, get_curves(), file_user)
         # Adding squares to model.
         create_squares(msp, cuadrados, file_user)
         # Adding rectangles to model.
@@ -335,7 +335,10 @@ def genera_dxf(download_folder):
         print('Se han añadido', l, 'lineas, ',
               c, 'curvas, al archivo dxf creado')
 
-        print('capas', len(dwg.layers))
+      
+
+        for e in msp:
+            print(e.dxftype())
 
         dwg.saveas(download_folder)
 
@@ -404,4 +407,13 @@ def get_circles():
     if get_errors_upload():
         return False
     else:
-        return circulos        
+        return circulos
+def get_curves():
+    '''
+    This function returns a circles splines . 
+    '''
+    if get_errors_upload():
+        return False
+    else:
+        return curvas
+

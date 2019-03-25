@@ -1,11 +1,22 @@
+# -*- coding: utf-8 -*-
+#
+# Units test
+#
+# J. Eduardo Risco 25-03-2019
+#
+
+
 import unittest
 
 import ezdxf
 
-from SurveyingPointCode.app.conversor import genera_dxf, upload_txt, get_points
-from SurveyingPointCode.app.conversor import get_circles
-from SurveyingPointCode.app.geometric_tools import create_layers, create_points
-from SurveyingPointCode.app.geometric_tools import create_circles
+from prototipo_flask..app.conversor import (genera_dxf, get_circles,
+                                              get_curves, get_points,
+                                              upload_txt)
+from prototipo_flask..app.geometric_tools import (create_circles,
+                                                    create_curves,
+                                                    create_layers,
+                                                    create_points)
 
 FAILURE = 'incorrect value'
 # File config user
@@ -31,7 +42,8 @@ upload_txt("test/input_files/Example_1.txt")
 create_points(dwg, msp, get_points())
 n_points = len(get_points())
 n_texts = n_points*3
-create_circles(msp,get_circles(),file_user)
+create_circles(msp, get_circles(), file_user)
+create_curves(msp, get_curves(), file_user)
 
 
 class SurveyingPointCode(unittest.TestCase):
@@ -56,7 +68,7 @@ class SurveyingPointCode(unittest.TestCase):
         n = 0
         for e in msp:
             if e.dxftype() == 'TEXT':
-                n = n+1               
+                n = n+1
         self.assertEqual(n, n_texts, FAILURE)
         self.assertNotEqual(n, 0, FAILURE)
 
@@ -64,11 +76,17 @@ class SurveyingPointCode(unittest.TestCase):
         n = 0
         for e in msp:
             if e.dxftype() == 'CIRCLE':
-                n = n+1                
-        self.assertEqual(n,2, FAILURE)
+                n = n+1
+        self.assertEqual(n, 2, FAILURE)
         self.assertNotEqual(n, 0, FAILURE)
 
-
+    def test_create_splines_number(self):
+        n = 0
+        for e in msp:
+            if e.dxftype() == 'SPLINE':
+                n = n+1
+        self.assertEqual(n, 1, FAILURE)
+        self.assertNotEqual(n, 0, FAILURE)
 
 
 if __name__ == '__main__':
