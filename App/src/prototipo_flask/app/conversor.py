@@ -313,7 +313,7 @@ def genera_dxf(download_folder):
         # Adding points to model.
         create_points(dwg, msp, get_points())
         # Adding circles to model.
-        create_circles(msp, circulos, file_user)
+        create_circles(msp, get_circles(), file_user)
         # Adding lines to model.
         create_lines(msp, lineas, file_user)
         # Adding curves to model.
@@ -335,10 +335,7 @@ def genera_dxf(download_folder):
         print('Se han añadido', l, 'lineas, ',
               c, 'curvas, al archivo dxf creado')
 
-        print('capas',len(dwg.layers))    
-
-        for e in msp:
-            print(e.dxftype())
+        print('capas', len(dwg.layers))
 
         dwg.saveas(download_folder)
 
@@ -390,6 +387,7 @@ def get_capas():
         return capas_topografia
     return False
 
+
 def get_points():
     '''
     This function returns a points list . 
@@ -398,3 +396,12 @@ def get_points():
         return False
     else:
         return puntos
+
+def get_circles():
+    '''
+    This function returns a circles list . 
+    '''
+    if get_errors_upload():
+        return False
+    else:
+        return circulos        
