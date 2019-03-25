@@ -27,9 +27,8 @@ msp = dwg.modelspace()
 create_layers(dwg, file_user)
 upload_txt("test/input_files/Example_1.txt")
 create_points(dwg, msp, get_points())
-n_points=len(get_points())
-n_texts=n_points*3
-
+n_points = len(get_points())
+n_texts = n_points*3
 
 
 class SurveyingPointCode(unittest.TestCase):
@@ -43,25 +42,21 @@ class SurveyingPointCode(unittest.TestCase):
             self.assertIn(layer.dxf.name, layers, FAILURE)
 
     def test_create_points_number_file_correct(self):
-        n=0
+        n = 0
         for e in msp:
-            if e.dxftype()=='POINT':
-                n=n+1
-
-        self.assertEqual(n,n_points,FAILURE) 
-        self.assertNotEqual(n,0,FAILURE)    
+            if e.dxftype() == 'POINT':
+                n = n+1
+        self.assertEqual(n, n_points, FAILURE)
+        self.assertNotEqual(n, 0, FAILURE)
 
     def test_create_points_texts_file_correct(self):
-        n=0
+        n = 0
         for e in msp:
-            if e.dxftype()=='TEXT':
-                n=n+1
-
-        self.assertEqual(n,n_texts,FAILURE) 
-        self.assertNotEqual(n,0,FAILURE)      
-
+            if e.dxftype() == 'TEXT':
+                n = n+1
+        self.assertEqual(n, n_texts, FAILURE)
+        self.assertNotEqual(n, 0, FAILURE)
 
 
 if __name__ == '__main__':
     unittest.main()
-    
