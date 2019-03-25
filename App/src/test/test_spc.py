@@ -10,12 +10,13 @@ import unittest
 
 import ezdxf
 
-from prototipo_flask..app.conversor import (genera_dxf, get_circles,
-                                              get_curves, get_points,
-                                              upload_txt)
-from prototipo_flask..app.geometric_tools import (create_circles,
+from prototipo_flask.app.conversor import (genera_dxf, get_circles,
+                                              get_curves, get_lines,
+                                              get_points, upload_txt)
+from prototipo_flask.app.geometric_tools import (create_circles,
                                                     create_curves,
                                                     create_layers,
+                                                    create_lines,
                                                     create_points)
 
 FAILURE = 'incorrect value'
@@ -46,6 +47,7 @@ create_circles(msp, get_circles(), file_user)
 create_curves(msp, get_curves(), file_user)
 
 
+
 class SurveyingPointCode(unittest.TestCase):
 
     def test_create_layers_number(self):
@@ -73,6 +75,7 @@ class SurveyingPointCode(unittest.TestCase):
         self.assertNotEqual(n, 0, FAILURE)
 
     def test_create_circles_number(self):
+
         n = 0
         for e in msp:
             if e.dxftype() == 'CIRCLE':
@@ -87,6 +90,17 @@ class SurveyingPointCode(unittest.TestCase):
                 n = n+1
         self.assertEqual(n, 1, FAILURE)
         self.assertNotEqual(n, 0, FAILURE)
+
+    def test_create_lines_number(self):
+        msp = dwg.modelspace()
+        create_lines(msp, get_lines(), file_user)
+        n=0
+        for e in msp:    
+            if e.dxftype() == 'LWPOLYLINE':
+                n = n+1
+        self.assertEqual(n, 5, FAILURE)
+        self.assertNotEqual(n, 0, FAILURE)
+
 
 
 if __name__ == '__main__':

@@ -148,7 +148,7 @@ def p_error(p):
 
 
 def upload_txt(entrada):
-    '''This function reads a file with topographic survey data, 
+    '''This function reads a file with topographic survey data,
     translating the points codes in several geometric elements.
     '''
 
@@ -315,7 +315,7 @@ def genera_dxf(download_folder):
         # Adding circles to model.
         create_circles(msp, get_circles(), file_user)
         # Adding lines to model.
-        create_lines(msp, lineas, file_user)
+        create_lines(msp, get_lines(), file_user)
         # Adding curves to model.
         create_curves(msp, get_curves(), file_user)
         # Adding squares to model.
@@ -329,16 +329,13 @@ def genera_dxf(download_folder):
         c = 0
         for el in dwg.entities:
             if isinstance(el, ezdxf.modern.lwpolyline.LWPolyline):
+
                 l = l + 1
             elif isinstance(el, ezdxf.modern.spline.Spline):
                 c = c + 1
         print('Se han añadido', l, 'lineas, ',
               c, 'curvas, al archivo dxf creado')
 
-      
-
-        for e in msp:
-            print(e.dxftype())
 
         dwg.saveas(download_folder)
 
@@ -400,6 +397,7 @@ def get_points():
     else:
         return puntos
 
+
 def get_circles():
     '''
     This function returns a circles list . 
@@ -408,12 +406,23 @@ def get_circles():
         return False
     else:
         return circulos
+
+
 def get_curves():
     '''
-    This function returns a circles splines . 
+    This function returns a splines list . 
     '''
     if get_errors_upload():
         return False
     else:
         return curvas
 
+
+def get_lines():
+    '''
+    This function returns a lines list . 
+    '''
+    if get_errors_upload():
+        return False
+    else:
+        return lineas
