@@ -157,7 +157,7 @@ class SurveyingPointCode(unittest.TestCase):
 
         n=0
         for a in msp2:
-            if a.dxftype() == 'LINE':
+            if a.dxftype() == 'LWPOLYLINE':
                n = n+1
         self.assertEqual(n, 0, FAILURE)    
 
@@ -170,7 +170,7 @@ class SurveyingPointCode(unittest.TestCase):
 
         n=0
         for a in msp2:
-            if a.dxftype() == 'LINE':
+            if a.dxftype() == 'LWPOLYLINE':
                n = n+1
         self.assertEqual(n, 0, FAILURE)   
     def test_azimut_distance(self):
