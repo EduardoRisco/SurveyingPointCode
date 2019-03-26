@@ -45,11 +45,6 @@ create_layers(dwg, file_user)
 upload_txt("test/input_files/Example_1.txt")
 
 
-
-
-
-
-
 class SurveyingPointCode(unittest.TestCase):
 
     def test_create_layers_number(self):
@@ -133,10 +128,19 @@ class SurveyingPointCode(unittest.TestCase):
         msp1 = dwg1.modelspace()
         upload_txt("test/input_files/Example_2.txt")
         create_circles(msp1, get_circles(), file_user)
-       
+
         for e in msp1:
-            self.assertEqual(e.dxftype(),"CIRCLE",FAILURE)       
-   
+            self.assertEqual(e.dxftype(), "CIRCLE", FAILURE)
+
+    def test_not_create_splines(self):
+        dwg1 = ezdxf.new('AC1018')
+        msp1 = dwg1.modelspace()
+        upload_txt("test/input_files/Example_2.txt")
+        create_curves(msp1, get_curves(), file_user)
+
+        for e in msp1:
+            self.assertEqual(e.dxftype(), "SPLINE", FAILURE)
+
 
 if __name__ == '__main__':
     unittest.main()
