@@ -10,11 +10,12 @@ import unittest
 
 import ezdxf
 
-from prototipo_flask.app.conversor import (genera_dxf, get_circles,
+from prototipo_flask.app.conversor import (genera_dxf, get_circles,	
                                               get_curves, get_lines,
                                               get_points, get_rectangles,
                                               get_squares, upload_txt)
-from prototipo_flask.app.geometric_tools import (calculate_azimut_distance,
+from prototipo_flask.app.geometric_tools import (calculate_angle,
+                                                    calculate_azimut_distance,
                                                     calculate_increment_x_y,
                                                     create_circles,
                                                     create_curves,
@@ -179,9 +180,15 @@ class SurveyingPointCode(unittest.TestCase):
 
         self.assertEqual(round(Inc_x,3), 100, FAILURE)
         self.assertEqual(round(Inc_y,3), 100, FAILURE)
-        self.assertNotEqual(Inc_x, 50, FAILURE)
+        self.assertNotEqual(Inc_x, 150, FAILURE)
         self.assertNotEqual(Inc_y, 145, FAILURE)
 
+    def test_angle_direction(self):
+        az=125
+
+        self.assertEqual(calculate_angle(az,10),215,FAILURE)    
+        self.assertEqual(calculate_angle(az,-10),35,FAILURE)    
+        self.assertNotEqual(calculate_angle(az,-10),215,FAILURE)    
 
 if __name__ == '__main__':
     unittest.main()
