@@ -141,6 +141,15 @@ class SurveyingPointCode(unittest.TestCase):
         for e in msp1:
             self.assertEqual(e.dxftype(), "SPLINE", FAILURE)
 
+    def test_not_create_lines(self):
+        dwg1 = ezdxf.new('AC1018')
+        msp1 = dwg1.modelspace()
+        upload_txt("test/input_files/Example_2.txt")
+        create_lines(msp1, get_lines(), file_user)
+
+        for e in msp1:
+            self.assertEqual(e.dxftype(), "LWPOLYLINE", FAILURE)        
+
 
 if __name__ == '__main__':
     unittest.main()
