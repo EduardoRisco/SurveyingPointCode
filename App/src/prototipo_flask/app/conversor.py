@@ -296,27 +296,33 @@ def upload_txt(entrada):
                     curva = []
     except (IOError, NameError) as e:
         print(e)
-        ## completar con return error
+        # completar con return error
 
 
-def genera_dxf(download_folder):
+ # Example of user file, topographical code, cad layer and layer color.
+file_user_upload = [
+    ['E', 'Edificio', (38, 140, 89)], ['A', 'Acera', 0],
+    ['FA', 'Farola', 2], ['TEL', 'Telecomunicaciones', 3],
+    ['RE', 'Red_Electrica', 161], ['SAN', 'Saneamiento', 220],
+    ['M', 'Muro', 1], ['B', 'Bordillo', 0],
+    ['B1', 'Bordillo', 0], ['R', 'Relleno', 0],
+    ['ARB', 'Arbol', 60], ['C', 'Calzada', 141],
+    ['C1', 'Calzada', 141]]
+
+
+cad_versions = {'DXF_R12': 'AC1009', 'DXF_R13': 'AC1012', 'DXF_R14': 'AC1014',
+                'DXF_2000': 'AC1015', 'DXF_2004': 'AC1018', 'DXF_2007': 'AC1021',
+                'DXF_2010': 'AC1024', 'DXF_2013': 'AC1027', 'DXF_2018': 'AC1032'}
+
+
+def genera_dxf(download_folder, file_user=file_user_upload, version=cad_versions['DXF_2004']):
     '''
     This function generates a dxf file.
     '''
 
-    # Example of user file, topographical code, cad layer and layer color.
-    file_user = [
-        ['E', 'Edificio', (38, 140, 89)], ['A', 'Acera', 0],
-        ['FA', 'Farola', 2], ['TEL', 'Telecomunicaciones', 3],
-        ['RE', 'Red_Electrica', 161], ['SAN', 'Saneamiento', 220],
-        ['M', 'Muro', 1], ['B', 'Bordillo', 0],
-        ['B1', 'Bordillo', 0], ['R', 'Relleno', 0],
-        ['ARB', 'Arbol', 60], ['C', 'Calzada', 141],
-        ['C1', 'Calzada', 141]]
-
     #### Pendiente de modificar en función de los errores obtenidos ####
     if not get_errors_upload() and not get_errors_square() and not get_errors_rectangle():
-        dwg = ezdxf.new('AC1018')
+        dwg = ezdxf.new(version)
 
         # Create the model space.
         msp = dwg.modelspace()
@@ -335,8 +341,6 @@ def genera_dxf(download_folder):
         create_squares(msp, get_squares(), file_user)
         # Adding rectangles to model.
         create_rectangles(msp, get_rectangles(), file_user)
-
-        print('get_circles',get_circles())
 
         dwg.saveas(download_folder)
 
