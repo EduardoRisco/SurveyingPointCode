@@ -10,7 +10,7 @@ import unittest
 
 import ezdxf
 
-from prototipo_flask.app.conversor import (genera_dxf, get_circles,	
+from prototipo_flask.app.conversor import (genera_dxf, get_circles,
                                               get_curves, get_lines,
                                               get_points, get_rectangles,
                                               get_squares, upload_txt)
@@ -127,42 +127,52 @@ class SurveyingPointCode(unittest.TestCase):
         self.assertNotEqual(n, 0, FAILURE)
 
     def test_not_create_circles(self):
-        dwg1 = ezdxf.new('AC1018')
-        msp1 = dwg1.modelspace()
         upload_txt("test/input_files/Example_2.txt")
-        create_circles(msp1, get_circles(), file_user)
-
-        for e in msp1:
-            self.assertEqual(e.dxftype(), "CIRCLE", FAILURE)
+        dwg2 = ezdxf.new('AC1018')
+        msp2 = dwg2.modelspace()
+        create_circles(msp2, get_circles(), file_user)
+        n=0
+        for a in msp2:
+            if a.dxftype() == 'CIRCLE':
+                n = n+1
+        self.assertEqual(n, 0, FAILURE)    
+           
 
     def test_not_create_splines(self):
-        dwg1 = ezdxf.new('AC1018')
-        msp1 = dwg1.modelspace()
         upload_txt("test/input_files/Example_2.txt")
-        create_curves(msp1, get_curves(), file_user)
-
-        for e in msp1:
-            self.assertEqual(e.dxftype(), "SPLINE", FAILURE)
+        dwg2 = ezdxf.new('AC1018')
+        msp2 = dwg2.modelspace()
+        create_curves(msp2, get_curves(), file_user)
+        n=0
+        for a in msp2:
+            if a.dxftype() == 'SPLINE':
+               n = n+1
+        self.assertEqual(n, 0, FAILURE)    
 
     def test_not_create_lines(self):
-        dwg1 = ezdxf.new('AC1018')
-        msp1 = dwg1.modelspace()
         upload_txt("test/input_files/Example_2.txt")
-        create_lines(msp1, get_lines(), file_user)
+        dwg2 = ezdxf.new('AC1018')
+        msp2 = dwg2.modelspace()
+        create_lines(msp2, get_lines(), file_user)
 
-        for e in msp1:
-            self.assertEqual(e.dxftype(), "LWPOLYLINE", FAILURE)
+        n=0
+        for a in msp2:
+            if a.dxftype() == 'LINE':
+               n = n+1
+        self.assertEqual(n, 0, FAILURE)    
 
     def test_not_create_squares_rectangles(self):
-        dwg1 = ezdxf.new('AC1018')
-        msp1 = dwg1.modelspace()
         upload_txt("test/input_files/Example_2.txt")
-        create_squares(msp1, get_squares(), file_user)
-        create_rectangles(msp1, get_rectangles(), file_user)
+        dwg2 = ezdxf.new('AC1018')
+        msp2 = dwg2.modelspace()
+        create_squares(msp2, get_squares(), file_user)
+        create_rectangles(msp2, get_rectangles(), file_user)
 
-        for e in msp1:
-            self.assertEqual(e.dxftype(), "LWPOLYLINE", FAILURE)
-
+        n=0
+        for a in msp2:
+            if a.dxftype() == 'LINE':
+               n = n+1
+        self.assertEqual(n, 0, FAILURE)   
     def test_azimut_distance(self):
         a = [1, (0, 0, 0), 'E']
         b = [2, (100, 100, 0), 'E']
@@ -192,3 +202,5 @@ class SurveyingPointCode(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+   

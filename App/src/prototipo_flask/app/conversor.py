@@ -166,10 +166,28 @@ def upload_txt(entrada):
 
     try:
 
+        global errores
+        global lineas
+        global curvas
+        global capas_topografia
+        global puntos
+        global circulos
+        global cuadrados
+        global rectangulos
+
         parser = yacc.yacc()
         err = False
+        capas_topografia = set()
+        dicc_capas = {}
+        lineas = []
+        curvas = []
+        puntos = []
         linea = []
         curva = []
+        errores = []
+        circulos = []
+        cuadrados = []
+        rectangulos = []
         codigo_capa = ""
 
         f = open(entrada)
@@ -220,8 +238,8 @@ def upload_txt(entrada):
                 for pto in dicc_capas.get(ptos):
                     puntos.append(pto)
                     if pto[2] not in ('TC', 'TR', 'TX'):
-                        if len(pto) > 3 and not isinstance(pto[3],
-                                                           (tuple, int, float)):
+                        if len(pto) > 3 and not isinstance(
+                                pto[3], (tuple, int, float)):
                             if pto[3] == 'I':
                                 if linea_iniciada:
                                     # If another 'I' is found, the line closes
@@ -278,6 +296,7 @@ def upload_txt(entrada):
                     curva = []
     except (IOError, NameError) as e:
         print(e)
+        ## completar con return error
 
 
 def genera_dxf(download_folder):
@@ -296,7 +315,7 @@ def genera_dxf(download_folder):
         ['C1', 'Calzada', 141]]
 
     #### Pendiente de modificar en función de los errores obtenidos ####
-    if not get_errors_upload():
+    if not get_errors_upload() and not get_errors_square() and not get_errors_rectangle():
         dwg = ezdxf.new('AC1018')
 
         # Create the model space.
@@ -317,10 +336,9 @@ def genera_dxf(download_folder):
         # Adding rectangles to model.
         create_rectangles(msp, get_rectangles(), file_user)
 
+        print('get_circles',get_circles())
 
         dwg.saveas(download_folder)
-
-
 
 
 def get_errors_upload():
@@ -357,7 +375,7 @@ def get_errors_rectangle():
 
 def get_capas():
     '''
-    This function returns a list with topographic codes. 
+    This function returns a list with topographic codes.
     '''
 
     if capas_topografia:
@@ -367,7 +385,7 @@ def get_capas():
 
 def get_points():
     '''
-    This function returns a points list . 
+    This function returns a points list .
     '''
     if get_errors_upload():
         return False
@@ -377,7 +395,7 @@ def get_points():
 
 def get_circles():
     '''
-    This function returns a circles list . 
+    This function returns a circles list .
     '''
     if get_errors_upload():
         return False
@@ -387,7 +405,7 @@ def get_circles():
 
 def get_curves():
     '''
-    This function returns a splines list . 
+    This function returns a splines list .
     '''
     if get_errors_upload():
         return False
@@ -397,7 +415,7 @@ def get_curves():
 
 def get_lines():
     '''
-    This function returns a lines list . 
+    This function returns a lines list .
     '''
     if get_errors_upload():
         return False
@@ -407,7 +425,7 @@ def get_lines():
 
 def get_squares():
     '''
-    This function returns a squares list . 
+    This function returns a squares list .
     '''
     if get_errors_upload() and get_errors_square():
         return False
@@ -417,7 +435,7 @@ def get_squares():
 
 def get_rectangles():
     '''
-    This function returns a rectangles list . 
+    This function returns a rectangles list .
     '''
     if get_errors_upload() and get_errors_rectangle():
         return False
