@@ -15,6 +15,7 @@ from prototipo_flask.app.conversor import (genera_dxf, get_circles,
                                               get_points, get_rectangles,
                                               get_squares, upload_txt)
 from prototipo_flask.app.geometric_tools import (calculate_azimut_distance,
+                                                    calculate_increment_x_y,
                                                     create_circles,
                                                     create_curves,
                                                     create_layers,
@@ -165,11 +166,21 @@ class SurveyingPointCode(unittest.TestCase):
         a = [1, (0, 0, 0), 'E']
         b = [2, (100, 100, 0), 'E']
         az, dist = calculate_azimut_distance(a, b)
-        
+
         self.assertEqual(az, 45, FAILURE)
         self.assertEqual(dist, 141.4213562373095, FAILURE)
         self.assertNotEqual(az, 50, FAILURE)
         self.assertNotEqual(dist, 145, FAILURE)
+
+    def test_increment_x_y(self):
+        az=45
+        dist=141.4213562373095   
+        Inc_x,Inc_y=calculate_increment_x_y(az,dist)
+
+        self.assertEqual(round(Inc_x,3), 100, FAILURE)
+        self.assertEqual(round(Inc_y,3), 100, FAILURE)
+        self.assertNotEqual(Inc_x, 50, FAILURE)
+        self.assertNotEqual(Inc_y, 145, FAILURE)
 
 
 if __name__ == '__main__':
