@@ -14,7 +14,8 @@ from prototipo_flask.app.conversor import (genera_dxf, get_circles,
                                               get_curves, get_lines,
                                               get_points, get_rectangles,
                                               get_squares, upload_txt)
-from prototipo_flask.app.geometric_tools import (create_circles,
+from prototipo_flask.app.geometric_tools import (calculate_azimut_distance,
+                                                    create_circles,
                                                     create_curves,
                                                     create_layers,
                                                     create_lines,
@@ -148,7 +149,7 @@ class SurveyingPointCode(unittest.TestCase):
         create_lines(msp1, get_lines(), file_user)
 
         for e in msp1:
-            self.assertEqual(e.dxftype(), "LWPOLYLINE", FAILURE)        
+            self.assertEqual(e.dxftype(), "LWPOLYLINE", FAILURE)
 
     def test_not_create_squares_rectangles(self):
         dwg1 = ezdxf.new('AC1018')
@@ -158,7 +159,18 @@ class SurveyingPointCode(unittest.TestCase):
         create_rectangles(msp1, get_rectangles(), file_user)
 
         for e in msp1:
-            self.assertEqual(e.dxftype(), "LWPOLYLINE", FAILURE)     
-            
+            self.assertEqual(e.dxftype(), "LWPOLYLINE", FAILURE)
+
+    def test_azimut_distance(self):
+        a = [1, (0, 0, 0), 'E']
+        b = [2, (100, 100, 0), 'E']
+        az, dist = calculate_azimut_distance(a, b)
+        
+        self.assertEqual(az, 45, FAILURE)
+        self.assertEqual(dist, 141.4213562373095, FAILURE)
+        self.assertNotEqual(az, 50, FAILURE)
+        self.assertNotEqual(dist, 145, FAILURE)
+
+
 if __name__ == '__main__':
     unittest.main()
