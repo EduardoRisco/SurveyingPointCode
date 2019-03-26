@@ -150,6 +150,15 @@ class SurveyingPointCode(unittest.TestCase):
         for e in msp1:
             self.assertEqual(e.dxftype(), "LWPOLYLINE", FAILURE)        
 
+    def test_not_create_squares_rectangles(self):
+        dwg1 = ezdxf.new('AC1018')
+        msp1 = dwg1.modelspace()
+        upload_txt("test/input_files/Example_2.txt")
+        create_squares(msp1, get_squares(), file_user)
+        create_rectangles(msp1, get_rectangles(), file_user)
 
+        for e in msp1:
+            self.assertEqual(e.dxftype(), "LWPOLYLINE", FAILURE)     
+            
 if __name__ == '__main__':
     unittest.main()
