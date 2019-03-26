@@ -1,0 +1,11 @@
+Se realizarán test unitarios en las diferentes funcionalidades de la app.
+	Estudio de las diferentes opciones:
+	unittest, pytest
+
+Estudiar información sobre la importacion de simbolos, provenientes de un archivo proporcionado por el usuario.
+	Cargar un archivo dxf
+	Leer los bloques existentes
+	Incorporarlos al dibujo actual
+	
+	
+Versiones de cad del dxf obtenidp
