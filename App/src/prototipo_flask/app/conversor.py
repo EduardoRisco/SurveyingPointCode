@@ -14,7 +14,8 @@ import ply.yacc as yacc
 
 from app.geometric_tools import (create_circles, create_curves, create_layers,
                                  create_lines, create_points,
-                                 create_rectangles, create_squares)
+                                 create_rectangles, create_squares,
+                                 insert_symbols)
 
 capas_topografia = set()
 dicc_capas = {}
@@ -176,7 +177,6 @@ def upload_txt(entrada):
         global rectangulos
 
         parser = yacc.yacc()
-        err = False
         capas_topografia = set()
         dicc_capas = {}
         lineas = []
@@ -200,10 +200,8 @@ def upload_txt(entrada):
             punto = parser.parse(line)
             # Detection of incorrect input file
             if not punto:
-                err = True
                 # Capturing Errors
                 errores.append([n_line, line])
-
             else:
                 # Getting the layer code
                 if len(punto) == 4 and (punto[2] == "TR" or punto[2] == "TC"):
@@ -299,48 +297,97 @@ def upload_txt(entrada):
         # completar con return error
 
 
- # Example of user file, topographical code, cad layer and layer color.
+# Example of user file, topographical code, cad layer and layer color.
 file_user_upload = [
-    ['E', 'Edificio', (38, 140, 89)], ['A', 'Acera', 0],
-    ['FA', 'Farola', 2], ['TEL', 'Telecomunicaciones', 3],
-    ['RE', 'Red_Electrica', 161], ['SAN', 'Saneamiento', 220],
-    ['M', 'Muro', 1], ['B', 'Bordillo', 0],
-    ['B1', 'Bordillo', 0], ['R', 'Relleno', 0],
-    ['ARB', 'Arbol', 60], ['C', 'Calzada', 141],
-    ['C1', 'Calzada', 141]]
+    ['E', 'Edificio', (38, 140, 89),''], ['A', 'Acera', 0,''],
+    ['FA', 'Farola', 2, 'Farola'], ['TEL', 'Telecomunicaciones', 3,''],
+    ['RE', 'Red_Electrica', 161,''], ['SAN', 'Saneamiento', 220,''],
+    ['M', 'Muro', 1,''], ['B', 'Bordillo', 0,''],
+    ['B1', 'Bordillo', 0,''], ['R', 'Relleno', 0, 'Vertice'],
+    ['ARB', 'Arbol', 60, 'Arbol'], ['C', 'Calzada', 141,''],
+    ['C1', 'Calzada', 141,'']]
+
+# Possible CAD versions to generate a dxf
+cad_versions = {
+    'DXF 2018': 'AC1032',
+    'DXF 2013': 'AC1027',
+    'DXF 2010': 'AC1024',
+    'DXF 2007': 'AC1021',
+    'DXF 2004': 'AC1018',
+    'DXF 2000': 'AC1015',
+    'DXF R14': 'AC1014',
+    'DXF R13': 'AC1012',
+    'DXF R12': 'AC1009'}
+
+file_symbols = "tmp/simbolos.dxf"
 
 
-cad_versions = {'DXF_R12': 'AC1009', 'DXF_R13': 'AC1012', 'DXF_R14': 'AC1014',
-                'DXF_2000': 'AC1015', 'DXF_2004': 'AC1018', 'DXF_2007': 'AC1021',
-                'DXF_2010': 'AC1024', 'DXF_2013': 'AC1027', 'DXF_2018': 'AC1032'}
+def upload_dxf(dxf_symbol=file_symbols):
+    '''
+    This function reads a dxf file with symbols.
+    '''
+    try:
+        global symbols
+        global file_symbols_dxf
+        file_symbols_dxf=dxf_symbol
+        symbols = []
+
+        dwg = ezdxf.readfile(dxf_symbol)
+
+        for b in dwg.blocks:
+            if b.__getattribute__('name') not in(
+                '_ArchTick',
+                '_Open30') and (
+                    b.__getattribute__('name').find('A$') == -1) and (
+                    b.__getattribute__('name').find('*Paper') == -1) and (
+                    b.__getattribute__('name').find('*Model') == -1):
+                symbols.append(b.__getattribute__('name'))
+
+    except (IOError, NameError) as e:
+        print(e)
 
 
-def genera_dxf(download_folder, file_user=file_user_upload, version=cad_versions['DXF_2004']):
+def genera_dxf(download_folder, file_user=file_user_upload,
+               version=cad_versions['DXF 2004']):
     '''
     This function generates a dxf file.
     '''
 
-    #### Pendiente de modificar en función de los errores obtenidos ####
-    if not get_errors_upload() and not get_errors_square() and not get_errors_rectangle():
+    
+    if not get_errors_upload() and not get_errors_square() and (
+        not get_errors_rectangle()):
+
         dwg = ezdxf.new(version)
 
         # Create the model space.
         msp = dwg.modelspace()
-
+        
+        if get_symbols():
+            source_drawing = ezdxf.readfile(get_symbols_file_dxf())
+            importer = ezdxf.Importer(source_drawing, dwg)
+            importer.import_blocks()
+            # Adding symbols to model.
+            insert_symbols(msp,get_points(),file_user)
+                    
         # Creating required layers.
         create_layers(dwg, file_user)
         # Adding points to model.
         create_points(dwg, msp, get_points())
         # Adding circles to model.
-        create_circles(msp, get_circles(), file_user)
+        if get_circles():
+            create_circles(msp, get_circles(), file_user)
         # Adding lines to model.
-        create_lines(msp, get_lines(), file_user)
+        if get_lines():
+            create_lines(msp, get_lines(), file_user)
         # Adding curves to model.
-        create_curves(msp, get_curves(), file_user)
+        if get_curves():
+            create_curves(msp, get_curves(), file_user)
         # Adding squares to model.
-        create_squares(msp, get_squares(), file_user)
+        if get_squares():
+            create_squares(msp, get_squares(), file_user)
         # Adding rectangles to model.
-        create_rectangles(msp, get_rectangles(), file_user)
+        if get_rectangles():
+            create_rectangles(msp, get_rectangles(), file_user)
 
         dwg.saveas(download_folder)
 
@@ -445,3 +492,22 @@ def get_rectangles():
         return False
     else:
         return rectangulos
+
+
+def get_symbols():
+    '''
+    This function returns a symbols list .
+    '''
+    if not symbols:
+        return False
+    else:
+        return symbols
+
+def get_symbols_file_dxf():
+    '''
+    This function returns a symbols file .
+    '''
+    if not file_symbols_dxf:
+        return False
+    else:
+        return file_symbols_dxf        

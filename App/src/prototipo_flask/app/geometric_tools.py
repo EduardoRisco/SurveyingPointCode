@@ -4,7 +4,7 @@
 #
 # Required ezdxf.
 #
-# J. Eduardo Risco 20-03-2019
+# J. Eduardo Risco 27-03-2019
 #
 
 import math
@@ -12,6 +12,7 @@ import math
 import ezdxf
 
 ### Layers  ###
+
 
 def create_layers(dwg, file_user):
     '''
@@ -31,7 +32,7 @@ def create_layers(dwg, file_user):
             color = l[1]
         dwg.layers.new(name=l[0], dxfattribs={'color': color})
 
-    # Obligatory layers 
+    # Obligatory layers
     dwg.layers.new('Points', dxfattribs={'color': 0})
     dwg.layers.new('Number_Points', dxfattribs={'color': 0})
     dwg.layers.new('Altitude', dxfattribs={'color': 0})
@@ -230,6 +231,30 @@ def create_rectangles(msp, rectangles, file_user):
         line.append((coord_d_x, coord_d_y))
         line.append((coord_a_x, coord_a_y))
         msp.add_lwpolyline(line, dxfattribs={'layer': layer})
+
+
+def insert_symbols(msp, points, file_user):
+    '''
+    This function inserts symbols into the coded points.
+    '''
+
+    for p in points:
+        if len(p) == 4:
+            if p[2]in('TC', 'TR'):
+                code_point = p[3]
+            elif p[2] == 'TX':
+                code_point = p[3][1]
+            else:
+                code_point = p[2]
+        else:
+            code_point = p[2]
+
+        for l in file_user:
+            if code_point == l[0]:
+                code_point=l[3]
+                layer=l[1]
+        msp.add_blockref(code_point, (p[1][0], p[1][1]),dxfattribs={'layer': layer})
+          
 
 ### Mathematical ###
 
