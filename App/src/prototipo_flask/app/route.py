@@ -1,17 +1,20 @@
 
 import os
-from flask import render_template, request, flash, redirect, url_for
-from flask import send_from_directory, send_file
-from flask_login import LoginManager, logout_user, current_user
-from flask_login import login_user, login_required
+
+from flask import (flash, redirect, render_template, request, send_file,
+                   send_from_directory, url_for)
+from flask_login import (LoginManager, current_user, login_required,
+                         login_user, logout_user)
 from werkzeug.urls import url_parse
 from werkzeug.utils import secure_filename
-from app.models import User
-from app.forms import RegistrationForm, LoginForm
-from app import db, app
-from app.conversor import genera_dxf, upload_txt, get_capas, get_errors
-from app.conversor import get_errors_square, get_errors_rectangle
 
+from app import app, db
+from app.conversor import (genera_dxf, get_capas, get_errors_upload,
+                           get_errors_rectangle, get_errors_square, upload_txt)
+from app.upload_optional_files import extract_symbols,upload_file_config             
+                      
+from app.forms import LoginForm, RegistrationForm
+from app.models import User
 
 ALLOWED_EXTENSIONS = set(["txt", "csv"])
 errores = []
@@ -84,8 +87,11 @@ def upload_file():
             f.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
             # Se genera y se guarda el archivo dxf
             upload_txt("./tmp/" + filename)
+            extract_symbols()
+            upload_file_config("./tmp/" + filename_config)
+            
             # os.remove("./tmp/"+filename)
-            if get_errors():
+            if get_errors_upload():
                 flash(
                     'Error: topographic data file has the following errors. \
                          Check the file')
@@ -100,6 +106,8 @@ def upload_file():
                     'Error: The number of points with "TR" code is not \
                         multiple of 3. Check the file')
                 return render_template('upload.html', title='Carga Archivos')
+
+            
             return redirect(url_for("convert_file_dxf"))
         flash("Error: the topografic data file type must be: .txt o .csv.")
     return render_template('upload.html', title='Carga Archivos')
@@ -109,13 +117,14 @@ def upload_file():
 @login_required
 def convert_file_dxf():
     if request.method == "POST":
-        genera_dxf("./tmp/salida.dxf")
+        genera_dxf("./tmp","salida.dxf")
+
         return redirect(url_for("downloads"))
     return render_template(
         'convert.html',
         title='Conversion DXF',
         capas=get_capas(),
-        errores=get_errors())
+        errores=get_errors_upload())
 
 
 @app.route("/download", methods=["GET", "POST"])
