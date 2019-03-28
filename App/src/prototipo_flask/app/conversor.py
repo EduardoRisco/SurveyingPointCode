@@ -17,8 +17,9 @@ from app.geometric_tools import (create_circles, create_curves, create_layers,
                                  create_rectangles, create_squares,
                                  insert_symbols)
 
+from app.upload_optional_files import get_config_user,get_symbols,get_symbols_file_dxf                                 
+
 capas_topografia = set()
-dicc_capas = {}
 errores = []
 circulos = []
 cuadrados = []
@@ -299,13 +300,13 @@ def upload_txt(entrada):
 
 # Example of user file, topographical code, cad layer and layer color.
 file_user_upload = [
-    ['E', 'Edificio', (38, 140, 89),''], ['A', 'Acera', 0,''],
-    ['FA', 'Farola', 2, 'Farola'], ['TEL', 'Telecomunicaciones', 3,''],
-    ['RE', 'Red_Electrica', 161,''], ['SAN', 'Saneamiento', 220,''],
-    ['M', 'Muro', 1,''], ['B', 'Bordillo', 0,''],
-    ['B1', 'Bordillo', 0,''], ['R', 'Relleno', 0, 'Vertice'],
-    ['ARB', 'Arbol', 60, 'Arbol'], ['C', 'Calzada', 141,''],
-    ['C1', 'Calzada', 141,'']]
+    ['E', 'Edificio', (38, 140, 89), ''], ['A', 'Acera', 0, ''],
+    ['FA', 'Farola', 2, 'Farola'], ['TEL', 'Telecomunicaciones', 3, ''],
+    ['RE', 'Red_Electrica', 161, ''], ['SAN', 'Saneamiento', 220, ''],
+    ['M', 'Muro', 1, ''], ['B', 'Bordillo', 0, ''],
+    ['B1', 'Bordillo', 0, ''], ['V', 'Relleno', 0, 'Vertice'],
+    ['ARB', 'Arbol', 60, 'Arbol'], ['C', 'Calzada', 141, ''],
+    ['C1', 'Calzada', 141, '']]
 
 # Possible CAD versions to generate a dxf
 cad_versions = {
@@ -319,56 +320,29 @@ cad_versions = {
     'DXF R13': 'AC1012',
     'DXF R12': 'AC1009'}
 
-file_symbols = "tmp/simbolos.dxf"
 
 
-def upload_dxf(dxf_symbol=file_symbols):
-    '''
-    This function reads a dxf file with symbols.
-    '''
-    try:
-        global symbols
-        global file_symbols_dxf
-        file_symbols_dxf=dxf_symbol
-        symbols = []
-
-        dwg = ezdxf.readfile(dxf_symbol)
-
-        for b in dwg.blocks:
-            if b.__getattribute__('name') not in(
-                '_ArchTick',
-                '_Open30') and (
-                    b.__getattribute__('name').find('A$') == -1) and (
-                    b.__getattribute__('name').find('*Paper') == -1) and (
-                    b.__getattribute__('name').find('*Model') == -1):
-                symbols.append(b.__getattribute__('name'))
-
-    except (IOError, NameError) as e:
-        print(e)
-
-
-def genera_dxf(download_folder, file_user=file_user_upload,
+def genera_dxf(download_folder,dxf_filename, file_user=file_user_upload,
                version=cad_versions['DXF 2004']):
     '''
     This function generates a dxf file.
     '''
 
-    
     if not get_errors_upload() and not get_errors_square() and (
-        not get_errors_rectangle()):
+            not get_errors_rectangle()):
 
         dwg = ezdxf.new(version)
 
         # Create the model space.
         msp = dwg.modelspace()
-        
+
         if get_symbols():
             source_drawing = ezdxf.readfile(get_symbols_file_dxf())
             importer = ezdxf.Importer(source_drawing, dwg)
             importer.import_blocks()
             # Adding symbols to model.
-            insert_symbols(msp,get_points(),file_user)
-                    
+            insert_symbols(msp, get_points(), file_user)
+
         # Creating required layers.
         create_layers(dwg, file_user)
         # Adding points to model.
@@ -389,7 +363,7 @@ def genera_dxf(download_folder, file_user=file_user_upload,
         if get_rectangles():
             create_rectangles(msp, get_rectangles(), file_user)
 
-        dwg.saveas(download_folder)
+        dwg.saveas(download_folder+'/'+dxf_filename)
 
 
 def get_errors_upload():
@@ -494,20 +468,3 @@ def get_rectangles():
         return rectangulos
 
 
-def get_symbols():
-    '''
-    This function returns a symbols list .
-    '''
-    if not symbols:
-        return False
-    else:
-        return symbols
-
-def get_symbols_file_dxf():
-    '''
-    This function returns a symbols file .
-    '''
-    if not file_symbols_dxf:
-        return False
-    else:
-        return file_symbols_dxf        
