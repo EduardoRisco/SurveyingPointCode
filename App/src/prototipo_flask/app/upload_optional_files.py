@@ -3,7 +3,6 @@
 # Module for uploading optional files.
 # confir_user and dxf_symbols
 #
-# Required PLY (Python Lex-Yacc).
 # Required ezdxf.
 #
 # J. Eduardo Risco 27-03-2019
@@ -12,8 +11,6 @@
 import csv
 
 import ezdxf
-import ply.lex as lex
-import ply.yacc as yacc
 
 config_user_init= []
 errors_config_user_init = []
