@@ -9,12 +9,11 @@ from werkzeug.urls import url_parse
 from werkzeug.utils import secure_filename
 
 from app import app, db
-from app.conversor import (genera_dxf, get_capas, get_errors_upload,
-                           get_errors_rectangle, get_errors_square, upload_txt)
-from app.upload_optional_files import extract_symbols,upload_file_config             
-                      
+from app.conversor import (genera_dxf, get_layers, get_errors_rectangle,
+                           get_errors_square, get_errors_upload, upload_txt)
 from app.forms import LoginForm, RegistrationForm
 from app.models import User
+from app.upload_optional_files import extract_symbols, upload_file_config
 
 ALLOWED_EXTENSIONS = set(["txt", "csv"])
 errores = []
@@ -123,7 +122,7 @@ def convert_file_dxf():
     return render_template(
         'convert.html',
         title='Conversion DXF',
-        capas=get_capas(),
+        capas=get_layers(),
         errores=get_errors_upload())
 
 

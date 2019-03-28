@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Module for uploading optional files.
-# confir_user and dxf_symbols
+# config_user and dxf_symbols
 #
 # Required ezdxf.
 #
@@ -12,8 +12,8 @@ import csv
 
 import ezdxf
 
-config_user_init= []
-errors_config_user_init = []
+config_user_init = []
+errors_config_user_init = set()
 symbols = []
 file_symbols_dxf = ''
 
@@ -29,18 +29,52 @@ def upload_file_config(entrada):
     try:
         global config_user_init
         global errors_config_user_init
-        errors_config_user_init = []
+        errors_config_user_init = set()
         config_user_init = []
+        codes = []
+        layer_color = []
+        layer = []
 
         with open(entrada) as File:
-            reader = csv.DictReader (File,delimiter=';',strict=True)
+            reader = csv.DictReader(File, delimiter=';', strict=True)
             for row in reader:
-               config_user_init.append(dict(row))
+                config_user_init.append(dict(row))
+        # Detection of incorrect input file
+        for  conf in config_user_init:
+            if len(codes) == 0:
+                codes.append(conf['Code'])
+                layer.append(conf['Layer'])
+                layer_color.append((conf['Layer'], conf['Color']))
+            else:
+                if conf['Code'] in codes:
+                    # Capturing Errors
+                    error = ('Topographic code ',
+                             conf['Code'], ' is duplicated')
+                    errors_config_user_init.add(error)
+                if conf['Layer'] in layer:
+                    print(layer)
+                    print(layer_color)
+                    if (conf['Layer'], conf['Color']) not in layer_color:
+                        error = (
+                            'The Layer ', conf['Layer'],
+                            'has different colors assigned to it ')
+                        errors_config_user_init.add(error)
+                codes.append(conf['Code'])
+                layer.append(conf['Layer'])
+                layer_color.append((conf['Layer'], conf['Color']))
 
-        print(get_config_user())       
-
+        print(get_config_user())
+        print(errors_config_user_init)
     except (IOError, NameError) as e:
         print(e)
+
+
+def configuration_table():
+    pass
+
+
+
+
 
 
 file_symbols = "tmp/simbolos.dxf"
@@ -82,6 +116,16 @@ def get_config_user():
         return config_user_init
 
 
+def get_errors_config_user():
+    '''
+    This function returns a error list from config_user.
+    '''
+    if errors_config_user_init:
+        return errors_config_user_init
+    else:
+        return False
+
+
 def get_symbols():
     '''
     This function returns a symbols list .
@@ -100,5 +144,3 @@ def get_symbols_file_dxf():
         return False
     else:
         return file_symbols_dxf
-
-

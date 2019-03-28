@@ -19,14 +19,14 @@ from app.geometric_tools import (create_circles, create_curves, create_layers,
 
 from app.upload_optional_files import get_config_user,get_symbols,get_symbols_file_dxf                                 
 
-capas_topografia = set()
-errores = []
-circulos = []
-cuadrados = []
-rectangulos = []
-lineas = []
-curvas = []
-puntos = []
+topo_layers = set()
+error_upload = []
+circles = []
+squares = []
+rectangles = []
+lines = []
+curves = []
+points = []
 
 
 # Lexer part
@@ -160,7 +160,7 @@ def p_error(p):
         return p.value
 
 
-def upload_txt(entrada):
+def upload_txt(file):
     '''
     This function reads a file with topographic survey data,
     translating the points codes in several geometric elements.
@@ -168,30 +168,30 @@ def upload_txt(entrada):
 
     try:
 
-        global errores
-        global lineas
-        global curvas
-        global capas_topografia
-        global puntos
-        global circulos
-        global cuadrados
-        global rectangulos
+        global error_upload
+        global lines
+        global curves
+        global topo_layers
+        global points
+        global circles
+        global squares
+        global rectangles
 
         parser = yacc.yacc()
-        capas_topografia = set()
-        dicc_capas = {}
-        lineas = []
-        curvas = []
-        puntos = []
-        linea = []
-        curva = []
-        errores = []
-        circulos = []
-        cuadrados = []
-        rectangulos = []
-        codigo_capa = ""
+        topo_layers = set()
+        dict_layers = {}
+        lines = []
+        curves = []
+        points = []
+        line = []
+        curve = []
+        error_upload = []
+        circles = []
+        squares = []
+        rectangles = []
+        layer_code = ""
 
-        f = open(entrada)
+        f = open(file)
         line = f.readline()
         n_line = 0
 
@@ -202,97 +202,97 @@ def upload_txt(entrada):
             # Detection of incorrect input file
             if not punto:
                 # Capturing Errors
-                errores.append([n_line, line])
+                error_upload.append([n_line, line])
             else:
                 # Getting the layer code
                 if len(punto) == 4 and (punto[2] == "TR" or punto[2] == "TC"):
-                    codigo_capa = punto[3]
+                    layer_code = punto[3]
                 elif punto[2] == "TX":
-                    codigo_capa = punto[3][1]
+                    layer_code = punto[3][1]
                 else:
-                    codigo_capa = punto[2]
+                    layer_code = punto[2]
                 # Verification that the layers do not exist in the dictionary
                 # if they do not exist they are created
                 # and the first point is added to that layer
-                if codigo_capa not in capas_topografia:
-                    dicc_capas[codigo_capa] = [punto]
-                    capas_topografia.add(codigo_capa)
+                if layer_code not in topo_layers:
+                    dict_layers[layer_code] = [punto]
+                    topo_layers.add(layer_code)
                 else:
                     # Add points having the same code to their
                     # corresponding element in the dictionary
-                    if codigo_capa in dicc_capas:
-                        lista = dicc_capas.get(codigo_capa)
+                    if layer_code in dict_layers:
+                        lista = dict_layers.get(layer_code)
                         lista.append(punto)
-                        dicc_capas[codigo_capa] = lista
+                        dict_layers[layer_code] = lista
             line = f.readline()
         f.close()
 
-        if errores:
+        if error_upload:
             return get_errors_upload()
         else:
            # Decoding of lines, curves and other elements
-            for ptos in dicc_capas:
-                linea_iniciada = False
-                curva_iniciada = False
-                for pto in dicc_capas.get(ptos):
-                    puntos.append(pto)
+            for ptos in dict_layers:
+                line_started = False
+                curve_started = False
+                for pto in dict_layers.get(ptos):
+                    points.append(pto)
                     if pto[2] not in ('TC', 'TR', 'TX'):
                         if len(pto) > 3 and not isinstance(
                                 pto[3], (tuple, int, float)):
                             if pto[3] == 'I':
-                                if linea_iniciada:
+                                if line_started:
                                     # If another 'I' is found, the line closes
                                     # and another line begins.
-                                    lineas.append(linea)
-                                    linea = []
-                                    linea.append(pto)
-                                    linea_iniciada = True
+                                    lines.append(line)
+                                    line = []
+                                    line.append(pto)
+                                    line_started = True
                                 # If there is no line in that layer,
                                 # the first line will be created.
                                 else:
-                                    linea = []
-                                    linea.append(pto)
-                                    linea_iniciada = True
+                                    line = []
+                                    line.append(pto)
+                                    line_started = True
                             elif pto[3] == 'IC':
-                                if curva_iniciada:
+                                if curve_started:
                                     # If another 'IC' is found, the curve closes
                                     # and another curve begins.
-                                    curvas.append(curva)
-                                    curva = []
-                                    curva.append(pto)
-                                    curva_iniciada = True
+                                    curves.append(curve)
+                                    curve = []
+                                    curve.append(pto)
+                                    curve_started = True
                                 # If there is no curve in that layer,
                                 # the first curve will be created.
                                 else:
-                                    curva = []
-                                    curva.append(pto)
-                                    curva_iniciada = True
+                                    curve = []
+                                    curve.append(pto)
+                                    curve_started = True
                             # Add points to the curve
-                            elif pto[3] == 'C' and curva_iniciada:
-                                curva.append(pto)
-                        elif len(pto) == 4 and linea_iniciada:
-                            linea.append(pto)
+                            elif pto[3] == 'C' and curve_started:
+                                curve.append(pto)
+                        elif len(pto) == 4 and line_started:
+                            line.append(pto)
                         # Add points to the line
-                        elif linea_iniciada:
-                            linea.append(pto)
+                        elif line_started:
+                            line.append(pto)
                     # Save existing circles
                     elif pto[2] == 'TX':
-                        circulos.append(pto)
+                        circles.append(pto)
                     # Save existing squares
                     elif pto[2] == 'TC':
-                        cuadrados.append(pto)
+                        squares.append(pto)
                     # Save existing rectangles
                     elif pto[2] == 'TR':
-                        rectangulos.append(pto)
+                        rectangles.append(pto)
 
                 # If there are no more elements in the layer,
                 # lines and curves are closed.
-                if linea:
-                    lineas.append(linea)
-                    linea = []
-                if curva:
-                    curvas.append(curva)
-                    curva = []
+                if line:
+                    lines.append(line)
+                    line = []
+                if curve:
+                    curves.append(curve)
+                    curve = []
     except (IOError, NameError) as e:
         print(e)
         # completar con return error
@@ -371,8 +371,8 @@ def get_errors_upload():
     This function returns the errors of the input file
     '''
 
-    if errores:
-        return errores
+    if error_upload:
+        return error_upload
     return False
 
 
@@ -382,7 +382,7 @@ def get_errors_square():
     defined to form squares, is not correct.
     '''
 
-    if len(cuadrados) % 2 != 0:
+    if len(squares) % 2 != 0:
         return True
     return False
 
@@ -393,18 +393,18 @@ def get_errors_rectangle():
     defined to form rectangles, is not correct.
     '''
 
-    if len(rectangulos) % 3 != 0:
+    if len(rectangles) % 3 != 0:
         return True
     return False
 
 
-def get_capas():
+def get_layers():
     '''
     This function returns a list with topographic codes.
     '''
 
-    if capas_topografia:
-        return capas_topografia
+    if topo_layers:
+        return topo_layers
     return False
 
 
@@ -415,7 +415,7 @@ def get_points():
     if get_errors_upload():
         return False
     else:
-        return puntos
+        return points
 
 
 def get_circles():
@@ -425,7 +425,7 @@ def get_circles():
     if get_errors_upload():
         return False
     else:
-        return circulos
+        return circles
 
 
 def get_curves():
@@ -435,7 +435,7 @@ def get_curves():
     if get_errors_upload():
         return False
     else:
-        return curvas
+        return curves
 
 
 def get_lines():
@@ -445,7 +445,7 @@ def get_lines():
     if get_errors_upload():
         return False
     else:
-        return lineas
+        return lines
 
 
 def get_squares():
@@ -455,7 +455,7 @@ def get_squares():
     if get_errors_upload() and get_errors_square():
         return False
     else:
-        return cuadrados
+        return squares
 
 
 def get_rectangles():
@@ -465,6 +465,6 @@ def get_rectangles():
     if get_errors_upload() and get_errors_rectangle():
         return False
     else:
-        return rectangulos
+        return rectangles
 
 
