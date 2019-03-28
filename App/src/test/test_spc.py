@@ -23,7 +23,10 @@ from prototipo_flask.app.geometric_tools import (calculate_angle,
                                                     create_lines,
                                                     create_points,
                                                     create_rectangles,
-                                                    create_squares)
+                                                    create_squares,
+                                                    insert_symbols)
+from prototipo_flask.app.upload_optional_files import (extract_symbols,
+                                                          get_symbols)
 
 FAILURE = 'incorrect value'
 # File config user
@@ -131,23 +134,22 @@ class SurveyingPointCode(unittest.TestCase):
         dwg2 = ezdxf.new('AC1018')
         msp2 = dwg2.modelspace()
         create_circles(msp2, get_circles(), file_user)
-        n=0
+        n = 0
         for a in msp2:
             if a.dxftype() == 'CIRCLE':
                 n = n+1
-        self.assertEqual(n, 0, FAILURE)    
-           
+        self.assertEqual(n, 0, FAILURE)
 
     def test_not_create_splines(self):
         upload_txt("test/input_files/Example_2.txt")
         dwg2 = ezdxf.new('AC1018')
         msp2 = dwg2.modelspace()
         create_curves(msp2, get_curves(), file_user)
-        n=0
+        n = 0
         for a in msp2:
             if a.dxftype() == 'SPLINE':
-               n = n+1
-        self.assertEqual(n, 0, FAILURE)    
+                n = n+1
+        self.assertEqual(n, 0, FAILURE)
 
     def test_not_create_lines(self):
         upload_txt("test/input_files/Example_2.txt")
@@ -155,11 +157,11 @@ class SurveyingPointCode(unittest.TestCase):
         msp2 = dwg2.modelspace()
         create_lines(msp2, get_lines(), file_user)
 
-        n=0
+        n = 0
         for a in msp2:
             if a.dxftype() == 'LWPOLYLINE':
-               n = n+1
-        self.assertEqual(n, 0, FAILURE)    
+                n = n+1
+        self.assertEqual(n, 0, FAILURE)
 
     def test_not_create_squares_rectangles(self):
         upload_txt("test/input_files/Example_2.txt")
@@ -168,11 +170,12 @@ class SurveyingPointCode(unittest.TestCase):
         create_squares(msp2, get_squares(), file_user)
         create_rectangles(msp2, get_rectangles(), file_user)
 
-        n=0
+        n = 0
         for a in msp2:
             if a.dxftype() == 'LWPOLYLINE':
-               n = n+1
-        self.assertEqual(n, 0, FAILURE)   
+                n = n+1
+        self.assertEqual(n, 0, FAILURE)
+
     def test_azimut_distance(self):
         a = [1, (0, 0, 0), 'E']
         b = [2, (100, 100, 0), 'E']
@@ -184,23 +187,30 @@ class SurveyingPointCode(unittest.TestCase):
         self.assertNotEqual(dist, 145, FAILURE)
 
     def test_increment_x_y(self):
-        az=45
-        dist=141.4213562373095   
-        Inc_x,Inc_y=calculate_increment_x_y(az,dist)
+        az = 45
+        dist = 141.4213562373095
+        Inc_x, Inc_y = calculate_increment_x_y(az, dist)
 
-        self.assertEqual(round(Inc_x,3), 100, FAILURE)
-        self.assertEqual(round(Inc_y,3), 100, FAILURE)
+        self.assertEqual(round(Inc_x, 3), 100, FAILURE)
+        self.assertEqual(round(Inc_y, 3), 100, FAILURE)
         self.assertNotEqual(Inc_x, 150, FAILURE)
         self.assertNotEqual(Inc_y, 145, FAILURE)
 
     def test_angle_direction(self):
-        az=125
+        az = 125
 
-        self.assertEqual(calculate_angle(az,10),215,FAILURE)    
-        self.assertEqual(calculate_angle(az,-10),35,FAILURE)    
-        self.assertNotEqual(calculate_angle(az,-10),215,FAILURE)    
+        self.assertEqual(calculate_angle(az, 10), 215, FAILURE)
+        self.assertEqual(calculate_angle(az, -10), 35, FAILURE)
+        self.assertNotEqual(calculate_angle(az, -10), 215, FAILURE)
+
+    def test_extract_symbols(self):
+        extract_symbols("test/input_files/simbolos.dxf")
+        for s in get_symbols():
+            self.assertIn(s, ['Farola', 'Arbol', 'Vertice'], FAILURE)
+            self.assertNotIn(s, ['Casa', 'Banco'], FAILURE)
+        self.assertEqual(len(get_symbols()), 3, FAILURE)
+        self.assertNotEqual(len(get_symbols()), 0, FAILURE)
+
 
 if __name__ == '__main__':
     unittest.main()
-
-   
