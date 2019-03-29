@@ -3,22 +3,87 @@
 # Module for uploading optional files.
 # config_user and dxf_symbols
 #
+# Required PLY (Python Lex-Yacc).
 # Required ezdxf.
 #
 # J. Eduardo Risco 27-03-2019
 #
 
-import csv
-
 import ezdxf
+import ply.lex as lex
+import ply.yacc as yacc
 
 config_user_init = []
-errors_config_user_init = set()
+errors_config_user_parser = []
 symbols = []
 file_symbols_dxf = ''
 
+# Lexer part
 
-#file_config_user = 'tmp/config_usuario_correcta.txt'
+tokens = (
+    "TEXT",
+    "INT",
+    "COMA",
+    "LPAREN",
+    "RPAREN"
+)
+
+t_LPAREN = r'\('
+t_RPAREN = r'\)'
+
+
+def t_INT(t):
+    r'-?[0-9]+'
+    t.value = int(t.value)
+    return t
+
+
+def t_TEXT(t):
+    r'[a-zA-Z0-9_]+'
+    t.type = 'TEXT'
+    return t
+
+
+t_COMA = r','
+
+t_ignore = r' '
+
+
+def t_newline(t):
+    r'\n+'
+    t.lexer.lineno += t.value.count("\n")
+
+
+def t_error(t):
+    raise SyntaxError("syntax error on line %d near '%s'" %
+                      (t.lineno, t.value))
+
+
+lexer_config = lex.lex()
+
+# Parser part
+
+
+def p_linea(p):
+    ''' linea : TEXT COMA TEXT COMA color COMA TEXT
+              | TEXT COMA TEXT COMA color '''
+
+    if len(p) == 8:
+        p[0] = p[1], p[3], p[5], p[7]
+    else:
+        p[0] = (p[1], p[3], p[5])
+
+
+def p_color(p):
+    ''' color :  LPAREN INT COMA INT COMA INT RPAREN'''
+
+    p[0] = p[2], p[4], p[6]
+
+
+def p_error(p):
+    if p:
+        return p.value
+
 
 
 def upload_file_config(entrada):
@@ -28,53 +93,35 @@ def upload_file_config(entrada):
     '''
     try:
         global config_user_init
-        global errors_config_user_init
-        errors_config_user_init = set()
+        global errors_config_user_parser
+        errors_config_user_parser = []
         config_user_init = []
-        codes = []
-        layer_color = []
-        layer = []
 
-        with open(entrada) as File:
-            reader = csv.DictReader(File, delimiter=';', strict=True)
-            for row in reader:
-                config_user_init.append(dict(row))
-        # Detection of incorrect input file
-        for  conf in config_user_init:
-            if len(codes) == 0:
-                codes.append(conf['Code'])
-                layer.append(conf['Layer'])
-                layer_color.append((conf['Layer'], conf['Color']))
+        parser = yacc.yacc()
+        f = open(entrada)
+        line = f.readline()
+        n_line = 0
+
+        while line != "":
+            n_line += 1
+            c_line = parser.parse(line, lexer=lexer_config)
+            if c_line == None or not c_line:
+                errors_config_user_parser.append([n_line, line])
             else:
-                if conf['Code'] in codes:
-                    # Capturing Errors
-                    error = ('Topographic code ',
-                             conf['Code'], ' is duplicated')
-                    errors_config_user_init.add(error)
-                if conf['Layer'] in layer:
-                    print(layer)
-                    print(layer_color)
-                    if (conf['Layer'], conf['Color']) not in layer_color:
-                        error = (
-                            'The Layer ', conf['Layer'],
-                            'has different colors assigned to it ')
-                        errors_config_user_init.add(error)
-                codes.append(conf['Code'])
-                layer.append(conf['Layer'])
-                layer_color.append((conf['Layer'], conf['Color']))
+                config_user_init.append(c_line)
+
+            line = f.readline()
+        f.close()
 
         print(get_config_user())
-        print(errors_config_user_init)
+        print(get_errors_config_user())
+
     except (IOError, NameError) as e:
         print(e)
 
 
 def configuration_table():
     pass
-
-
-
-
 
 
 file_symbols = "tmp/simbolos.dxf"
@@ -110,7 +157,7 @@ def get_config_user():
     This function returns a config_user list .
     '''
 
-    if errors_config_user_init:
+    if errors_config_user_parser:
         return False
     else:
         return config_user_init
@@ -120,8 +167,8 @@ def get_errors_config_user():
     '''
     This function returns a error list from config_user.
     '''
-    if errors_config_user_init:
-        return errors_config_user_init
+    if errors_config_user_parser:
+        return errors_config_user_parser
     else:
         return False
 

@@ -17,8 +17,8 @@ from app.geometric_tools import (create_circles, create_curves, create_layers,
                                  create_rectangles, create_squares,
                                  insert_symbols)
 
-from app.upload_optional_files import get_config_user,get_symbols,get_symbols_file_dxf                                 
-
+from app.upload_optional_files import get_config_user,get_symbols,get_symbols_file_dxf   
+                       
 topo_layers = set()
 error_upload = []
 circles = []
@@ -83,7 +83,7 @@ def t_error(t):
                       (t.lineno, t.value))
 
 
-lex.lex()
+lexer_topographycal=lex.lex()
 
 # Parser part
 
@@ -198,7 +198,7 @@ def upload_txt(file):
         while line != "":
             n_line += 1
             # Using the parser
-            punto = parser.parse(line)
+            punto = parser.parse(line,lexer=lexer_topographycal)
             # Detection of incorrect input file
             if not punto:
                 # Capturing Errors

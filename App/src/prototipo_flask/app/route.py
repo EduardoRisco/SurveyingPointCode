@@ -13,6 +13,7 @@ from app.conversor import (genera_dxf, get_layers, get_errors_rectangle,
                            get_errors_square, get_errors_upload, upload_txt)
 from app.forms import LoginForm, RegistrationForm
 from app.models import User
+#from app.upload_optional.upload_optional_files import extract_symbols,upload_file_config
 from app.upload_optional_files import extract_symbols, upload_file_config
 
 ALLOWED_EXTENSIONS = set(["txt", "csv"])
@@ -87,7 +88,8 @@ def upload_file():
             # Se genera y se guarda el archivo dxf
             upload_txt("./tmp/" + filename)
             extract_symbols()
-            upload_file_config("./tmp/" + filename_config)
+            if f_config!="":
+                upload_file_config("./tmp/" + filename_config)
             
             # os.remove("./tmp/"+filename)
             if get_errors_upload():
