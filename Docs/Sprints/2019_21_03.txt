@@ -22,3 +22,8 @@ AC1021 	AutoCAD R2007
 AC1024 	AutoCAD R2010
 AC1027 	AutoCAD R2013
 AC1032 	AutoCAD R2018
+
+Parser para el archivo con la configuración de usuario.
+	Surge el problema de parsear dos archivos con diferente gramática, al mismo tiempo.
+	http://www.dabeaz.com/ply/ply.html#ply_nn37
+		Multiple Parsers and Lexers
