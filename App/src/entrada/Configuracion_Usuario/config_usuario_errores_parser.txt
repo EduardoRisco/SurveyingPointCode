@@ -1,0 +1,11 @@
+E,Edificio,( 140, 89)
+A,Acera,(0, 0, 0)
+Farola,(255, 0, 0),Farola
+TEL,Telecomunicaciones,(0, 255, 0)
+RE,Red_Electrica,(120, 120, 120)
+SAN,Saneamiento,(0, 0, 255)
+M,Muro,(255, 255, 0)
+B,Bordillo,(255, 255, 0)
+V,Vertices,(0, 0, 0),Vertices
+ARB,Arbol,(0, 255, 255),Arbol
+C,Calzada,(0, 120, 255)
