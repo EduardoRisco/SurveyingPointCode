@@ -13,9 +13,13 @@ import ezdxf
 import ply.lex as lex
 import ply.yacc as yacc
 
+from app import conversor
+
 config_user_init = []
 errors_config_user_parser = []
+errors_config_user_duplicate_elem = set()
 symbols = []
+table_config = []
 file_symbols_dxf = ''
 
 # Lexer part
@@ -85,20 +89,22 @@ def p_error(p):
         return p.value
 
 
-
-def upload_file_config(entrada):
+def upload_file_config(input_file):
     '''
     This function reads a user configuration file,
     contains topographic codes, cad layers, colors and symbols.
     '''
+
     try:
         global config_user_init
         global errors_config_user_parser
+        global errors_config_user_duplicate_elem
+        errors_config_user_duplicate_elem = set()
         errors_config_user_parser = []
         config_user_init = []
 
         parser = yacc.yacc()
-        f = open(entrada)
+        f = open(input_file)
         line = f.readline()
         n_line = 0
 
@@ -106,22 +112,68 @@ def upload_file_config(entrada):
             n_line += 1
             c_line = parser.parse(line, lexer=lexer_config)
             if c_line == None or not c_line:
+                # Capturing errors parser
                 errors_config_user_parser.append([n_line, line])
             else:
                 config_user_init.append(c_line)
-
             line = f.readline()
         f.close()
 
-        print(get_config_user())
-        print(get_errors_config_user())
+        if not get_errors_config_user():
+            codes = []
+            layer_color = []
+            layer = []
+            for conf in config_user_init:
+                if len(codes) == 0:
+                    codes.append(conf[0])
+                    layer.append(conf[1])
+                    layer_color.append((conf[1], conf[2]))
+                else:
+                    if conf[0] in codes:
+                        # Capturing errors duplicate elements
+                        error = ('Topographic code ',
+                                 conf[0], ' is duplicated')
+                        errors_config_user_duplicate_elem.add(error)
+                    if conf[1] in layer:
+                        if (conf[1], conf[2]) not in layer_color:
+                            error = (
+                                'The Layer ', conf[1],
+                                'has different colors assigned to it ')
+                            errors_config_user_duplicate_elem.add(error)
+                    codes.append(conf[0])
+                    layer.append(conf[1])
+                    layer_color.append((conf[1], conf[2]))
+
+        if get_config_user():
+            configuration_table()
 
     except (IOError, NameError) as e:
         print(e)
 
 
 def configuration_table():
-    pass
+    '''
+    This function fills the configuration table of codes, layers, colors 
+    and symbols. It connects, if they exist, the files loaded by the user,
+    creating an automatic configuration.
+    '''
+
+    global table_config
+    table_config = []
+    for layer_topog in conversor.get_layers():
+        line = dict()
+        line['code'] = layer_topog
+        if get_config_user():
+            for conf in get_config_user():
+                if conf[0] == layer_topog:
+                    line['layer'] = conf[1]
+                    line['color'] = conf[2]
+                    if get_symbols() and len(conf) > 3:
+                        line['symbol'] = conf[3]
+                    else:
+                        line['symbol'] = None
+        table_config.append(line)
+    print(table_config)
 
 
 file_symbols = "tmp/simbolos.dxf"
@@ -157,7 +209,7 @@ def get_config_user():
     This function returns a config_user list .
     '''
 
-    if errors_config_user_parser:
+    if get_errors_config_user() or get_errors_config_user_duplicate_elements():
         return False
     else:
         return config_user_init
@@ -165,10 +217,22 @@ def get_config_user():
 
 def get_errors_config_user():
     '''
-    This function returns a error list from config_user.
+    This function returns a list of config_use errors,
+    when the input data  doesn't have the correct format.
     '''
     if errors_config_user_parser:
         return errors_config_user_parser
+    else:
+        return False
+
+
+def get_errors_config_user_duplicate_elements():
+    '''
+    This funtion  returns a list of errors,
+    when there are duplicate items on different lines.
+    '''
+    if not get_errors_config_user() and errors_config_user_duplicate_elem:
+        return errors_config_user_duplicate_elem
     else:
         return False
 
@@ -191,3 +255,14 @@ def get_symbols_file_dxf():
         return False
     else:
         return file_symbols_dxf
+
+
+def get_config_table():
+    '''
+    This function returns an initial configuration automatically
+    generated with the uploaded files.
+    '''
+    if table_config:
+        return table_config
+    else:
+        False

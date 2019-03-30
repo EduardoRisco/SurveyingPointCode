@@ -16,9 +16,9 @@ from app.geometric_tools import (create_circles, create_curves, create_layers,
                                  create_lines, create_points,
                                  create_rectangles, create_squares,
                                  insert_symbols)
+from app.upload_optional_files import (get_config_user, get_symbols,
+                                       get_symbols_file_dxf)
 
-from app.upload_optional_files import get_config_user,get_symbols,get_symbols_file_dxf   
-                       
 topo_layers = set()
 error_upload = []
 circles = []
@@ -83,7 +83,7 @@ def t_error(t):
                       (t.lineno, t.value))
 
 
-lexer_topographycal=lex.lex()
+lexer_topographycal = lex.lex()
 
 # Parser part
 
@@ -160,7 +160,7 @@ def p_error(p):
         return p.value
 
 
-def upload_txt(file):
+def upload_txt(input_file):
     '''
     This function reads a file with topographic survey data,
     translating the points codes in several geometric elements.
@@ -191,14 +191,14 @@ def upload_txt(file):
         rectangles = []
         layer_code = ""
 
-        f = open(file)
+        f = open(input_file)
         line = f.readline()
         n_line = 0
 
         while line != "":
             n_line += 1
             # Using the parser
-            punto = parser.parse(line,lexer=lexer_topographycal)
+            punto = parser.parse(line, lexer=lexer_topographycal)
             # Detection of incorrect input file
             if not punto:
                 # Capturing Errors
@@ -321,8 +321,7 @@ cad_versions = {
     'DXF R12': 'AC1009'}
 
 
-
-def genera_dxf(download_folder,dxf_filename, file_user=file_user_upload,
+def genera_dxf(download_folder, dxf_filename, file_user=file_user_upload,
                version=cad_versions['DXF 2004']):
     '''
     This function generates a dxf file.
@@ -466,5 +465,3 @@ def get_rectangles():
         return False
     else:
         return rectangles
-
-
