@@ -9,11 +9,11 @@ from werkzeug.urls import url_parse
 from werkzeug.utils import secure_filename
 
 from app import app, db
-from app.conversor import (genera_dxf, get_layers, get_errors_rectangle,
-                           get_errors_square, get_errors_upload, upload_txt)
+from app.conversor import (configuration_table, genera_dxf,
+                           get_errors_rectangle, get_errors_square,
+                           get_errors_upload, get_layers, upload_txt)
 from app.forms import LoginForm, RegistrationForm
 from app.models import User
-#from app.upload_optional.upload_optional_files import extract_symbols,upload_file_config
 from app.upload_optional_files import extract_symbols, upload_file_config
 
 ALLOWED_EXTENSIONS = set(["txt", "csv"])
@@ -90,7 +90,7 @@ def upload_file():
             extract_symbols()
             if f_config!="":
                 upload_file_config("./tmp/" + filename_config)
-            
+            configuration_table()
             # os.remove("./tmp/"+filename)
             if get_errors_upload():
                 flash(
@@ -118,7 +118,9 @@ def upload_file():
 @login_required
 def convert_file_dxf():
     if request.method == "POST":
-        genera_dxf("./tmp","salida.dxf")
+        
+        # Provisional
+        genera_dxf("./tmp","salida.dxf",configuration_table())
 
         return redirect(url_for("downloads"))
     return render_template(

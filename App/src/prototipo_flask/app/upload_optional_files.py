@@ -13,7 +13,6 @@ import ezdxf
 import ply.lex as lex
 import ply.yacc as yacc
 
-from app import conversor
 
 config_user_init = []
 errors_config_user_parser = []
@@ -143,37 +142,9 @@ def upload_file_config(input_file):
                     codes.append(conf[0])
                     layer.append(conf[1])
                     layer_color.append((conf[1], conf[2]))
-
-        if get_config_user():
-            configuration_table()
-
+        
     except (IOError, NameError) as e:
         print(e)
-
-
-def configuration_table():
-    '''
-    This function fills the configuration table of codes, layers, colors 
-    and symbols. It connects, if they exist, the files loaded by the user,
-    creating an automatic configuration.
-    '''
-
-    global table_config
-    table_config = []
-    for layer_topog in conversor.get_layers():
-        line = dict()
-        line['code'] = layer_topog
-        if get_config_user():
-            for conf in get_config_user():
-                if conf[0] == layer_topog:
-                    line['layer'] = conf[1]
-                    line['color'] = conf[2]
-                    if get_symbols() and len(conf) > 3:
-                        line['symbol'] = conf[3]
-                    else:
-                        line['symbol'] = None
-        table_config.append(line)
-    print(table_config)
 
 
 file_symbols = "tmp/simbolos.dxf"
