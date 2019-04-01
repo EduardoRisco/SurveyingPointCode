@@ -331,8 +331,14 @@ def configuration_table():
                     if get_symbols() and len(conf) > 3:
                         line['symbol'] = conf[3]
                     else:
-                        line['symbol'] = None
+                        line['symbol'] = ''
+        else:
+            line['layer'] = ''
+            line['color'] = (0, 0, 0)
+            line['symbol'] = ''
+
         table_config.append(line)
+    print(table_config)    
     return table_config
 
 
@@ -348,6 +354,12 @@ def config_to_dxf(conf_user_web):
         for e in d.values():
             if e == 'No symbol found':
                 e = ''
+            elif e.find('rgb') == 0:
+                e = (e[4:-1])
+                t = []
+                for i in e.split(','):
+                    t.append(int(i))
+                e = tuple(t)
             l_conf.append(e)
         final_config.append(l_conf)
     return final_config
@@ -396,7 +408,7 @@ def genera_dxf(download_folder, dxf_filename, form_web,
             create_rectangles(msp, get_rectangles(), file_user)
 
         dwg.saveas(download_folder+'/'+dxf_filename)
-        
+
 
 def get_errors_upload():
     '''

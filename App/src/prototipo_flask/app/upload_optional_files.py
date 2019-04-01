@@ -147,10 +147,10 @@ def upload_file_config(input_file):
         print(e)
 
 
-file_symbols = "tmp/simbolos.dxf"
+#file_symbols = "tmp/simbolos.dxf"
 
 
-def extract_symbols(dxf_symbol=file_symbols):
+def extract_symbols(dxf_symbol):
     '''
     This function reads a dxf file with symbols.
     '''

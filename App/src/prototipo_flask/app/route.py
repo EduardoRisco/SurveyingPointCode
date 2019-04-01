@@ -63,34 +63,69 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
+return_web_config = [{'code': 'RE', 'layer': 'Red_Electrica',
+                      'color': 'rgb(120, 120, 120)', 'symbol': 'No symbol found'},
+                     {'code': 'A', 'layer': 'Acera',
+                      'color': 'rgb(0, 0, 0)', 'symbol': 'No symbol found'},
+                     {'code': 'SAN', 'layer': 'Saneamiento',
+                      'color': 'rgb(0, 0, 255)', 'symbol': 'No symbol found'},
+                     {'code': 'TEL', 'layer': 'Telecomunicaciones',
+                      'color': 'rgb(0, 255, 0)', 'symbol': 'No symbol found'},
+                     {'code': 'FA', 'layer': 'Farola',
+                      'color': 'rgb(255, 0, 0)', 'symbol': 'Farola'},
+                     {'code': 'V', 'layer': 'Vertice',
+                      'color': 'rgb(0, 0, 0)', 'symbol': 'Vertice'},
+                     {'code': 'E', 'layer': 'Edificio',
+                      'color': 'rgb(38, 140, 89)', 'symbol': 'No symbol found'},
+                     {'code': 'ARB', 'layer': 'Arbol',
+                      'color': 'rgb(0, 255, 255)', 'symbol': 'Arbol'},
+                     {'code': 'M', 'layer': 'Muro', 'color': 'rgb(255, 255, 0)', 'symbol': 'No symbol found'}]
+
 
 @app.route("/upload", methods=["GET", "POST"])
 @login_required
 def upload_file():
     if request.method == "POST":
-        if "file_surveying" not in request.files:
+        if "topographical_file" not in request.files:
             flash("Error: topographic data file not selected.")
-        if "file_config" not in request.files:
+
+        f_topography = request.files["topographical_file"]    
+        if "config_file" not in request.files:
             f_config = ""
         else:
-            f_config = request.files["file_config"]
-        f = request.files["file_surveying"]
-        if f.filename == "":
+            f_config = request.files["config_file"]
+        if "symbols_file" not in request.files:
+            f_symbols = ""
+        else:
+            f_symbols = request.files["symbols_file"]
+
+        
+        if f_topography.filename == "":
             flash("Error: topographic data file not selected.")
-        if f and allowed_file(f.filename):
-            filename = secure_filename(f.filename)
+        if f_topography and allowed_file(f_topography.filename):
+            filename_topography = secure_filename(f_topography.filename)
 
             if f_config and allowed_file(f_config.filename):
                 filename_config = secure_filename(f_config.filename)
                 f_config.save(os.path.join(
                     app.config["UPLOAD_FOLDER"], filename_config))
-            f.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+            if f_symbols:
+                filename_symbols = secure_filename(f_symbols.filename)
+                f_symbols.save(os.path.join(
+                    app.config["UPLOAD_FOLDER"], filename_symbols))
+
+            f_topography.save(os.path.join(
+                app.config["UPLOAD_FOLDER"], filename_topography))
             # Se genera y se guarda el archivo dxf
-            upload_txt("./tmp/" + filename)
-            extract_symbols()
-            if f_config!="":
+            upload_txt("./tmp/" + filename_topography)
+            
+            if f_config != "":
                 upload_file_config("./tmp/" + filename_config)
+            if f_symbols != "":
+                extract_symbols("./tmp/"+filename_symbols)
+
             configuration_table()
+
             # os.remove("./tmp/"+filename)
             if get_errors_upload():
                 flash(
@@ -108,7 +143,6 @@ def upload_file():
                         multiple of 3. Check the file')
                 return render_template('upload.html', title='Carga Archivos')
 
-            
             return redirect(url_for("convert_file_dxf"))
         flash("Error: the topografic data file type must be: .txt o .csv.")
     return render_template('upload.html', title='Carga Archivos')
@@ -118,10 +152,10 @@ def upload_file():
 @login_required
 def convert_file_dxf():
     if request.method == "POST":
-        
-        # Provisional
-        genera_dxf("./tmp","salida.dxf",configuration_table())
 
+        # Provisional
+        #genera_dxf("./tmp", "salida.dxf", configuration_table())
+        genera_dxf("./tmp", "salida.dxf",return_web_config)
         return redirect(url_for("downloads"))
     return render_template(
         'convert.html',
