@@ -1,8 +1,16 @@
+# -*- coding: utf-8 -*-
+#
+# Module to manage server with Flask
+#
+# J. Eduardo Risco 01-04-2019
+#
 
 import os
+import secrets
+import time
 
 from flask import (flash, redirect, render_template, request, send_file,
-                   send_from_directory, url_for)
+                   send_from_directory, session, url_for)
 from flask_login import (LoginManager, current_user, login_required,
                          login_user, logout_user)
 from werkzeug.urls import url_parse
@@ -14,24 +22,18 @@ from app.conversor import (configuration_table, genera_dxf,
                            get_errors_upload, get_layers, upload_txt)
 from app.forms import LoginForm, RegistrationForm
 from app.models import User
-from app.upload_optional_files import extract_symbols, upload_file_config
+from app.upload_optional_files import (extract_symbols, get_errors_config_user,
+                                       get_errors_config_user_duplicate_elements,
+                                       upload_file_config)
 
-ALLOWED_EXTENSIONS = set(["txt", "csv"])
-errores = []
-capas = []
-
-
-def allowed_file(filename):
-    return "." in filename and filename.rsplit(
-        ".", 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
+app.secret_key = secrets.token_urlsafe(16)
 db.create_all()
 
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    email = ''
     if current_user.is_authenticated:
         return redirect(url_for('upload_file'))
     form = LoginForm()
@@ -44,13 +46,19 @@ def login():
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('upload_file')
+            session['username'] = user.username
+            session['last_access'] = user.last_access
+            session['current_access'] = time.ctime(time.time())
+            user.last_access = session['current_access']
+            db.session.commit()
             flash('User successfully logged in')
         return redirect(next_page)
-    return render_template('login.html', title='Sign In', form=form)
+    return render_template('login.html', title='Sign In', form=form, email=email)
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+
     if current_user.is_authenticated:
         return redirect(url_for('upload_file'))
     form = RegistrationForm()
@@ -62,6 +70,7 @@ def register():
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
+
 
 return_web_config = [{'code': 'RE', 'layer': 'Red_Electrica',
                       'color': 'rgb(120, 120, 120)', 'symbol': 'No symbol found'},
@@ -85,11 +94,12 @@ return_web_config = [{'code': 'RE', 'layer': 'Red_Electrica',
 @app.route("/upload", methods=["GET", "POST"])
 @login_required
 def upload_file():
+
     if request.method == "POST":
         if "topographical_file" not in request.files:
             flash("Error: topographic data file not selected.")
-
-        f_topography = request.files["topographical_file"]    
+            return render_template('upload.html', title='Carga Archivos')
+        f_topography = request.files["topographical_file"]
         if "config_file" not in request.files:
             f_config = ""
         else:
@@ -99,31 +109,37 @@ def upload_file():
         else:
             f_symbols = request.files["symbols_file"]
 
-        
         if f_topography.filename == "":
             flash("Error: topographic data file not selected.")
-        if f_topography and allowed_file(f_topography.filename):
+        if f_topography:
             filename_topography = secure_filename(f_topography.filename)
 
-            if f_config and allowed_file(f_config.filename):
+            if f_config:
                 filename_config = secure_filename(f_config.filename)
                 f_config.save(os.path.join(
                     app.config["UPLOAD_FOLDER"], filename_config))
+                upload_file_config("./tmp/" + filename_config)
+                if get_errors_config_user():
+                    flash(
+                        'Error: config file has the following errors. \
+                         Check the file')
+                    # return render_template('upload.html', title='Carga Archivos')
+                elif get_errors_config_user_duplicate_elements():
+                    flash(
+                        'Error: config file has duplicate items on different lines. \
+                         Check the file')
+                    # return render_template('upload.html', title='Carga Archivos')
+
             if f_symbols:
                 filename_symbols = secure_filename(f_symbols.filename)
                 f_symbols.save(os.path.join(
                     app.config["UPLOAD_FOLDER"], filename_symbols))
+                extract_symbols("./tmp/"+filename_symbols)
 
             f_topography.save(os.path.join(
                 app.config["UPLOAD_FOLDER"], filename_topography))
-            # Se genera y se guarda el archivo dxf
-            upload_txt("./tmp/" + filename_topography)
-            
-            if f_config != "":
-                upload_file_config("./tmp/" + filename_config)
-            if f_symbols != "":
-                extract_symbols("./tmp/"+filename_symbols)
 
+            upload_txt("./tmp/" + filename_topography)
             configuration_table()
 
             # os.remove("./tmp/"+filename)
@@ -145,6 +161,7 @@ def upload_file():
 
             return redirect(url_for("convert_file_dxf"))
         flash("Error: the topografic data file type must be: .txt o .csv.")
+
     return render_template('upload.html', title='Carga Archivos')
 
 
@@ -154,8 +171,8 @@ def convert_file_dxf():
     if request.method == "POST":
 
         # Provisional
-        #genera_dxf("./tmp", "salida.dxf", configuration_table())
-        genera_dxf("./tmp", "salida.dxf",return_web_config)
+        session['dxf_output'] = str(session['username']) + '_file.dxf'
+        genera_dxf("./tmp", session['dxf_output'], return_web_config)
         return redirect(url_for("downloads"))
     return render_template(
         'convert.html',
@@ -168,23 +185,26 @@ def convert_file_dxf():
 @login_required
 def downloads():
     if request.method == "POST":
-        return redirect(url_for("download_file", filename='salida.dxf'))
+        return redirect(url_for("download_file"))
     return render_template('download.html')
 
 
-@app.route('/download_files/<filename>')
+@app.route('/download_files')
 @login_required
-def download_file(filename):
+def download_file():
     try:
         return send_from_directory(
             app.config['UPLOAD_FOLDER'],
-            filename,
+            session['dxf_output'],
             as_attachment=True)
     except Exception as e:
         return str(e)
 
 
 @app.route('/logout')
+@login_required
 def logout():
+
     logout_user()
+    session.clear()
     return redirect(url_for('login'))

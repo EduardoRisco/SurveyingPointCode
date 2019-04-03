@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 #
-# Archivo form
+# File forms
 #
-# J. Eduardo Risco 25-02-2019
+# J. Eduardo Risco 31-03-2019
 #
+
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
+from flask_wtf.file import FileAllowed, FileField, FileRequired
+from wtforms import BooleanField, PasswordField, StringField, SubmitField
+from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
+
 from app.models import User
 
 
@@ -30,7 +33,17 @@ class RegistrationForm(FlaskForm):
 
 
 class LoginForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Recuérdame')
     submit = SubmitField('Login')
+
+
+class UploadForm(FlaskForm):
+    topographical_file = FileField('Topographical data file', validators=[
+                                   FileRequired(), FileAllowed(['txt', 'csv'], 'File type must be: .txt or .csv.')])
+    config_file = FileField('User configuration file', validators=[
+                            FileAllowed(['txt', 'csv'], 'File type must be: .txt or .csv.')])
+    symbols_file = FileField('CAD symbols file', validators=[
+                             FileAllowed(['dxf'], 'File type must be: \'dxf\'.')])
+    submit = SubmitField('Upload')

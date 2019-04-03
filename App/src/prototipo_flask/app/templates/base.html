@@ -1,21 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <meta charset="UTF-8">
-      <title>Home</title>
-      <link rel="stylesheet" media="screen" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   </head>
-   <body>
-      <div class="container">
-         <br>
-         <center>
-            <h1>SurveyingPointCode</h1>
+
+<head>
+   <meta charset="UTF-8">
+   <title>Home</title>
+   <link rel="stylesheet" media="screen" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+   <div class="container">
+      <br>
+      <center>
+         
+         <div class="col-8">
+               <h1>SurveyingPointCode</h1>
+            <!--<nav class="nav flex-row text-center d-flex justify-content-md-end justify-content-center mb-2 mb-md-0">-->
+            <nav class="nav flex-row text-center d-flex justify-content-end mb-2 mb-md-0">
+               {% if current_user and 'username' in session: %}
+                  <a  class="nav-link d-none d-md-block" id="welcome_user">Welcome, 
+                     <strong>{{ current_user.username }}</strong></a>
+                     
+                  <a  class="nav-link d-none d-md-block" id="welcome_accs">Last access, 
+                           <strong>{{ session['last_access'] if 'last_access' in session else '' }}  </strong></a>
+             
+                  <a class="btn btn-danger d-none d-md-block" href="{{ url_for('logout') }}" role="button"><i
+                        class="fas fa-sign-out-alt"></i> Sign out</a>
+
+               {% else %}
+                  <a class="btn btn-success mt-2 mt-md-auto" href="{{ url_for('login') }}" role="button"><i
+                        class="fas fa-sign-in-alt"></i> Sign in</a>
+               {% endif %}
+
+            </nav>
+         </div>
             <br>
             <br>
-         </center>
-      </div>
-      {% block content %}{% endblock %}
-   </body>
+      </center>
+   </div>
+   {% block content %}{% endblock %}
+</body>
+
 </html>

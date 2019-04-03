@@ -93,7 +93,7 @@ def create_lines(msp, lines, file_user):
    in the corresponding layer.It also solves the case of unmeasured points
    and incorporates them into the line.
    '''
-
+    layer = ''
     for p in lines:
         code_line = p[0][2]
         lin_coord = []
@@ -139,7 +139,7 @@ def create_curves(msp, curves, file_user):
     This function creates user-defined curves,
     and adds them to the model, in the corresponding layer.
     '''
-
+    layer = ''
     for p in curves:
         code_line = p[0][2]
         lin_coord = []
@@ -237,7 +237,7 @@ def insert_symbols(msp, points, file_user):
     '''
     This function inserts symbols into the coded points.
     '''
-
+    layer = ''
     for p in points:
         if len(p) == 4:
             if p[2]in('TC', 'TR'):
