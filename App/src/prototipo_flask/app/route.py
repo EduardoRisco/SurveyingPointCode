@@ -17,9 +17,9 @@ from werkzeug.urls import url_parse
 from werkzeug.utils import secure_filename
 
 from app import app, db
-from app.conversor import (configuration_table, genera_dxf,
+from app.conversor import (cad_versions, configuration_table, genera_dxf,
                            get_errors_rectangle, get_errors_square,
-                           get_errors_upload, get_layers, upload_txt)
+                           get_errors_upload, get_layers, upload_txt, get_symbols, configuration_table)
 from app.forms import LoginForm, RegistrationForm
 from app.models import User
 from app.upload_optional_files import (extract_symbols, get_errors_config_user,
@@ -140,7 +140,7 @@ def upload_file():
                 app.config["UPLOAD_FOLDER"], filename_topography))
 
             upload_txt("./tmp/" + filename_topography)
-            configuration_table()
+           
 
             # os.remove("./tmp/"+filename)
             if get_errors_upload():
@@ -159,6 +159,7 @@ def upload_file():
                         multiple of 3. Check the file')
                 return render_template('upload.html', title='Carga Archivos')
 
+            configuration_table()
             return redirect(url_for("convert_file_dxf"))
         flash("Error: the topografic data file type must be: .txt o .csv.")
 
@@ -168,17 +169,32 @@ def upload_file():
 @app.route("/convert", methods=["GET", "POST"])
 @login_required
 def convert_file_dxf():
+
+    form = request.form.to_dict()
+
     if request.method == "POST":
+
+        # Actualizar las capas
+        layers = []
+        layer = {}
+        i = 0
+
+        for key in form.keys():
+            field, index = key.split('-')
+            if int(index) != i:
+                layers.append(layer)
+                layer = {}
+                i += 1
+            layer.update({field: form[key]})
 
         # Provisional
         session['dxf_output'] = str(session['username']) + '_file.dxf'
-        genera_dxf("./tmp", session['dxf_output'], return_web_config)
+        genera_dxf("./tmp", session['dxf_output'],
+                   layers)
         return redirect(url_for("downloads"))
-    return render_template(
-        'convert.html',
-        title='Conversion DXF',
-        capas=get_layers(),
-        errores=get_errors_upload())
+
+    return render_template('convert.html', title='Conversion DXF', form=form,
+                           capas=configuration_table(), symbols=get_symbols(),  errores=get_errors_upload())
 
 
 @app.route("/download", methods=["GET", "POST"])

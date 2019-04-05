@@ -58,8 +58,9 @@ def t_newline(t):
 
 
 def t_error(t):
-    raise SyntaxError("syntax error on line %d near '%s'" %
-                      (t.lineno, t.value))
+    print("Illegal character '%s'" % t.value[0]) 
+    t.lexer.skip(1)
+
 
 
 lexer_config = lex.lex()
@@ -145,9 +146,6 @@ def upload_file_config(input_file):
         
     except (IOError, NameError) as e:
         print(e)
-
-
-#file_symbols = "tmp/simbolos.dxf"
 
 
 def extract_symbols(dxf_symbol):

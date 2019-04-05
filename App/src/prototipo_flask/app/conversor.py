@@ -79,8 +79,8 @@ def t_newline(t):
 
 
 def t_error(t):
-    raise SyntaxError("syntax error on line %d near '%s'" %
-                      (t.lineno, t.value))
+    print("Illegal character '%s'" % t.value[0]) 
+    t.lexer.skip(1)
 
 
 lexer_topographycal = lex.lex()
@@ -198,11 +198,14 @@ def upload_txt(input_file):
         while line != "":
             n_line += 1
             # Using the parser
+            if SyntaxError(parser.parse(line, lexer=lexer_topographycal)):
+                print('ok')
             punto = parser.parse(line, lexer=lexer_topographycal)
+            
             # Detection of incorrect input file
-            if not punto:
+            if not punto or punto == None:
                 # Capturing Errors
-                error_upload.append([n_line, line])
+                error_upload.append([n_line, line])                
             else:
                 # Getting the layer code
                 if len(punto) == 4 and (punto[2] == "TR" or punto[2] == "TC"):
@@ -336,9 +339,7 @@ def configuration_table():
             line['layer'] = ''
             line['color'] = (0, 0, 0)
             line['symbol'] = ''
-
         table_config.append(line)
-    print(table_config)    
     return table_config
 
 
@@ -379,6 +380,8 @@ def genera_dxf(download_folder, dxf_filename, form_web,
 
         # Create the model space.
         msp = dwg.modelspace()
+        # Creating required layers.
+        create_layers(dwg, file_user)
 
         if get_symbols():
             source_drawing = ezdxf.readfile(get_symbols_file_dxf())
@@ -387,8 +390,6 @@ def genera_dxf(download_folder, dxf_filename, form_web,
             # Adding symbols to model.
             insert_symbols(msp, get_points(), file_user)
 
-        # Creating required layers.
-        create_layers(dwg, file_user)
         # Adding points to model.
         create_points(dwg, msp, get_points())
         # Adding circles to model.
