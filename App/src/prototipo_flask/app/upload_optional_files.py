@@ -153,8 +153,10 @@ def extract_symbols(dxf_symbol):
     This function reads a dxf file with symbols.
     '''
     try:
+        global error_symbol
         global symbols
         global file_symbols_dxf
+        error_symbol=True
         file_symbols_dxf = dxf_symbol
         symbols = []
 
@@ -168,6 +170,7 @@ def extract_symbols(dxf_symbol):
                     b.__getattribute__('name').find('*Paper') == -1) and (
                     b.__getattribute__('name').find('*Model') == -1):
                 symbols.append(b.__getattribute__('name'))
+                error_symbol=False
 
     except (IOError, NameError) as e:
         print(e)
@@ -214,6 +217,15 @@ def get_symbols():
         return False
     else:
         return symbols
+
+def get_error_symbols():
+    '''
+    This function returns true if there are no symbols in the dxf file.
+    '''
+    if not error_symbol:
+        return False
+    else:
+        return True        
 
 
 def get_symbols_file_dxf():
