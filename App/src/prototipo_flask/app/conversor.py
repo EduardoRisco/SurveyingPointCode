@@ -12,6 +12,8 @@ import ezdxf
 import ply.lex as lex
 import ply.yacc as yacc
 
+from app import app
+
 from app.geometric_tools import (create_circles, create_curves, create_layers,
                                  create_lines, create_points,
                                  create_rectangles, create_squares,
@@ -198,10 +200,7 @@ def upload_txt(input_file):
         while line != "":
             n_line += 1
             # Using the parser
-            if SyntaxError(parser.parse(line, lexer=lexer_topographycal)):
-                print('ok')
-            punto = parser.parse(line, lexer=lexer_topographycal)
-            
+            punto = parser.parse(line, lexer=lexer_topographycal)          
             # Detection of incorrect input file
             if not punto or punto == None:
                 # Capturing Errors
@@ -229,7 +228,7 @@ def upload_txt(input_file):
                         dict_layers[layer_code] = lista
             line = f.readline()
         f.close()
-
+        
         if error_upload:
             return get_errors_upload()
         else:
@@ -301,19 +300,6 @@ def upload_txt(input_file):
         # completar con return error
 
 
-# Possible CAD versions to generate a dxf
-cad_versions = {
-    'DXF 2018': 'AC1032',
-    'DXF 2013': 'AC1027',
-    'DXF 2010': 'AC1024',
-    'DXF 2007': 'AC1021',
-    'DXF 2004': 'AC1018',
-    'DXF 2000': 'AC1015',
-    'DXF R14': 'AC1014',
-    'DXF R13': 'AC1012',
-    'DXF R12': 'AC1009'}
-
-
 def configuration_table():
     '''
     This function fills the configuration table of codes, layers, colors 
@@ -367,7 +353,7 @@ def config_to_dxf(conf_user_web):
 
 
 def genera_dxf(download_folder, dxf_filename, form_web,
-               version=cad_versions['DXF 2004']):
+               version=app.config['CAD_VERSIONS']['DXF 2004']):
     '''
     This function generates a dxf file.
     '''

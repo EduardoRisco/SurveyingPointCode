@@ -1,3 +1,4 @@
+
 from flask import Flask
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
@@ -13,21 +14,33 @@ POSTGRES = {
     'host': '172.18.0.2',
     'port': '5432',
 }
+UPLOAD_FOLDER = os.path.abspath('./tmp/')
+# Different version options to generate the dxf file
+CAD_VERSIONS = {
+    'DXF 2018': 'AC1032',
+    'DXF 2013': 'AC1027',
+    'DXF 2010': 'AC1024',
+    'DXF 2007': 'AC1021',
+    'DXF 2004': 'AC1018',
+    'DXF 2000': 'AC1015',
+    'DXF R14': 'AC1014',
+    'DXF R13': 'AC1012',
+    'DXF R12': 'AC1009'}
 
-UPLOAD_FOLDER = os.path.abspath("./tmp/")
+
 app = Flask(__name__)
 app.config.from_object(Config)
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['CAD_VERSIONS'] = CAD_VERSIONS
 
 login_manager = LoginManager()
-login_manager.login_message = "You must be logged in to access this page."
-login_manager.login_view = "/login"
+login_manager.login_message = 'You must be logged in to access this page.'
+login_manager.login_view = '/login'
 login_manager.init_app(app)
-
 
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://%(user)s:\
 %(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
 db = SQLAlchemy(app)
 
-from app import route,models
+from app import route, models
