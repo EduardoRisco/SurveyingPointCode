@@ -17,14 +17,14 @@ from werkzeug.urls import url_parse
 from werkzeug.utils import secure_filename
 
 from app import app, db
-from app.conversor import (cad_versions, configuration_table, genera_dxf,
+from app.conversor import (configuration_table, genera_dxf,
                            get_errors_rectangle, get_errors_square,
                            get_errors_upload, get_layers, upload_txt, get_symbols, configuration_table)
 from app.forms import LoginForm, RegistrationForm
 from app.models import User
 from app.upload_optional_files import (extract_symbols, get_errors_config_user,
                                        get_errors_config_user_duplicate_elements,
-                                       upload_file_config)
+                                       upload_file_config,get_error_symbols)
 
 app.secret_key = secrets.token_urlsafe(16)
 db.create_all()
@@ -113,35 +113,36 @@ def upload_file():
             flash("Error: topographic data file not selected.")
         if f_topography:
             filename_topography = secure_filename(f_topography.filename)
-
+            filename_config=''
             if f_config:
                 filename_config = secure_filename(f_config.filename)
                 f_config.save(os.path.join(
                     app.config["UPLOAD_FOLDER"], filename_config))
-                upload_file_config("./tmp/" + filename_config)
-                if get_errors_config_user():
-                    flash(
-                        'Error: config file has the following errors. \
-                         Check the file')
-                    # return render_template('upload.html', title='Carga Archivos')
-                elif get_errors_config_user_duplicate_elements():
-                    flash(
-                        'Error: config file has duplicate items on different lines. \
-                         Check the file')
-                    # return render_template('upload.html', title='Carga Archivos')
-
+            upload_file_config("./tmp/" + filename_config)
+            if get_errors_config_user():
+                flash(
+                    'Error: config file has the following errors. \
+                        Check the file')
+                # return render_template('upload.html', title='Carga Archivos')
+            elif get_errors_config_user_duplicate_elements():
+                flash(
+                    'Error: config file has duplicate items on different lines. \
+                        Check the file')
+                # return render_template('upload.html', title='Carga Archivos')
+            filename_symbols=''
             if f_symbols:
                 filename_symbols = secure_filename(f_symbols.filename)
                 f_symbols.save(os.path.join(
                     app.config["UPLOAD_FOLDER"], filename_symbols))
-                extract_symbols("./tmp/"+filename_symbols)
+            extract_symbols("./tmp/"+filename_symbols)
 
             f_topography.save(os.path.join(
                 app.config["UPLOAD_FOLDER"], filename_topography))
 
             upload_txt("./tmp/" + filename_topography)
-           
-
+            print('__Simbolos___________________________',get_error_symbols())
+            print('_________________________________',get_errors_config_user_duplicate_elements())
+            
             # os.remove("./tmp/"+filename)
             if get_errors_upload():
                 flash(
