@@ -1,0 +1,3 @@
+Continuación con la importacion de archivo de configuración del usuario.
+Multisesiones con Flask.
+Se vuelve al encontrar un error al usar dos parsers, al intercambiar los archivos, y se soluciona
