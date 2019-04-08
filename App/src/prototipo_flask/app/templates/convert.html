@@ -1,7 +1,9 @@
 {% extends "base.html" %}
+
 <head>
    <title>Convert file</title>
 </head>
+
 <body>
    {% block content %}
    <div class="container">
@@ -13,30 +15,79 @@
             </center>
          </div>
       </div>
-      <div class="container">
-         <div class="d-inline-flex p-2">
-            <div class="col-sm-2 my-1">
-               <form  action="" method="post"  novalidate>
-                  <table class="table table-sm">
-                     <thead>
-                        <tr>
-                           <th scope="col">Code Point</th>
-                           <th scope="col">Layer Cad</th>
-                           <th scope="col">Color</th>
-                           <th scope="col">Symbol</th>
-                        </tr>
-                     </thead>
-                     <tbody>
-                        {% for c in capas -%}
-                        <tr>
-                           <td>{{c}}</td>
-                           <td><input name="CapaCad" type="text"></input></td>
-                           <td><input name="Color" type="color"></input></td>
-                           <td><input name="Symbol" type="text"></input></td>
-                        </tr>
-                        {% endfor -%}
-                     </tbody>
-                  </table>
+   </div>
+
+   <div class="row justify-content-center"><!--Fila-->
+      <div class="col-12 d-none d-md-block"><!--12 es el maximo, -->
+         <!-- Hide on screens smaller than md -->
+         <div class="card border-secondary form-card"><!-- crear el card-->
+            <div class="card-header bg-light"><!--cabecera-->
+               <div class="row align-items-center"><!--Fila-->
+                  <div class="col-md-2">
+                     <h5 class="mb-0 font-weight-bold text-center text-primary">Point Code</h5>
+                  </div>
+                  <div class="col-md-4">
+                     <h5 class="mb-0 font-weight-bold text-center text-primary">CAD Layer</h5>
+                  </div>
+                  <div class="col-md-2">
+                     <h5 class="mb-0 font-weight-bold text-center text-primary">Layer Color</h5>
+                  </div>
+                  <div class="col-md-4">
+                     <h5 class="mb-0 font-weight-bold text-center text-primary">Symbol</h5>
+                  </div>
+               </div>
+            </div>
+            <div class="card-body">
+               <form action="" method="post" novalidate autocomplete="off"><!--formulario-->
+                  {% for i in range(capas|length): -%}
+                  <div class="form-row horizontal-form">
+                     <div class="col-md-2">
+                        <input type="text" name="code-{{ i }}"
+                           class="form-control-plaintext font-weight-bold text-center" readonly
+                           value="{{ capas[i]['code'] }}">
+                     </div>
+                     <div class="col-md-4">
+                        <input type="text" name="layer-{{ i }}" class="form-control form-control-sm"
+                           placeholder="Default Layer 0" value="{{ capas[i]['layer'] if capas[i]['layer'] }}">
+                     </div>
+                     <div class="col-md-2">
+                        <div class="input-group colorpicker-component color-picker">
+                           <input type="text" name="color-{{ i }}" class="form-control form-control-sm"
+                              value="rgb{{ capas[i]['color'] if capas[i]['color'] else rgb(255, 255, 255) }}">
+                           <div class="input-group-append">
+                              <span class="input-group-text input-group-addon"><i></i></span>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-md-4">
+                        {% if symbols %}
+                        <select class="custom-select custom-select-sm" name="symbol-{{ i }}">
+                           {% for s in symbols %}
+                           <option {{ 'selected' if capas[i]['symbol'] == s }} value="{{ s }}">{{ s }}</option>
+                           {% endfor -%}
+                           {% if capas[i]['symbol'] not in symbols %}
+                           <option selected value="">No symbol found</option>
+                           {% else %}
+                           <option  value="">No symbol found</option>
+                           {% endif %}
+                        </select>
+                        {% else %}
+                        <input type="text" name="symbol-{{ i }}" class="form-control form-control-sm"
+                           value="No symbol found" readonly>
+                        {% endif %}
+                     </div>
+                  </div>
+                  {% endfor -%}
+                  <div class="form-row d-flex align-items-center mt-3">
+                     <label for="cad-versions" class="col-md-2 col-form-label font-weight-bold text-center">CAD version</label>
+                     <div class="col-md-4">
+                        <select class="custom-select custom-select-sm" name="cadversion" id="cad-versions">
+                           {% for version, internal_version in cad_versions.items() %}
+                           <option value="{{ internal_version }}">{{ version }}</option>
+                           {% endfor -%} 
+                        </select>
+                     </div>
+                  </div>
                   <center>
                      <br>
                      <button type="submit" class="btn btn-success">Convert</button>
@@ -76,6 +127,7 @@
          </div>
       </div>
    </div>
-   </div>
+
    {% endblock %}
-</body>
+
+   <body>

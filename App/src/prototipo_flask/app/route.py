@@ -20,7 +20,7 @@ from app import app, db
 from app.conversor import (errors_rectangle, errors_square, generate_dxf,
                            get_errors_upload_topographical_file, get_layers,
                            get_layers_table, get_symbols,
-                           upload_topographical_file,get_dxf_configuration)
+                           upload_topographical_file, get_dxf_configuration)
 from app.forms import LoginForm, RegistrationForm
 from app.models import User
 from app.upload_optional_files import (error_symbols, file_empty,
@@ -104,24 +104,26 @@ def upload_file():
                 f_config.save(os.path.join(
                     app.config["UPLOAD_FOLDER"], filename_config))
             upload_config_file("./tmp/" + filename_config)
-          
+
+            var_file_config_empty=file_empty(get_errors_config_file(), get_config_file())
+
             if get_errors_config_file():
                 flash(
                     'Error: config file has the following errors. \
                         Check the file')
                 return render_template('upload.html', title='Carga Archivos')
-            elif get_errors_config_file_duplicate_elements():
+            elif get_errors_config_file_duplicate_elements() and not var_file_config_empty:
                 flash(
                     'Error: config file has duplicate items on different lines. \
                         Check the file')
                 return render_template('upload.html', title='Carga Archivos')
-            
-            elif get_errors_config_file_duplicate_color(get_config_file()):
+
+            elif get_errors_config_file_duplicate_color(get_config_file()) and not var_file_config_empty:
                 flash(
                     'Error: config file has different colors on the same lines. \
                         Check the file')
                 return render_template('upload.html', title='Carga Archivos')
-            elif file_empty(get_errors_config_file(), get_config_file()):
+            elif var_file_config_empty:
                 flash(
                     'Error: config file is empty. \
                         Check the file')
@@ -171,6 +173,9 @@ def convert_file_dxf():
 
     if request.method == "POST":
 
+        cad_version=form['cadversion']
+        del form['cadversion']
+
         # Actualizar las capas
         layers = []
         layer = {}
@@ -184,26 +189,30 @@ def convert_file_dxf():
                 i += 1
             layer.update({field: form[key]})
         print(layers)
-        new_layers=get_dxf_configuration(layers)
+        new_layers = get_dxf_configuration(layers)
         print(new_layers)
         # Provisional
         session['dxf_output'] = str(session['username']) + '_file.dxf'
 
         if get_errors_config_file_duplicate_color(new_layers):
             flash(
-                    'Error: config file has different colors on the same lines. \
+                'Error: config file has different colors on the same lines. \
                         Check the file')
-            print('__________________________________________________________________________________________________________________')
-            return render_template('convert.html', title='Conversion DXF', form=form,
-                           capas=layers, symbols=get_symbols(),  errores=get_errors_upload_topographical_file())
 
-        else: 
+            return render_template('convert.html', title='Conversion DXF', form=form,
+                                   capas=get_layers_table(), symbols=get_symbols(),
+                                   cad_versions=app.config["CAD_VERSIONS"],
+                                   errores=get_errors_upload_topographical_file())
+
+        else:
             generate_dxf("./tmp", session['dxf_output'],
-                   layers)
+                         layers,cad_version)
             return redirect(url_for("downloads"))
 
     return render_template('convert.html', title='Conversion DXF', form=form,
-                           capas=get_layers_table(), symbols=get_symbols(),  errores=get_errors_upload_topographical_file())
+                           capas=get_layers_table(), symbols=get_symbols(),
+                           cad_versions=app.config["CAD_VERSIONS"],
+                           errores=get_errors_upload_topographical_file())
 
 
 @app.route("/download", methods=["GET", "POST"])
