@@ -17,14 +17,18 @@ from werkzeug.urls import url_parse
 from werkzeug.utils import secure_filename
 
 from app import app, db
-from app.conversor import (configuration_table, genera_dxf,
-                           get_errors_rectangle, get_errors_square,
-                           get_errors_upload, get_layers, upload_txt, get_symbols, configuration_table)
+from app.conversor import (errors_rectangle, errors_square, generate_dxf,
+                           get_errors_upload_topographical_file, get_layers,
+                           get_layers_table, get_symbols,
+                           upload_topographical_file,get_dxf_configuration)
 from app.forms import LoginForm, RegistrationForm
 from app.models import User
-from app.upload_optional_files import (extract_symbols, get_errors_config_user,
-                                       get_errors_config_user_duplicate_elements,
-                                       upload_file_config,get_error_symbols)
+from app.upload_optional_files import (error_symbols, file_empty,
+                                       get_config_file,
+                                       get_errors_config_file_duplicate_elements,
+                                       get_errors_config_file,
+                                       get_errors_config_file_duplicate_color,
+                                       upload_config_file, upload_symbols_file)
 
 app.secret_key = secrets.token_urlsafe(16)
 db.create_all()
@@ -72,25 +76,6 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 
-return_web_config = [{'code': 'RE', 'layer': 'Red_Electrica',
-                      'color': 'rgb(120, 120, 120)', 'symbol': 'No symbol found'},
-                     {'code': 'A', 'layer': 'Acera',
-                      'color': 'rgb(0, 0, 0)', 'symbol': 'No symbol found'},
-                     {'code': 'SAN', 'layer': 'Saneamiento',
-                      'color': 'rgb(0, 0, 255)', 'symbol': 'No symbol found'},
-                     {'code': 'TEL', 'layer': 'Telecomunicaciones',
-                      'color': 'rgb(0, 255, 0)', 'symbol': 'No symbol found'},
-                     {'code': 'FA', 'layer': 'Farola',
-                      'color': 'rgb(255, 0, 0)', 'symbol': 'Farola'},
-                     {'code': 'V', 'layer': 'Vertice',
-                      'color': 'rgb(0, 0, 0)', 'symbol': 'Vertice'},
-                     {'code': 'E', 'layer': 'Edificio',
-                      'color': 'rgb(38, 140, 89)', 'symbol': 'No symbol found'},
-                     {'code': 'ARB', 'layer': 'Arbol',
-                      'color': 'rgb(0, 255, 255)', 'symbol': 'Arbol'},
-                     {'code': 'M', 'layer': 'Muro', 'color': 'rgb(255, 255, 0)', 'symbol': 'No symbol found'}]
-
-
 @app.route("/upload", methods=["GET", "POST"])
 @login_required
 def upload_file():
@@ -113,54 +98,65 @@ def upload_file():
             flash("Error: topographic data file not selected.")
         if f_topography:
             filename_topography = secure_filename(f_topography.filename)
-            filename_config=''
+            filename_config = ''
             if f_config:
                 filename_config = secure_filename(f_config.filename)
                 f_config.save(os.path.join(
                     app.config["UPLOAD_FOLDER"], filename_config))
-            upload_file_config("./tmp/" + filename_config)
-            if get_errors_config_user():
+            upload_config_file("./tmp/" + filename_config)
+          
+            if get_errors_config_file():
                 flash(
                     'Error: config file has the following errors. \
                         Check the file')
-                # return render_template('upload.html', title='Carga Archivos')
-            elif get_errors_config_user_duplicate_elements():
+                return render_template('upload.html', title='Carga Archivos')
+            elif get_errors_config_file_duplicate_elements():
                 flash(
                     'Error: config file has duplicate items on different lines. \
                         Check the file')
-                # return render_template('upload.html', title='Carga Archivos')
-            filename_symbols=''
+                return render_template('upload.html', title='Carga Archivos')
+            
+            elif get_errors_config_file_duplicate_color(get_config_file()):
+                flash(
+                    'Error: config file has different colors on the same lines. \
+                        Check the file')
+                return render_template('upload.html', title='Carga Archivos')
+            elif file_empty(get_errors_config_file(), get_config_file()):
+                flash(
+                    'Error: config file is empty. \
+                        Check the file')
+                return render_template('upload.html', title='Carga Archivos')
+
+            filename_symbols = ''
             if f_symbols:
                 filename_symbols = secure_filename(f_symbols.filename)
                 f_symbols.save(os.path.join(
                     app.config["UPLOAD_FOLDER"], filename_symbols))
-            extract_symbols("./tmp/"+filename_symbols)
+            upload_symbols_file("./tmp/"+filename_symbols)
 
             f_topography.save(os.path.join(
                 app.config["UPLOAD_FOLDER"], filename_topography))
 
-            upload_txt("./tmp/" + filename_topography)
-            print('__Simbolos___________________________',get_error_symbols())
-            print('_________________________________',get_errors_config_user_duplicate_elements())
-            
-            # os.remove("./tmp/"+filename)
-            if get_errors_upload():
+            upload_topographical_file("./tmp/" + filename_topography)
+
+            if get_errors_upload_topographical_file():
                 flash(
                     'Error: topographic data file has the following errors. \
                          Check the file')
                 return render_template('upload.html', title='Carga Archivos')
-            if get_errors_square():
+            if errors_square():
                 flash(
                     'Error: The number of points with "TC" code is not \
                         multiple of 2. Check the file')
                 return render_template('upload.html', title='Carga Archivos')
-            if get_errors_rectangle():
+            if errors_rectangle():
                 flash(
                     'Error: The number of points with "TR" code is not \
                         multiple of 3. Check the file')
                 return render_template('upload.html', title='Carga Archivos')
 
-            configuration_table()
+            get_layers_table()
+
             return redirect(url_for("convert_file_dxf"))
         flash("Error: the topografic data file type must be: .txt o .csv.")
 
@@ -187,15 +183,27 @@ def convert_file_dxf():
                 layer = {}
                 i += 1
             layer.update({field: form[key]})
-
+        print(layers)
+        new_layers=get_dxf_configuration(layers)
+        print(new_layers)
         # Provisional
         session['dxf_output'] = str(session['username']) + '_file.dxf'
-        genera_dxf("./tmp", session['dxf_output'],
+
+        if get_errors_config_file_duplicate_color(new_layers):
+            flash(
+                    'Error: config file has different colors on the same lines. \
+                        Check the file')
+            print('__________________________________________________________________________________________________________________')
+            return render_template('convert.html', title='Conversion DXF', form=form,
+                           capas=layers, symbols=get_symbols(),  errores=get_errors_upload_topographical_file())
+
+        else: 
+            generate_dxf("./tmp", session['dxf_output'],
                    layers)
-        return redirect(url_for("downloads"))
+            return redirect(url_for("downloads"))
 
     return render_template('convert.html', title='Conversion DXF', form=form,
-                           capas=configuration_table(), symbols=get_symbols(),  errores=get_errors_upload())
+                           capas=get_layers_table(), symbols=get_symbols(),  errores=get_errors_upload_topographical_file())
 
 
 @app.route("/download", methods=["GET", "POST"])

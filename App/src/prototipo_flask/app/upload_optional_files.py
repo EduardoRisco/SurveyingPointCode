@@ -14,11 +14,10 @@ import ply.lex as lex
 import ply.yacc as yacc
 
 
-config_user_init = []
-errors_config_user_parser = []
-errors_config_user_duplicate_elem = set()
+config_file_init = []
+errors_config_file_parser = []
+errors_config_file_duplicate_elem = set()
 symbols = []
-table_config = []
 file_symbols_dxf = ''
 
 # Lexer part
@@ -58,9 +57,8 @@ def t_newline(t):
 
 
 def t_error(t):
-    print("Illegal character '%s'" % t.value[0]) 
+    #print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
-
 
 
 lexer_config = lex.lex()
@@ -89,19 +87,19 @@ def p_error(p):
         return p.value
 
 
-def upload_file_config(input_file):
+def upload_config_file(input_file):
     '''
     This function reads a user configuration file,
     contains topographic codes, cad layers, colors and symbols.
     '''
 
     try:
-        global config_user_init
-        global errors_config_user_parser
-        global errors_config_user_duplicate_elem
-        errors_config_user_duplicate_elem = set()
-        errors_config_user_parser = []
-        config_user_init = []
+        global config_file_init
+        global errors_config_file_parser
+        global errors_config_file_duplicate_elem
+        errors_config_file_duplicate_elem = set()
+        errors_config_file_parser = []
+        config_file_init = []
 
         parser = yacc.yacc()
         f = open(input_file)
@@ -113,17 +111,17 @@ def upload_file_config(input_file):
             c_line = parser.parse(line, lexer=lexer_config)
             if c_line == None or not c_line:
                 # Capturing errors parser
-                errors_config_user_parser.append([n_line, line])
+                errors_config_file_parser.append([n_line, line])
             else:
-                config_user_init.append(c_line)
+                config_file_init.append(c_line)
             line = f.readline()
         f.close()
 
-        if not get_errors_config_user():
+        if not get_errors_config_file() and not file_empty(get_errors_config_file(), get_config_file()):
             codes = []
             layer_color = []
             layer = []
-            for conf in config_user_init:
+            for conf in config_file_init:
                 if len(codes) == 0:
                     codes.append(conf[0])
                     layer.append(conf[1])
@@ -131,24 +129,16 @@ def upload_file_config(input_file):
                 else:
                     if conf[0] in codes:
                         # Capturing errors duplicate elements
-                        error = ('Topographic code ',
-                                 conf[0], ' is duplicated')
-                        errors_config_user_duplicate_elem.add(error)
-                    if conf[1] in layer:
-                        if (conf[1], conf[2]) not in layer_color:
-                            error = (
-                                'The Layer ', conf[1],
-                                'has different colors assigned to it ')
-                            errors_config_user_duplicate_elem.add(error)
+                        error = 'Topographic code '+ conf[0]+ ' is duplicated'
+                        errors_config_file_duplicate_elem.add(error)
                     codes.append(conf[0])
                     layer.append(conf[1])
-                    layer_color.append((conf[1], conf[2]))
-        
+                    layer_color.append((conf[1], conf[2]))       
     except (IOError, NameError) as e:
         print(e)
 
 
-def extract_symbols(dxf_symbol):
+def upload_symbols_file(dxf_symbol_file):
     '''
     This function reads a dxf file with symbols.
     '''
@@ -156,11 +146,10 @@ def extract_symbols(dxf_symbol):
         global error_symbol
         global symbols
         global file_symbols_dxf
-        error_symbol=True
-        file_symbols_dxf = dxf_symbol
+        error_symbol = True
         symbols = []
 
-        dwg = ezdxf.readfile(dxf_symbol)
+        dwg = ezdxf.readfile(dxf_symbol_file)
 
         for b in dwg.blocks:
             if b.__getattribute__('name') not in(
@@ -170,41 +159,52 @@ def extract_symbols(dxf_symbol):
                     b.__getattribute__('name').find('*Paper') == -1) and (
                     b.__getattribute__('name').find('*Model') == -1):
                 symbols.append(b.__getattribute__('name'))
-                error_symbol=False
+                error_symbol = False
 
     except (IOError, NameError) as e:
         print(e)
 
 
-def get_config_user():
+def file_empty(list_items, list_errors):
     '''
-    This function returns a config_user list .
+    This function returns True if the file is empty, in other case it returns False.
     '''
 
-    if get_errors_config_user() or get_errors_config_user_duplicate_elements():
+    if not list_items and not list_errors:
+        return True
+    return False
+
+
+def get_config_file():
+    '''
+    This function returns a config_user list if it exists, in other case it returns False.
+    '''
+
+    if file_empty(get_errors_config_file(), config_file_init) or (
+            get_errors_config_file()) or get_errors_config_file_duplicate_elements():
         return False
     else:
-        return config_user_init
+        return config_file_init
 
 
-def get_errors_config_user():
+def get_errors_config_file():
     '''
     This function returns a list of config_use errors,
     when the input data  doesn't have the correct format.
     '''
-    if errors_config_user_parser:
-        return errors_config_user_parser
+    if errors_config_file_parser:
+        return errors_config_file_parser
     else:
         return False
 
 
-def get_errors_config_user_duplicate_elements():
+def get_errors_config_file_duplicate_elements():
     '''
     This funtion  returns a list of errors,
     when there are duplicate items on different lines.
     '''
-    if not get_errors_config_user() and errors_config_user_duplicate_elem:
-        return errors_config_user_duplicate_elem
+    if not get_errors_config_file() and errors_config_file_duplicate_elem:
+        return errors_config_file_duplicate_elem
     else:
         return False
 
@@ -218,17 +218,18 @@ def get_symbols():
     else:
         return symbols
 
-def get_error_symbols():
+
+def error_symbols():
     '''
     This function returns true if there are no symbols in the dxf file.
     '''
     if not error_symbol:
         return False
     else:
-        return True        
+        return True
 
 
-def get_symbols_file_dxf():
+def get_symbols_dxf_file():
     '''
     This function returns a symbols file .
     '''
@@ -238,12 +239,23 @@ def get_symbols_file_dxf():
         return file_symbols_dxf
 
 
-def get_config_table():
+def get_errors_config_file_duplicate_color(list_config):
     '''
-    This function returns an initial configuration automatically
-    generated with the uploaded files.
+    This function returns a list of errors, if any, of layers with 
+    different color assigned. Input parameter a list with the user's configuration 
     '''
-    if table_config:
-        return table_config
-    else:
-        False
+
+    layer_color = []
+    layer = []
+    errors = set()
+    for conf in list_config:
+        if len(layer) == 0:
+            layer.append(conf[1])
+            layer_color.append((conf[1], conf[2]))
+        else:
+            if conf[1] in layer and (conf[1], conf[2]) not in layer_color:
+                error = 'The Layer '+ conf[1]+ 'has different colors assigned to it '
+                errors.add(error)
+            layer.append(conf[1])
+            layer_color.append((conf[1], conf[2]))
+    return errors
