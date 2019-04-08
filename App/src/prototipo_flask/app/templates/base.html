@@ -5,48 +5,31 @@
    <meta charset="UTF-8">
    <title>Home</title>
    <link rel="stylesheet" href="https://bootswatch.com/4/united/bootstrap.min.css" />
-   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.3/css/bootstrap-colorpicker.min.css" />
+   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+      integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+   <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.3/css/bootstrap-colorpicker.min.css" />
    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <meta name="theme-color" content="#000000" />
 </head>
 
 <body>
-   <div class="container">
-      <br>
-      <center>
-         
-         <div class="col-8">
-               <h1>SurveyingPointCode</h1>
-            <!--<nav class="nav flex-row text-center d-flex justify-content-md-end justify-content-center mb-2 mb-md-0">-->
-            <nav class="nav flex-row text-center d-flex justify-content-end mb-2 mb-md-0">
-               {% if current_user and 'username' in session: %}
-                  <a  class="nav-link d-none d-md-block" id="welcome_user">Welcome, 
-                     <strong>{{ current_user.username }}</strong></a>
-                     
-                  <a  class="nav-link d-none d-md-block" id="welcome_accs">Last access, 
-                           <strong>{{ session['last_access'] if 'last_access' in session else '' }}  </strong></a>
-             
-                  <a class="btn btn-danger d-none d-md-block" href="{{ url_for('logout') }}" role="button"><i
-                        class="fas fa-sign-out-alt"></i> Sign out</a>
+   <img class="background-image fixed-bottom" src="{{ url_for('static', filename='images/logo_background.svg') }}"
+      alt="Surveying Point Code Logo">
 
-               {% else %}
-                  <a class="btn btn-success mt-2 mt-md-auto" href="{{ url_for('login') }}" role="button"><i
-                        class="fas fa-sign-in-alt"></i> Sign in</a>
-               {% endif %}
-
-            </nav>
-         </div>
-            <br>
-            <br>
-      </center>
-   </div>
    {% block content %}{% endblock %}
-   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
-   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+   <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+      integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+      crossorigin="anonymous"></script>
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+      integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+      crossorigin="anonymous"></script>
    <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.3/js/bootstrap-colorpicker.min.js"></script>
+   <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.3/js/bootstrap-colorpicker.min.js"></script>
 
    <script src="{{ url_for('static', filename='js/spc.js') }}"></script>
 </body>

@@ -33,8 +33,11 @@ from app.upload_optional_files import (error_symbols, file_empty,
 app.secret_key = secrets.token_urlsafe(16)
 db.create_all()
 
+@app.route('/', methods=['GET'])
+def index():
+    return render_template('index.html')
 
-@app.route('/', methods=['GET', 'POST'])
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     email = ''
@@ -112,13 +115,13 @@ def upload_file():
                     'Error: config file has the following errors. \
                         Check the file')
                 return render_template('upload.html', title='Carga Archivos')
-            elif get_errors_config_file_duplicate_elements() and not var_file_config_empty:
+            elif get_errors_config_file_duplicate_elements() :
                 flash(
                     'Error: config file has duplicate items on different lines. \
                         Check the file')
                 return render_template('upload.html', title='Carga Archivos')
 
-            elif get_errors_config_file_duplicate_color(get_config_file()) and not var_file_config_empty:
+            elif get_errors_config_file_duplicate_color(get_config_file()) :
                 flash(
                     'Error: config file has different colors on the same lines. \
                         Check the file')
@@ -200,7 +203,7 @@ def convert_file_dxf():
                         Check the file')
 
             return render_template('convert.html', title='Conversion DXF', form=form,
-                                   capas=get_layers_table(), symbols=get_symbols(),
+                                   capas=layers, symbols=get_symbols(),
                                    cad_versions=app.config["CAD_VERSIONS"],
                                    errores=get_errors_upload_topographical_file())
 
@@ -241,4 +244,4 @@ def logout():
 
     logout_user()
     session.clear()
-    return redirect(url_for('login'))
+    return redirect(url_for('index'))
