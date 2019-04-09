@@ -33,6 +33,7 @@ from app.upload_optional_files import (error_symbols, file_empty,
 app.secret_key = secrets.token_urlsafe(16)
 db.create_all()
 
+
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
@@ -108,33 +109,34 @@ def upload_file():
                     app.config["UPLOAD_FOLDER"], filename_config))
             upload_config_file("./tmp/" + filename_config)
 
-            var_file_config_empty=file_empty(get_errors_config_file(), get_config_file())
-
             if get_errors_config_file():
                 flash(
                     'Error: config file has the following errors. \
                         Check the file')
                 return render_template('upload.html', title='Carga Archivos')
-            elif get_errors_config_file_duplicate_elements() :
+
+            elif file_empty(get_config_file(), get_errors_config_file(),
+                            get_errors_config_file_duplicate_color(get_config_file()),
+                            get_errors_config_file_duplicate_elements()):
+                flash(
+                    'Error: config file is empty. \
+                        Check the file')
+                return render_template('upload.html', title='Carga Archivos')
+            elif get_errors_config_file_duplicate_elements():
                 flash(
                     'Error: config file has duplicate items on different lines. \
                         Check the file')
                 return render_template('upload.html', title='Carga Archivos')
 
-            elif get_errors_config_file_duplicate_color(get_config_file()) :
+            elif get_errors_config_file_duplicate_color(get_config_file()):
                 flash(
                     'Error: config file has different colors on the same lines. \
                         Check the file')
                 return render_template('upload.html', title='Carga Archivos')
-            elif var_file_config_empty:
-                flash(
-                    'Error: config file is empty. \
-                        Check the file')
-                return render_template('upload.html', title='Carga Archivos')
 
-            filename_symbols = ''
+            filename_symbols=''
             if f_symbols:
-                filename_symbols = secure_filename(f_symbols.filename)
+                filename_symbols=secure_filename(f_symbols.filename)
                 f_symbols.save(os.path.join(
                     app.config["UPLOAD_FOLDER"], filename_symbols))
             upload_symbols_file("./tmp/"+filename_symbols)
@@ -172,7 +174,7 @@ def upload_file():
 @login_required
 def convert_file_dxf():
 
-    form = request.form.to_dict()
+    form=request.form.to_dict()
 
     if request.method == "POST":
 
@@ -180,22 +182,22 @@ def convert_file_dxf():
         del form['cadversion']
 
         # Actualizar las capas
-        layers = []
-        layer = {}
-        i = 0
+        layers=[]
+        layer={}
+        i=0
 
         for key in form.keys():
-            field, index = key.split('-')
+            field, index=key.split('-')
             if int(index) != i:
                 layers.append(layer)
-                layer = {}
+                layer={}
                 i += 1
             layer.update({field: form[key]})
         print(layers)
-        new_layers = get_dxf_configuration(layers)
+        new_layers=get_dxf_configuration(layers)
         print(new_layers)
         # Provisional
-        session['dxf_output'] = str(session['username']) + '_file.dxf'
+        session['dxf_output']=str(session['username']) + '_file.dxf'
 
         if get_errors_config_file_duplicate_color(new_layers):
             flash(
@@ -209,7 +211,7 @@ def convert_file_dxf():
 
         else:
             generate_dxf("./tmp", session['dxf_output'],
-                         layers,cad_version)
+                         layers, cad_version)
             return redirect(url_for("downloads"))
 
     return render_template('convert.html', title='Conversion DXF', form=form,

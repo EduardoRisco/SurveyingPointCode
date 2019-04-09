@@ -16,7 +16,7 @@ import ply.yacc as yacc
 
 config_file_init = []
 errors_config_file_parser = []
-errors_config_file_duplicate_elem = set()
+errors_config_file_duplicate_elem = []
 symbols = []
 file_symbols_dxf = ''
 
@@ -97,7 +97,7 @@ def upload_config_file(input_file):
         global config_file_init
         global errors_config_file_parser
         global errors_config_file_duplicate_elem
-        errors_config_file_duplicate_elem = set()
+        errors_config_file_duplicate_elem = []
         errors_config_file_parser = []
         config_file_init = []
 
@@ -117,23 +117,28 @@ def upload_config_file(input_file):
             line = f.readline()
         f.close()
 
-        if not get_errors_config_file() and not file_empty(get_errors_config_file(), get_config_file()):
+        if not get_errors_config_file():
             codes = []
             layer_color = []
             layer = []
+            n_line = 0
             for conf in config_file_init:
+                n_line += 1
                 if len(codes) == 0:
                     codes.append(conf[0])
                     layer.append(conf[1])
                     layer_color.append((conf[1], conf[2]))
+
                 else:
                     if conf[0] in codes:
                         # Capturing errors duplicate elements
-                        error = 'Topographic code '+ conf[0]+ ' is duplicated'
-                        errors_config_file_duplicate_elem.add(error)
+                        error = 'Topographic code ' + \
+                            conf[0] + ' is duplicated'
+                        errors_config_file_duplicate_elem.append(
+                            [n_line, error])
                     codes.append(conf[0])
                     layer.append(conf[1])
-                    layer_color.append((conf[1], conf[2]))       
+                    layer_color.append((conf[1], conf[2]))
     except (IOError, NameError) as e:
         print(e)
 
@@ -165,22 +170,12 @@ def upload_symbols_file(dxf_symbol_file):
         print(e)
 
 
-def file_empty(list_items, list_errors):
-    '''
-    This function returns True if the file is empty, in other case it returns False.
-    '''
-
-    if not list_items and not list_errors:
-        return True
-    return False
-
-
 def get_config_file():
     '''
     This function returns a config_user list if it exists, in other case it returns False.
     '''
 
-    if file_empty(get_errors_config_file(), config_file_init) or (
+    if file_empty(config_file_init, get_errors_config_file()) or (
             get_errors_config_file()) or get_errors_config_file_duplicate_elements():
         return False
     else:
@@ -207,6 +202,43 @@ def get_errors_config_file_duplicate_elements():
         return errors_config_file_duplicate_elem
     else:
         return False
+
+
+def get_errors_config_file_duplicate_color(list_config):
+    '''
+    This function returns a list of errors, if any, of layers with 
+    different color assigned. Input parameter a list with the user's configuration 
+    '''
+    if not list_config:
+        return False
+    else:
+        layer_color = []
+        layer = []
+        errors = set()
+        for conf in list_config:
+            if len(layer) == 0:
+                layer.append(conf[1])
+                layer_color.append((conf[1], conf[2]))
+            else:
+                if conf[1] in layer and (conf[1], conf[2]) not in layer_color:
+                    error = 'The Layer ' + conf[1] + \
+                        ' has different colors assigned to it '
+                    errors.add(error)
+                layer.append(conf[1])
+                layer_color.append((conf[1], conf[2]))
+        return errors
+
+
+def file_empty(list_items, list_errors_upload,
+               list_errors_duplicate=True, list_errors_color=True):
+    '''
+    This function returns True if the file is empty, in other case it returns False.
+    '''
+
+    if not list_items and not (list_errors_upload
+                               or list_errors_color or list_errors_duplicate):
+        return True
+    return False
 
 
 def get_symbols():
@@ -237,25 +269,3 @@ def get_symbols_dxf_file():
         return False
     else:
         return file_symbols_dxf
-
-
-def get_errors_config_file_duplicate_color(list_config):
-    '''
-    This function returns a list of errors, if any, of layers with 
-    different color assigned. Input parameter a list with the user's configuration 
-    '''
-
-    layer_color = []
-    layer = []
-    errors = set()
-    for conf in list_config:
-        if len(layer) == 0:
-            layer.append(conf[1])
-            layer_color.append((conf[1], conf[2]))
-        else:
-            if conf[1] in layer and (conf[1], conf[2]) not in layer_color:
-                error = 'The Layer '+ conf[1]+ 'has different colors assigned to it '
-                errors.add(error)
-            layer.append(conf[1])
-            layer_color.append((conf[1], conf[2]))
-    return errors
