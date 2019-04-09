@@ -230,11 +230,10 @@ def upload_topographical_file(input_file):
             line = f.readline()
         f.close()
 
-        if get_errors_upload_topographical_file() and (
-                file_empty(get_errors_upload_topographical_file(), get_layers())):
+        if get_errors_upload_topographical_file() :
             return False
         else:
-           # Decoding of lines, curves and other elements
+            # Decoding of lines, curves and other elements
             for ptos in dict_layers:
                 line_started = False
                 curve_started = False
@@ -311,7 +310,7 @@ def get_layers_table():
     '''
 
     table_config = []
-    for layer_topog in get_layers():
+    for layer_topog in get_code_layers():
         line = dict()
         line['code'] = layer_topog
         if get_config_file():
@@ -356,7 +355,7 @@ def get_dxf_configuration(conf_user_web):
 
 
 def generate_dxf(download_folder, dxf_filename, form_web,
-                 version=app.config['CAD_VERSIONS']['DXF 2004']):
+                 version):
     '''
     This function generates a dxf file.
     '''
@@ -432,7 +431,7 @@ def errors_rectangle():
     return False
 
 
-def get_layers():
+def get_code_layers():
     '''
     This function returns a list with topographic codes.
     '''

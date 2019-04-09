@@ -204,7 +204,7 @@ def get_errors_config_file_duplicate_elements():
         return False
 
 
-def get_errors_config_file_duplicate_color(list_config):
+def get_errors_config_file_duplicate_color(list_config,code_layers):
     '''
     This function returns a list of errors, if any, of layers with 
     different color assigned. Input parameter a list with the user's configuration 
@@ -219,13 +219,13 @@ def get_errors_config_file_duplicate_color(list_config):
             if len(layer) == 0:
                 layer.append(conf[1])
                 layer_color.append((conf[1], conf[2]))
-            else:
-                if conf[1] in layer and (conf[1], conf[2]) not in layer_color:
+            else:               
+                if conf[0] in code_layers and  conf[1] in layer and (conf[1], conf[2]) not in layer_color:
                     error = 'The Layer ' + conf[1] + \
                         ' has different colors assigned to it '
                     errors.add(error)
                 layer.append(conf[1])
-                layer_color.append((conf[1], conf[2]))
+                layer_color.append((conf[1], conf[2]))     
         return errors
 
 

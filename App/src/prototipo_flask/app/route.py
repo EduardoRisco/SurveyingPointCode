@@ -18,16 +18,16 @@ from werkzeug.utils import secure_filename
 
 from app import app, db
 from app.conversor import (errors_rectangle, errors_square, generate_dxf,
-                           get_errors_upload_topographical_file, get_layers,
+                           get_dxf_configuration,
+                           get_errors_upload_topographical_file, get_code_layers,
                            get_layers_table, get_symbols,
-                           upload_topographical_file, get_dxf_configuration)
+                           upload_topographical_file)
 from app.forms import LoginForm, RegistrationForm
 from app.models import User
 from app.upload_optional_files import (error_symbols, file_empty,
-                                       get_config_file,
-                                       get_errors_config_file_duplicate_elements,
-                                       get_errors_config_file,
+                                       get_config_file, get_errors_config_file,
                                        get_errors_config_file_duplicate_color,
+                                       get_errors_config_file_duplicate_elements,
                                        upload_config_file, upload_symbols_file)
 
 app.secret_key = secrets.token_urlsafe(16)
@@ -109,43 +109,11 @@ def upload_file():
                     app.config["UPLOAD_FOLDER"], filename_config))
             upload_config_file("./tmp/" + filename_config)
 
-            if get_errors_config_file():
-                flash(
-                    'Error: config file has the following errors. \
-                        Check the file')
-                return render_template('upload.html', title='Carga Archivos')
-
-            elif file_empty(get_config_file(), get_errors_config_file(),
-                            get_errors_config_file_duplicate_color(get_config_file()),
-                            get_errors_config_file_duplicate_elements()):
-                flash(
-                    'Error: config file is empty. \
-                        Check the file')
-                return render_template('upload.html', title='Carga Archivos')
-            elif get_errors_config_file_duplicate_elements():
-                flash(
-                    'Error: config file has duplicate items on different lines. \
-                        Check the file')
-                return render_template('upload.html', title='Carga Archivos')
-
-            elif get_errors_config_file_duplicate_color(get_config_file()):
-                flash(
-                    'Error: config file has different colors on the same lines. \
-                        Check the file')
-                return render_template('upload.html', title='Carga Archivos')
-
-            filename_symbols=''
-            if f_symbols:
-                filename_symbols=secure_filename(f_symbols.filename)
-                f_symbols.save(os.path.join(
-                    app.config["UPLOAD_FOLDER"], filename_symbols))
-            upload_symbols_file("./tmp/"+filename_symbols)
-
             f_topography.save(os.path.join(
                 app.config["UPLOAD_FOLDER"], filename_topography))
 
             upload_topographical_file("./tmp/" + filename_topography)
-
+           
             if get_errors_upload_topographical_file():
                 flash(
                     'Error: topographic data file has the following errors. \
@@ -162,6 +130,40 @@ def upload_file():
                         multiple of 3. Check the file')
                 return render_template('upload.html', title='Carga Archivos')
 
+            if get_errors_config_file():
+                flash(
+                    'Error: config file has the following errors. \
+                        Check the file')
+                return render_template('upload.html', title='Carga Archivos')
+
+            elif file_empty(get_config_file(), get_errors_config_file(),
+                            get_errors_config_file_duplicate_color(
+                                get_config_file(), get_code_layers()),
+                            get_errors_config_file_duplicate_elements()):
+                flash(
+                    'Error: config file is empty. \
+                        Check the file')
+                return render_template('upload.html', title='Carga Archivos')
+            elif get_errors_config_file_duplicate_elements():
+                flash(
+                    'Error: config file has duplicate items on different lines. \
+                        Check the file')
+                return render_template('upload.html', title='Carga Archivos')
+
+            elif get_errors_config_file_duplicate_color(get_config_file(), get_code_layers()):
+                flash(
+                    'Error: config file has different colors on the same lines. \
+                        Check the file')
+               
+                return render_template('upload.html', title='Carga Archivos')
+
+            filename_symbols = ''
+            if f_symbols:
+                filename_symbols = secure_filename(f_symbols.filename)
+                f_symbols.save(os.path.join(
+                    app.config["UPLOAD_FOLDER"], filename_symbols))
+            upload_symbols_file("./tmp/"+filename_symbols)
+
             get_layers_table()
 
             return redirect(url_for("convert_file_dxf"))
@@ -174,30 +176,30 @@ def upload_file():
 @login_required
 def convert_file_dxf():
 
-    form=request.form.to_dict()
+    form = request.form.to_dict()
 
     if request.method == "POST":
 
-        cad_version=form['cadversion']
+        cad_version = form['cadversion']
         del form['cadversion']
 
         # Actualizar las capas
-        layers=[]
-        layer={}
-        i=0
+        layers = []
+        layer = {}
+        i = 0
 
         for key in form.keys():
-            field, index=key.split('-')
+            field, index = key.split('-')
             if int(index) != i:
                 layers.append(layer)
-                layer={}
+                layer = {}
                 i += 1
             layer.update({field: form[key]})
         print(layers)
-        new_layers=get_dxf_configuration(layers)
+        new_layers = get_dxf_configuration(layers)
         print(new_layers)
         # Provisional
-        session['dxf_output']=str(session['username']) + '_file.dxf'
+        session['dxf_output'] = str(session['username']) + '_file.dxf'
 
         if get_errors_config_file_duplicate_color(new_layers):
             flash(
