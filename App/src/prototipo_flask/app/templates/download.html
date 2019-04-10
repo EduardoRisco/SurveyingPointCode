@@ -3,10 +3,24 @@
 {% include "header.html" %}
 {% endblock %}
 {% block content %}
+<div class="container">
+    <div class="row align-items-center justify-content-center">
+        <div class="col-sm-5 my-1">
+            <h1>Download File</h1>
 
-<h1>Descargar Archivo</h1>
-<form method="POST" enctype="multipart/form-data">
-    <input type="submit" value="Descarga">
-</form>
+        </div>
+        <div class="container">
+            <div class="row align-items-center justify-content-center">
+            <form method="POST" enctype="multipart/form-data">
+                <input type="submit" value="Download">
+            </form>
+        </div>
 
+    </div>
+</div>
+
+{% endblock %}
+
+{% block footer %}
+{% include "footer.html" %}
 {% endblock %}

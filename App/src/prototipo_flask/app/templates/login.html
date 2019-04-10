@@ -62,6 +62,9 @@
          Not Registered ? <a href="{{ url_for('register') }}">Create an account</a>
    </div>
    </center>
-   <p class="mt-5 mb-3 text-muted text-center">SurveyingPointCode by J.Eduardo Risco &copy; 2018-2019</p>
    {% endblock %}
 </body>
+
+{% block footer %}
+{% include "footer.html" %}
+{% endblock %}
