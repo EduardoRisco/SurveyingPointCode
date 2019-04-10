@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% block header %}
+{% include "header.html" %}
+{% endblock %}
 <head>
    <title>Upload file</title>
 </head>
@@ -41,7 +44,7 @@
       <br>
       <div class="row align-items-center justify-content-center">
          <div class="col-sm-3 my-1">
-            <form method="POST" enctype="multipart/form-data">
+            <form method="POST" enctype="multipart/form-data" autocomplete="off">
                <center><input type="file" name="topographical_file">
                   <small  class="form-text text-muted">
                      Topographical data file 

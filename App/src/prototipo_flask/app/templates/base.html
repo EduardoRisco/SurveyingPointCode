@@ -12,12 +12,14 @@
    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
    <meta name="theme-color" content="#000000" />
+   <meta autor="José Eduardo Risco Sánchez-Cortés" />
+
 </head>
 
 <body>
    <img class="background-image fixed-bottom" src="{{ url_for('static', filename='images/logo_background.svg') }}"
-      alt="Surveying Point Code Logo">
-
+      alt="Home">
+   {% block header %}{% endblock %}
    {% block content %}{% endblock %}
    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
       integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>

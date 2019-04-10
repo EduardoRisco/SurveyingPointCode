@@ -1,0 +1,36 @@
+<header class="header fixed-top">
+    <div class="container-fluid">
+        <div class="row justify-content-between align-items-center">
+            <div class="col-4">
+
+                <div class="row justify-content-start">
+
+                    <a href="/"><img src="{{ url_for('static', filename='images/logo_nav.svg') }}" alt="Home"
+                            class="img-fluid my-1 ml-3"></a>
+                </div>
+            </div>
+
+            <div class="col-8">
+
+                <nav class="nav flex-row text-center d-flex justify-content-end mb-2 mb-md-0">
+                    {% if current_user and 'username' in session: %}
+                    <a href="#" class="nav-link d-none d-md-block" id="welcome_user">User
+                        <strong>{{ current_user.username }}</strong></a>
+
+                    <a href="#" class="nav-link d-none d-md-block" id="last_access">Last access
+                        <strong>{{ session['last_access'] if 'last_access' in session else '' }}</strong></a>
+
+                    <a class="btn btn-danger d-none d-md-block" href="{{ url_for('logout') }}" role="button"><i
+                            class="fas fa-sign-out-alt"></i> Sign out</a>
+
+                    {% else %}
+
+                    <a class="btn btn-success d-none d-md-block" href="{{ url_for('login') }}" role="button"><i
+                            class="fas fa-sign-in-alt"></i> Sign in</a>
+
+                    {% endif %}
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
