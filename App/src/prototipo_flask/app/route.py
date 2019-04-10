@@ -113,7 +113,13 @@ def upload_file():
                 app.config["UPLOAD_FOLDER"], filename_topography))
 
             upload_topographical_file("./tmp/" + filename_topography)
-           
+            filename_symbols = ''
+            if f_symbols:
+                filename_symbols = secure_filename(f_symbols.filename)
+                f_symbols.save(os.path.join(
+                    app.config["UPLOAD_FOLDER"], filename_symbols))
+            upload_symbols_file("./tmp/"+filename_symbols)
+
             if get_errors_upload_topographical_file():
                 flash(
                     'Error: topographic data file has the following errors. \
@@ -154,17 +160,12 @@ def upload_file():
                 flash(
                     'Error: config file has different colors on the same lines. \
                         Check the file')
-               
+
                 return render_template('upload.html', title='Carga Archivos')
 
-            filename_symbols = ''
-            if f_symbols:
-                filename_symbols = secure_filename(f_symbols.filename)
-                f_symbols.save(os.path.join(
-                    app.config["UPLOAD_FOLDER"], filename_symbols))
-            upload_symbols_file("./tmp/"+filename_symbols)
 
-            get_layers_table()
+
+            #get_layers_table()
 
             return redirect(url_for("convert_file_dxf"))
         flash("Error: the topografic data file type must be: .txt o .csv.")
@@ -195,25 +196,26 @@ def convert_file_dxf():
                 layer = {}
                 i += 1
             layer.update({field: form[key]})
-        print(layers)
+        layers.append(layer)      
+
         new_layers = get_dxf_configuration(layers)
-        print(new_layers)
+
         # Provisional
         session['dxf_output'] = str(session['username']) + '_file.dxf'
 
-        if get_errors_config_file_duplicate_color(new_layers):
-            flash(
-                'Error: config file has different colors on the same lines. \
+        if get_errors_config_file_duplicate_color( new_layers, get_code_layers()):
+                flash(
+                    'Error: config file has different colors on the same lines. \
                         Check the file')
 
-            return render_template('convert.html', title='Conversion DXF', form=form,
-                                   capas=layers, symbols=get_symbols(),
-                                   cad_versions=app.config["CAD_VERSIONS"],
-                                   errores=get_errors_upload_topographical_file())
+                return render_template('convert.html', title='Conversion DXF', form=form,
+                           capas=get_layers_table(), symbols=get_symbols(),
+                           cad_versions=app.config["CAD_VERSIONS"],
+                           errores=get_errors_upload_topographical_file())
 
         else:
-            generate_dxf("./tmp", session['dxf_output'],
-                         layers, cad_version)
+
+            generate_dxf("./tmp", session['dxf_output'], layers, cad_version)
             return redirect(url_for("downloads"))
 
     return render_template('convert.html', title='Conversion DXF', form=form,

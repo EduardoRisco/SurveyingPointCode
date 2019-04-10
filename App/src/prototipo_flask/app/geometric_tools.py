@@ -37,8 +37,7 @@ def create_layers(dwg, file_user):
     dwg.layers.new('Number_Points', dxfattribs={'color': 0})
     dwg.layers.new('Altitude', dxfattribs={'color': 0})
     dwg.layers.new('Label', dxfattribs={'color': 5})
-
-
+    
 ### Geometrical ###
 
 def create_points(dwg, msp, points):

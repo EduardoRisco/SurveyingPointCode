@@ -138,7 +138,7 @@ def upload_config_file(input_file):
                             [n_line, error])
                     codes.append(conf[0])
                     layer.append(conf[1])
-                    layer_color.append((conf[1], conf[2]))
+                    layer_color.append((conf[1], conf[2]))         
     except (IOError, NameError) as e:
         print(e)
 
@@ -152,9 +152,10 @@ def upload_symbols_file(dxf_symbol_file):
         global symbols
         global file_symbols_dxf
         error_symbol = True
+        file_symbols_dxf = dxf_symbol_file
         symbols = []
 
-        dwg = ezdxf.readfile(dxf_symbol_file)
+        dwg = ezdxf.readfile(file_symbols_dxf)
 
         for b in dwg.blocks:
             if b.__getattribute__('name') not in(
@@ -204,7 +205,7 @@ def get_errors_config_file_duplicate_elements():
         return False
 
 
-def get_errors_config_file_duplicate_color(list_config,code_layers):
+def get_errors_config_file_duplicate_color(list_config, code_layers):
     '''
     This function returns a list of errors, if any, of layers with 
     different color assigned. Input parameter a list with the user's configuration 
@@ -219,13 +220,14 @@ def get_errors_config_file_duplicate_color(list_config,code_layers):
             if len(layer) == 0:
                 layer.append(conf[1])
                 layer_color.append((conf[1], conf[2]))
-            else:               
-                if conf[0] in code_layers and  conf[1] in layer and (conf[1], conf[2]) not in layer_color:
+            else:
+                if (conf[0] in code_layers and conf[1] in layer and (
+                        conf[1], conf[2]) not in layer_color):
                     error = 'The Layer ' + conf[1] + \
                         ' has different colors assigned to it '
                     errors.add(error)
                 layer.append(conf[1])
-                layer_color.append((conf[1], conf[2]))     
+                layer_color.append((conf[1], conf[2]))
         return errors
 
 

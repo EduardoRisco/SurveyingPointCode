@@ -350,7 +350,6 @@ def get_dxf_configuration(conf_user_web):
                 e = tuple(t)
             l_conf.append(e)
         final_config.append(l_conf)
-
     return final_config
 
 
@@ -362,14 +361,13 @@ def generate_dxf(download_folder, dxf_filename, form_web,
 
     if not get_errors_upload_topographical_file() and not errors_square() and (
             not errors_rectangle()):
-
+       
         file_user = get_dxf_configuration(form_web)
         dwg = ezdxf.new(version)
 
         # Create the model space.
         msp = dwg.modelspace()
-        # Creating required layers.
-        create_layers(dwg, file_user)
+        
 
         if get_symbols():
             source_drawing = ezdxf.readfile(get_symbols_dxf_file())
@@ -378,6 +376,8 @@ def generate_dxf(download_folder, dxf_filename, form_web,
             # Adding symbols to model.
             insert_symbols(msp, get_points(), file_user)
 
+        # Creating required layers.
+        create_layers(dwg, file_user)
         # Adding points to model.
         create_points(dwg, msp, get_points())
         # Adding circles to model.
