@@ -21,9 +21,8 @@ CAD_VERSIONS = {
     'DXF 2013': 'AC1027',
     'DXF 2010': 'AC1024',
     'DXF 2007': 'AC1021',
-    'DXF 2004': 'AC1018',
-    'DXF 2000': 'AC1015'
-}
+    'DXF 2004': 'AC1018'
+ }
 
 
 app = Flask(__name__)
