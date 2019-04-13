@@ -1,0 +1,43 @@
+* Ampliacion de funcionalidades y enfoque de como será el diseño definitivo de la web, estilos, colores...
+* Tratamiento de los mensajes que presenta la palicacion al usuario, avisos, errores...
+
+* Problema surgido al intentar añadir la letra ñ:
+
+	Errores en el archivo de entrada al añadir la letra ñ , por la diferentes codificaciones.
+		En Windows 10:
+			Usando in-utf8.txt:
+			Error: 
+			Illegal character 'Ã'
+			Illegal character '±'
+			Syntax error at 'a'
+		 
+			Usando in-latin 1.txt:
+			Sin errores
+		 
+		En linux:
+			Usando in-utf8.txt:
+			Sin errores
+			Usando in-latin 1.txt:
+			Error:
+			UnicodeDecodeError: 'utf-8' codec can't decode byte 0xf1 in position 4: invalid continuation byte
+
+			
+	Solucionado usando codificaciones UTF-8 y :
+			with open(input_file, encoding='utf-8') as f:
+			
+	la definión para poder incluir la letra ñ y las diferentes tildes en los nombres de las capas , queda así:
+		def t_TEXT(t):
+			r'[a-zA-ZÀ-ÿ0-9ñÑ_]+'
+			t.type = 'TEXT'
+			return t
+		
+* Problema surgido con los colores de cad:
+Los pogramas de cad usan principalmente una paleta de colores de 256, pero la conversión de rgb a esta no es la 
+habitual, usan una paleta personalizada. Habra que personalizar una paleta de colores con la relación entre rgb y 
+los colores de cad.
+
+http://gohtx.com/acadcolors.php
+
+https://onedrive.live.com/view.aspx?resid=CB948AEB4728C76D!1356&authkey=!AGqmRz6KTXsCdWg
+
+https://github.com/istvan-ujjmeszaros/bootstrap-colorpickersliders
