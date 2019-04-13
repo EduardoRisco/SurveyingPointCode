@@ -9,10 +9,12 @@
 # J. Eduardo Risco 27-03-2019
 #
 
+
 import ezdxf
 import ply.lex as lex
 import ply.yacc as yacc
 
+from app import app
 
 config_file_init = []
 errors_config_file_parser = []
@@ -41,7 +43,7 @@ def t_INT(t):
 
 
 def t_TEXT(t):
-    r'[a-zA-Z0-9_]+'
+    r'[a-zA-ZÀ-ÿ0-9ñÑ_]+'
     t.type = 'TEXT'
     return t
 
@@ -102,20 +104,19 @@ def upload_config_file(input_file):
         config_file_init = []
 
         parser = yacc.yacc()
-        f = open(input_file)
-        line = f.readline()
-        n_line = 0
+        with open(input_file, encoding='utf-8') as f:
 
-        while line != "":
-            n_line += 1
-            c_line = parser.parse(line, lexer=lexer_config)
-            if c_line == None or not c_line:
-                # Capturing errors parser
-                errors_config_file_parser.append([n_line, line])
-            else:
-                config_file_init.append(c_line)
             line = f.readline()
-        f.close()
+            n_line = 0
+            while line != "":
+                n_line += 1
+                c_line = parser.parse(line, lexer=lexer_config)
+                if c_line == None or not c_line:
+                    # Capturing errors parser
+                    errors_config_file_parser.append([n_line, line])
+                else:
+                    config_file_init.append(c_line)
+                line = f.readline()
 
         if not get_errors_config_file():
             codes = []
@@ -138,7 +139,7 @@ def upload_config_file(input_file):
                             [n_line, error])
                     codes.append(conf[0])
                     layer.append(conf[1])
-                    layer_color.append((conf[1], conf[2]))         
+                    layer_color.append((conf[1], conf[2]))        
     except (IOError, NameError) as e:
         print(e)
 
