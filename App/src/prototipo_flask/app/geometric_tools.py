@@ -11,6 +11,8 @@ import math
 
 import ezdxf
 
+from app import app
+
 ### Layers  ###
 
 
@@ -25,11 +27,7 @@ def create_layers(dwg, file_user):
         layer_color.add((i[1], i[2]))
 
     for l in layer_color:
-        if isinstance(l[1], tuple):
-            color = (l[1][0] * 6 / 256) * 36 + (l[1][1] * 6 / 256) * 6 + (
-                l[1][2] * 6 / 256)
-        else:
-            color = l[1]
+		color = app.config['CAD_COLORS'].index(l[1])   
         dwg.layers.new(name=l[0], dxfattribs={'color': color})
 
     # Obligatory layers
