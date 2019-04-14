@@ -139,7 +139,7 @@ def upload_config_file(input_file):
                             [n_line, error])
                     codes.append(conf[0])
                     layer.append(conf[1])
-                    layer_color.append((conf[1], conf[2]))        
+                    layer_color.append((conf[1], conf[2]))
     except (IOError, NameError) as e:
         print(e)
 
@@ -218,13 +218,14 @@ def get_errors_config_file_duplicate_color(list_config, code_layers):
         layer = []
         errors = set()
         for conf in list_config:
+            layer_name = '0' if conf[1] == '' else conf[1]
             if len(layer) == 0:
                 layer.append(conf[1])
                 layer_color.append((conf[1], conf[2]))
             else:
                 if (conf[0] in code_layers and conf[1] in layer and (
                         conf[1], conf[2]) not in layer_color):
-                    error = 'The Layer ' + conf[1] + \
+                    error = 'The Layer ' + layer_name + \
                         ' has different colors assigned to it '
                     errors.add(error)
                 layer.append(conf[1])
@@ -272,3 +273,22 @@ def get_symbols_dxf_file():
         return False
     else:
         return file_symbols_dxf
+
+
+def get_errors_cad_color_palette(list_config, code_layers):
+    '''
+    This function returns a list of errors, 
+    if the color is not in the cad color palette.
+    Input parameter a list with the user's configuration
+    '''
+    if not list_config:
+        return False
+    else:
+        errors = set()
+        for conf in list_config:
+            if conf[2] not in app.config['CAD_COLORS'] and conf[0] in code_layers:
+                error = 'Layer '+conf[1] + ': rgb' + str(conf[2]) + \
+                        ' color is not defined in the cad color palette '
+                errors.add(error)
+        return errors
+
