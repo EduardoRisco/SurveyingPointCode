@@ -268,7 +268,13 @@ def calculate_azimut_distance(a, b):
     inc_x = coord_b_x - coord_a_x
     inc_y = coord_b_y - coord_a_y
 
-    angle = math.atan((inc_x) / (inc_y))
+    if inc_y==0:
+        if inc_x>0:
+            angle=90
+        else:
+            angle =180  
+    else:          
+        angle = math.atan((inc_x) / (inc_y))
     distance = math.sqrt((inc_x)**2 + (inc_y)**2)
 
     if inc_x > 0 and inc_y > 0:
