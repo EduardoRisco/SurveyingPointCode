@@ -1,89 +1,61 @@
 {% extends "base.html" %}
-{% block header %}
-{% include "header.html" %}
-{% endblock %}
-<head>
-   <title>Register</title>
-</head>
-<body>
-   {% block content %}
-   <div class="container">
-      <div class="row align-items-center justify-content-center">
-         <div class="col-sm-3 my-1">
-            <center>
-               <h1>Register</h1>
-               <br>
-            </center>
-         </div>
-      </div>
-   </div>
-      <div class="container">
-         <div class="row align-items-center justify-content-center">
-            <div class="col-sm-3 my-1">
-               {% with messages = get_flashed_messages(with_categories=true) %}
-               {% if messages %}
-               {% for message in messages %}
-               {% if "Error" not in message[1]: %}
-               <div class="alert alert-info">
-                  <strong></strong> {{ message[1] }}
+
+{% block content %}
+<div class="container-fluid">
+   <div class="row justify-content-center">
+      <div class="col-md-6">
+         <div class="card" id="login_card">
+            <div class="row no-gutters justify-content-center">
+               <div class="col-md-6 p-5 d-none d-md-block" id="login_left_logo"> <!-- Hide on screens smaller than md -->
+                  <div class="row h-100 justify-content-center p-3">
+                     <img src="{{ url_for('static', filename='images/logo_login.svg') }}" class="card-img img-fluid" alt="Surveying Point Code Logo">
+                  </div>
                </div>
-               {% endif %}
-               {% if "Error" in message[1]: %}
-               <div class="alert alert-danger">
-                  <strong></strong> {{ message[1] }}
+               <div class="col-md-6 p-2 d-md-none" id="login_top_logo"> <!-- Hide on screens wider than md -->
+                  <div class="row h-100 justify-content-center p-2">
+                     <img src="{{ url_for('static', filename='images/logo_login_min.svg') }}" class="card-img img-fluid" alt="Surveying Point Code Logo">
+                  </div>
+               </div>                     
+               <div class="col-md-6">
+                  <div class="card-body p-3">
+                     <h5 class="card-title font-weight-bolder pb-2">Register</h5>
+                     <form action="" method="post" role="form" novalidate>
+                        {{ form.hidden_tag() }}
+                        <div class="form-group">
+                           {{ form.username.label }}
+                           <input type="text" class="form-control form-control-sm {{ 'is-invalid' if post and form.username.errors else 'is-valid' if post and not form.username.errors }}" id="username" name="username" placeholder="Enter username" value="{{ data['username'] }}" required>
+                           <div class="invalid-feedback">{{ form.username.errors[0] }}</div>
+                           <div class="valid-feedback">Looks good!</div>
+                        </div>
+                        <div class="form-group">
+                           {{ form.email.label }}
+                           <input type="email" class="form-control form-control-sm {{ 'is-invalid' if post and form.email.errors else 'is-valid' if post and not form.email.errors }}" id="email" name="email" placeholder="Enter email" value="{{ data['email'] }}" required>
+                           <div class="invalid-feedback">{{ form.email.errors[0] }}</div>
+                           <div class="valid-feedback">Looks good!</div>
+                        </div>  
+                        <div class="form-group">
+                           {{ form.password.label }}
+                           <input type="password" class="form-control form-control-sm {{ 'is-invalid' if post and form.password.errors }}" id="password" name="password" placeholder="Enter password" required>
+                           <div class="invalid-feedback">{{ form.password.errors[0] }}</div> 
+                        </div>
+                        <div class="form-group">
+                           {{ form.password2.label }}
+                           <input type="password" class="form-control form-control-sm {{ 'is-invalid' if post and form.password2.errors }}" id="password2" name="password2" placeholder="Repeat password" required>
+                           <div class="invalid-feedback">{{ form.password2.errors[0] }}</div>
+                        </div>
+                        <div class="row d-flex align-items-center justify-content-center">
+                           <button type="submit" class="btn btn-success btn-sm mr-2"><i class="far fa-paper-plane"></i> Register</button>
+                           <a class="btn btn-primary btn-sm" href="{{ url_for('index') }}" role="button"><i class="fas fa-ban"></i> Cancel</a>
+                        </div>                              
+                     </form>                          
+                     <p class="mb-0 mt-3 text-center" style="line-height: normal">
+                        <small><strong>SurveyingPointCode by J. Eduardo Risco</br>&copy; 2018-2019</strong></small>
+                     </p>
+                  </div>
                </div>
-               {% endif %}
-               {% endfor %}
-               {% endif %}
-               {% endwith %}
             </div>
-         </div>
-      </div>
-   
-   <div class="container">
-   <br>
-   <div class="row align-items-center justify-content-center">
-   <div class="col-sm-3 my-1">
-      <form  action="" method="post" role="form" novalidate>
-         {{ form.hidden_tag()  }}
-         <div class="form-group">
-            {{ form.username.label }}<br>
-            <input type="text" class="form-control" id="username" name="username" placeholder="Enter username." required>
-            {% for error in form.username.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-            <br>
-            {{ form.email.label }}
-            <input type="email" class="form-control" id="email" name="email" placeholder="Enter email." required>
-            {% for error in form.email.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-            <br>
-            {{ form.password.label }}
-            <input type="password" class="form-control" id="password" name="password" placeholder="Password." required>
-            {% for error in form.password.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-            <br>
-            {{ form.password2.label }}
-            <input type="password" class="form-control" id="password2" name="password2" placeholder="Password." required>
-            {% for error in form.password2.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-            <br>
-            <center>
-               <button type="submit" class="btn btn-success">Register</button>
-            </center>
-      </form>
-      <br>
+         </div>         
       </div>
    </div>
 </div>
-   {% endblock %}
-  
-</body>
-
-{% block footer %}
-{% include "footer.html" %}
 {% endblock %}
-
