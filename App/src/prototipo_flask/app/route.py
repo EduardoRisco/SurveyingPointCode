@@ -74,15 +74,27 @@ def register():
 
     if current_user.is_authenticated:
         return redirect(url_for('upload_file'))
+    post = False
+    data = {
+        'username' : '',
+        'email' : ''
+    }    
     form = RegistrationForm()
-    if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
-        user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        flash('Congratulations, you are now a registered user!')
-        return redirect(url_for('login'))
-    return render_template('register.html', title='Register', form=form)
+
+    if request.method == 'POST':
+        post = True
+        if form.validate_on_submit():
+            user = User(username=form.username.data, email=form.email.data)
+            user.set_password(form.password.data)
+            db.session.add(user)
+            db.session.commit()
+            flash('You are now a registered user!')
+            return redirect(url_for('login'))
+        if form.username.data is not None:
+            data['username'] = form.username.data    
+        if form.email.data is not None:
+            data['email'] = form.email.data    
+    return render_template('register.html', title='Register', form=form, post=post, data=data)
 
 
 @app.route("/upload", methods=["GET", "POST"])
