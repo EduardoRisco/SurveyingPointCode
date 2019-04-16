@@ -18,14 +18,17 @@ from werkzeug.utils import secure_filename
 
 from app import app, db
 from app.conversor import (errors_rectangle, errors_square, generate_dxf,
-                           get_dxf_configuration,
-                           get_errors_upload_topographical_file, get_code_layers,
+                           get_code_layers, get_dxf_configuration,
+                           get_errors_upload_topographical_file,
                            get_layers_table, get_symbols,
                            upload_topographical_file)
 from app.forms import LoginForm, RegistrationForm
 from app.models import User
+from app.route_helper import add_session, logout_user
 from app.upload_optional_files import (error_symbols, file_empty,
-                                       get_config_file, get_errors_config_file,
+                                       get_config_file,
+                                       get_errors_cad_color_palette,
+                                       get_errors_config_file,
                                        get_errors_config_file_duplicate_color,
                                        get_errors_config_file_duplicate_elements,
                                        upload_config_file, upload_symbols_file)
@@ -41,27 +44,29 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    email = ''
+   
     if current_user.is_authenticated:
         return redirect(url_for('upload_file'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if user is None or not user.check_password(form.password.data):
-            flash('Error: Invalid email or password')
-            return redirect(url_for('login'))
-        login_user(user, remember=form.remember_me.data)
-        next_page = request.args.get('next')
-        if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('upload_file')
-            session['username'] = user.username
-            session['last_access'] = user.last_access
-            session['current_access'] = time.ctime(time.time())
-            user.last_access = session['current_access']
-            db.session.commit()
-            flash('User successfully logged in')
-        return redirect(next_page)
-    return render_template('login.html', title='Sign In', form=form, email=email)
+
+    post = False
+    email = ''
+    form = LoginForm()    
+    if request.method == 'POST':
+        post = True
+        if form.validate_on_submit():
+            user = User.query.filter_by(email=form.email.data).first()
+            if user is None or not user.check_password(form.password.data):
+                flash('Error: Invalid email or password')
+                return redirect(url_for('login'))
+            login_user(user, remember=form.remember_me.data)
+            next_page = request.args.get('next')
+            if not next_page or url_parse(next_page).netloc != '':                
+                add_session(user)
+                user.last_access = session['current_access']
+                db.session.commit()
+                next_page = url_for('upload_file')                
+            return redirect(next_page)
+    return render_template('login.html', title='Sign In', form=form, email=email,post=post)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -119,12 +124,20 @@ def upload_file():
                 f_symbols.save(os.path.join(
                     app.config["UPLOAD_FOLDER"], filename_symbols))
             upload_symbols_file("./tmp/"+filename_symbols)
-
+           
             if get_errors_upload_topographical_file():
                 flash(
                     'Error: topographic data file has the following errors. \
                          Check the file')
                 return render_template('upload.html', title='Carga Archivos')
+
+            elif file_empty( "./tmp/" + filename_topography):
+               
+                flash(
+                    'Error: config file is empty. \
+                        Check the file')
+                return render_template('upload.html', title='Carga Archivos')
+
             if errors_square():
                 flash(
                     'Error: The number of points with "TC" code is not \
@@ -142,14 +155,14 @@ def upload_file():
                         Check the file')
                 return render_template('upload.html', title='Carga Archivos')
 
-            elif file_empty(get_config_file(), get_errors_config_file(),
-                            get_errors_config_file_duplicate_color(
-                                get_config_file(), get_code_layers()),
-                            get_errors_config_file_duplicate_elements()):
-                flash(
-                    'Error: config file is empty. \
-                        Check the file')
-                return render_template('upload.html', title='Carga Archivos')
+            #elif file_empty(get_config_file(), get_errors_config_file(),
+                            #get_errors_config_file_duplicate_color(
+                                #get_config_file(), get_code_layers()),
+                            #get_errors_config_file_duplicate_elements()):
+                #flash(
+                    #'Error: config file is empty. \
+                        #Check the file')
+                #return render_template('upload.html', title='Carga Archivos')
             elif get_errors_config_file_duplicate_elements():
                 flash(
                     'Error: config file has duplicate items on different lines. \
@@ -163,9 +176,7 @@ def upload_file():
 
                 return render_template('upload.html', title='Carga Archivos')
 
-
-
-            #get_layers_table()
+           
 
             return redirect(url_for("convert_file_dxf"))
         flash("Error: the topografic data file type must be: .txt o .csv.")
@@ -196,27 +207,31 @@ def convert_file_dxf():
                 layer = {}
                 i += 1
             layer.update({field: form[key]})
-        layers.append(layer)      
+        layers.append(layer)
 
         new_layers = get_dxf_configuration(layers)
 
         # Provisional
         session['dxf_output'] = str(session['username']) + '_file.dxf'
 
-        if get_errors_config_file_duplicate_color( new_layers, get_code_layers()):
-                flash(
-                    'Error: config file has different colors on the same lines. \
+        if get_errors_config_file_duplicate_color(new_layers, get_code_layers()):
+            flash(
+                'Error: config file has different colors on the same lines. \
                         Check the file')
 
-                return render_template('convert.html', title='Conversion DXF', form=form,
-                           capas=get_layers_table(), symbols=get_symbols(),
-                           cad_versions=app.config["CAD_VERSIONS"],
-                           errores=get_errors_upload_topographical_file())
-
+            return render_template('convert.html', title='Conversion DXF', form=form,
+                                   capas=get_layers_table(), symbols=get_symbols(),
+                                   cad_versions=app.config["CAD_VERSIONS"],
+                                   errores=get_errors_upload_topographical_file())
         else:
+            if generate_dxf("./tmp", session['dxf_output'], layers, cad_version):
 
-            generate_dxf("./tmp", session['dxf_output'], layers, cad_version)
-            return redirect(url_for("downloads"))
+                flash('Successfully converted file')
+                return redirect(url_for("downloads"))
+            else:
+               flash('Error: converted file')
+               return render_template('upload.html', title='Carga Archivos')    
+  
 
     return render_template('convert.html', title='Conversion DXF', form=form,
                            capas=get_layers_table(), symbols=get_symbols(),
