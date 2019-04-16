@@ -53,13 +53,7 @@
                            placeholder="Default Layer 0" value="{{ capas[i]['layer'] if capas[i]['layer'] }}">
                      </div>
                      <div class="col-md-2">
-                        <div class="input-group colorpicker-component color-picker">
-                           <input type="text" name="color-{{ i }}" class="form-control form-control-sm"
-                              value="rgb{{ capas[i]['color'] if capas[i]['color'] else rgb(255, 255, 255) }}">
-                           <div class="input-group-append">
-                              <span class="input-group-text input-group-addon"><i></i></span>
-                           </div>
-                        </div>
+                        <input type="text" name="color-{{ i }}" class="form-control form-control-sm color-picker" value="rgb{{ capas[i]['color'] }}">
                      </div>
                      <div class="col-md-4">
                         {% if symbols %}
