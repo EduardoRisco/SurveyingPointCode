@@ -17,6 +17,6 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOAD_FOLDER = os.path.abspath('./tmp/')
     CAD_VERSIONS = cad_versions
-    CAD_COLORS_PALETTE = cad_colors_palette
+    CAD_COLORS = cad_colors_palette
     SQLALCHEMY_DATABASE_URI = 'postgresql://%(user)s:\
 %(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
