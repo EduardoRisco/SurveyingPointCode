@@ -28,9 +28,9 @@ Instrucciones configuración entorno:
   docker volume create  --driver local --name=pg_data
   ```
 
-  ``````
+  ```
   docker volume create --driver local --name=pga4volume
-  ``````
+  ```
 
 
 - Crear una conexión para comunicar los contenedores.
@@ -48,7 +48,7 @@ Instrucciones configuración entorno:
 - Arrancar el contenedor PgAdmin4 con los siguientes parámetros:
 
   ```
-  docker run --publish 80:80 --volume=pga4volume:/var/lib/pgadmin --name=pgadmin4 --hostname=pgadmin4 --network=pgnetwork --detach -e "PGADMIN_DEFAULT_EMAIL=email@gmail.com" -e "PGADMIN_DEFAULT_PASSWORD=tfg" -d dpage/pgadmin4
+  docker run --publish 80:80 --volume=pga4volume:/var/lib/pgadmin --name=pgadmin4 --hostname=pgadmin4 --network=pgnetwork -e "PGADMIN_DEFAULT_EMAIL=your_email@example.com" -e "PGADMIN_DEFAULT_PASSWORD=tfg" -d dpage/pgadmin4
   ```
 
 
