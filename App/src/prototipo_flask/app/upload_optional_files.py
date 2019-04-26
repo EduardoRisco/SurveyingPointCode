@@ -9,6 +9,7 @@
 # J. Eduardo Risco 27-03-2019
 #
 
+import os
 
 import ezdxf
 import ply.lex as lex
@@ -59,7 +60,6 @@ def t_newline(t):
 
 
 def t_error(t):
-    #print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
 
 
@@ -69,8 +69,8 @@ lexer_config = lex.lex()
 
 
 def p_linea(p):
-    ''' linea : TEXT COMA TEXT COMA color COMA TEXT
-              | TEXT COMA TEXT COMA color '''
+    """ linea : TEXT COMA TEXT COMA color COMA TEXT
+              | TEXT COMA TEXT COMA color """
 
     if len(p) == 8:
         p[0] = p[1], p[3], p[5], p[7]
@@ -79,7 +79,7 @@ def p_linea(p):
 
 
 def p_color(p):
-    ''' color :  LPAREN INT COMA INT COMA INT RPAREN'''
+    """ color :  LPAREN INT COMA INT COMA INT RPAREN"""
 
     p[0] = p[2], p[4], p[6]
 
@@ -90,10 +90,10 @@ def p_error(p):
 
 
 def upload_config_file(input_file):
-    '''
+    """
     This function reads a user configuration file,
     contains topographic codes, cad layers, colors and symbols.
-    '''
+    """
 
     try:
         global config_file_init
@@ -111,7 +111,7 @@ def upload_config_file(input_file):
             while line != "":
                 n_line += 1
                 c_line = parser.parse(line, lexer=lexer_config)
-                if c_line == None or not c_line:
+                if c_line is None or not c_line:
                     # Capturing errors parser
                     errors_config_file_parser.append([n_line, line])
                 else:
@@ -145,9 +145,9 @@ def upload_config_file(input_file):
 
 
 def upload_symbols_file(dxf_symbol_file):
-    '''
+    """
     This function reads a dxf file with symbols.
-    '''
+    """
     try:
         global error_symbol
         global symbols
@@ -173,11 +173,11 @@ def upload_symbols_file(dxf_symbol_file):
 
 
 def get_config_file():
-    '''
+    """
     This function returns a config_user list if it exists, in other case it returns False.
-    '''
+    """
 
-    if file_empty(config_file_init, get_errors_config_file()) or (
+    if  not config_file_init or get_errors_config_file() or (
             get_errors_config_file()) or get_errors_config_file_duplicate_elements():
         return False
     else:
@@ -185,10 +185,10 @@ def get_config_file():
 
 
 def get_errors_config_file():
-    '''
+    """
     This function returns a list of config_use errors,
     when the input data  doesn't have the correct format.
-    '''
+    """
     if errors_config_file_parser:
         return errors_config_file_parser
     else:
@@ -196,10 +196,10 @@ def get_errors_config_file():
 
 
 def get_errors_config_file_duplicate_elements():
-    '''
+    """
     This funtion  returns a list of errors,
     when there are duplicate items on different lines.
-    '''
+    """
     if not get_errors_config_file() and errors_config_file_duplicate_elem:
         return errors_config_file_duplicate_elem
     else:
@@ -207,10 +207,10 @@ def get_errors_config_file_duplicate_elements():
 
 
 def get_errors_config_file_duplicate_color(list_config, code_layers):
-    '''
+    """
     This function returns a list of errors, if any, of layers with 
     different color assigned. Input parameter a list with the user's configuration 
-    '''
+    """
     if not list_config:
         return False
     else:
@@ -233,22 +233,20 @@ def get_errors_config_file_duplicate_color(list_config, code_layers):
         return errors
 
 
-def file_empty(list_items, list_errors_upload,
-               list_errors_duplicate=True, list_errors_color=True):
-    '''
+def file_empty(file):
+    """
     This function returns True if the file is empty, in other case it returns False.
-    '''
+    """
 
-    if not list_items and not (list_errors_upload
-                               or list_errors_color or list_errors_duplicate):
+    if os.stat(file).st_size == 0:
         return True
     return False
 
 
 def get_symbols():
-    '''
+    """
     This function returns a symbols list .
-    '''
+    """
     if not symbols:
         return False
     else:
@@ -256,9 +254,9 @@ def get_symbols():
 
 
 def error_symbols():
-    '''
+    """
     This function returns true if there are no symbols in the dxf file.
-    '''
+    """
     if not error_symbol:
         return False
     else:
@@ -266,9 +264,9 @@ def error_symbols():
 
 
 def get_symbols_dxf_file():
-    '''
+    """
     This function returns a symbols file .
-    '''
+    """
     if not file_symbols_dxf:
         return False
     else:
@@ -276,11 +274,11 @@ def get_symbols_dxf_file():
 
 
 def get_errors_cad_color_palette(list_config, code_layers):
-    '''
+    """
     This function returns a list of errors, 
     if the color is not in the cad color palette.
     Input parameter a list with the user's configuration
-    '''
+    """
     if not list_config:
         return False
     else:
@@ -291,4 +289,3 @@ def get_errors_cad_color_palette(list_config, code_layers):
                         ' color is not defined in the cad color palette '
                 errors.add(error)
         return errors
-

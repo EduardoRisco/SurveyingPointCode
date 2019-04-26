@@ -26,6 +26,21 @@ body {
   z-index: -1000;  
 }
 
+/* HEADER AND FOOTER CSS */
+header, footer {
+  background-color: #aebbbe;
+}
+
+footer {
+  line-height: normal;
+  /*-webkit-box-shadow: 0 -0.5rem 1rem rgba(0, 0, 0, 0.25) !important;
+  box-shadow: 0 -0.5rem 1rem rgba(0, 0, 0, 0.25) !important;*/
+}
+
+nav > a {
+  color: #000000;
+}
+
 #welcome_user {
   pointer-events: none;
 }
@@ -58,10 +73,28 @@ body {
   border-top-right-radius: 1rem;    
 }
 
-/* FORMS CSS */
-.form-card .card-header {
+/* FORMS CSS && LIST OF CONVERTED FILES */
+.form-card .card-header,
+.converted-files .card-header {
   position: -webkit-sticky;
   position: sticky;
   top: 50px;
   z-index: 1020;
 }
+
+.converted-files .card-body .options {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 103px;
+  z-index: 1010;  
+  background-color: #ffffff;
+}
+
+.alert.converted-item{
+  cursor: pointer;
+}
+
+.alert.converted-item:hover {
+  background-color: #d1cfcd !important;
+}
+

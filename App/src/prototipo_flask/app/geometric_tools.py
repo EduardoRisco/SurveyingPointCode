@@ -13,21 +13,21 @@ import ezdxf
 
 from app import app
 
-### Layers  ###
+# Layers
 
 
 def create_layers(dwg, file_user):
-    '''
+    """
     This function  reads a file ,creates the layers defined by the
     user, adding them to model.
-    '''
+    """
 
     layer_color = set()
     for i in file_user:
         layer_color.add((i[1], i[2]))
 
     for l in layer_color:
-		color = app.config['CAD_COLORS'].index(l[1])   
+        color = app.config['CAD_COLORS'].index(l[1])        
         dwg.layers.new(name=l[0], dxfattribs={'color': color})
 
     # Obligatory layers
@@ -36,13 +36,14 @@ def create_layers(dwg, file_user):
     dwg.layers.new('Altitude', dxfattribs={'color': 0})
     dwg.layers.new('Label', dxfattribs={'color': 5})
     
-### Geometrical ###
+# Geometrical
+
 
 def create_points(dwg, msp, points):
-    '''
+    """
     This function insert all the points in the 'Points' layer,
     the altitude in the 'Altitude' layer and the code in the 'Label' layer.
-    '''
+    """
     # Defining Text, Elevation, and Label Styles
     dwg.styles.new('elevation', dxfattribs={'font': 'arial.ttf', 'width': 0.1})
     dwg.styles.new('label', dxfattribs={'font': 'times.ttf', 'width': 0.5})
@@ -54,26 +55,26 @@ def create_points(dwg, msp, points):
             'style': 'elevation',
             'height': 0.35,
             'layer': 'Altitude'
-        }).set_pos(((p[1][0] + 0.35, p[1][1] + 0.35)), align='LEFT')
+        }).set_pos((p[1][0] + 0.35, p[1][1] + 0.35), align='LEFT')
         msp.add_text(p[2],
                      dxfattribs={
             'style': 'label',
             'height': 0.35,
             'layer': 'Label'
-        }).set_pos(((p[1][0] + 0.35, p[1][1] + 0.90)), align='LEFT')
+        }).set_pos((p[1][0] + 0.35, p[1][1] + 0.90), align='LEFT')
         msp.add_text(p[0],
                      dxfattribs={
             'style': 'elevation',
             'height': 0.40,
             'layer': 'Number_Points'
-        }).set_pos(((p[1][0] - 0.35, p[1][1] - 0.35)), align='RIGHT')
+        }).set_pos((p[1][0] - 0.35, p[1][1] - 0.35), align='RIGHT')
 
 
 def create_circles(msp, circles, file_user):
-    '''
+    """
     This function creates circles with radius defined by the
     user, and adds them to the model, in the corresponding layer.
-    '''
+    """
     layer = ''
     for c in circles:
         code_line = c[3][1]
@@ -85,11 +86,11 @@ def create_circles(msp, circles, file_user):
 
 
 def create_lines(msp, lines, file_user):
-    '''
+    """
    This function creates user-defined lines,and adds them to the model,
    in the corresponding layer.It also solves the case of unmeasured points
    and incorporates them into the line.
-   '''
+   """
     layer = ''
     for p in lines:
         code_line = p[0][2]
@@ -132,10 +133,10 @@ def create_lines(msp, lines, file_user):
 
 
 def create_curves(msp, curves, file_user):
-    '''
+    """
     This function creates user-defined curves,
     and adds them to the model, in the corresponding layer.
-    '''
+    """
     layer = ''
     for p in curves:
         code_line = p[0][2]
@@ -149,10 +150,10 @@ def create_curves(msp, curves, file_user):
 
 
 def create_squares(msp, squares, file_user):
-    '''
+    """
     This function creates user-defined squares,
     and adds them to the model, in the corresponding layer.
-    '''
+    """
     layer = ''
 
     for i in range(0, len(squares), 2):
@@ -179,8 +180,6 @@ def create_squares(msp, squares, file_user):
             coord_c_x = coord_b_x + inc_x
             coord_c_y = coord_b_y + inc_y
             line.append((coord_c_x, coord_c_y))
-            coord_a_x = coord_b_x
-            coord_a_y = coord_b_y
             coord_b_x = coord_c_x
             coord_b_y = coord_c_y
             azimut = azimut + 90
@@ -190,10 +189,10 @@ def create_squares(msp, squares, file_user):
 
 
 def create_rectangles(msp, rectangles, file_user):
-    '''
+    """
     This function creates user-defined rectangles,
     and adds them to the model, in the corresponding layer.
-    '''
+    """
 
     layer = ''
 
@@ -231,9 +230,9 @@ def create_rectangles(msp, rectangles, file_user):
 
 
 def insert_symbols(msp, points, file_user):
-    '''
+    """
     This function inserts symbols into the coded points.
-    '''
+    """
     layer = ''
     for p in points:
         if len(p) == 4:
@@ -253,13 +252,13 @@ def insert_symbols(msp, points, file_user):
         msp.add_blockref(code_point, (p[1][0], p[1][1]),dxfattribs={'layer': layer})
           
 
-### Mathematical ###
+# Mathematical
 
 
 def calculate_azimut_distance(a, b):
-    '''
+    """
     Function returns the calculated azimuth and distance between two points.
-    '''
+    """
 
     coord_a_x = a[1][0]
     coord_a_y = a[1][1]
@@ -268,18 +267,18 @@ def calculate_azimut_distance(a, b):
     inc_x = coord_b_x - coord_a_x
     inc_y = coord_b_y - coord_a_y
 
-    if inc_y==0:
-        if inc_x>0:
-            angle=90
+    if inc_y == 0:
+        if inc_x > 0:
+            angle = 90
         else:
-            angle =180  
+            angle = 180
     else:          
-        angle = math.atan((inc_x) / (inc_y))
-    distance = math.sqrt((inc_x)**2 + (inc_y)**2)
+        angle = math.atan(inc_x / inc_y)
+    distance = math.sqrt(inc_x**2 + inc_y**2)
 
     if inc_x > 0 and inc_y > 0:
         azimut = math.degrees(angle)
-    elif inc_x > 0 and inc_y < 0 or inc_x < 0 and inc_y < 0:
+    elif inc_x > 0 > inc_y or inc_x < 0 and inc_y < 0:
         azimut = math.degrees(angle) + 180
     else:
         azimut = math.degrees(angle) + 360
@@ -287,10 +286,10 @@ def calculate_azimut_distance(a, b):
 
 
 def calculate_increment_x_y(azimut, distance):
-    '''
+    """
     Function returns the increment of 'x' and 'y' from
-    of an azimuth and a distanc
-    '''
+    of an azimuth and a distance
+    """
 
     inc_x = (math.sin(math.radians(azimut)) * distance)
     inc_y = (math.cos(math.radians(azimut)) * distance)
@@ -298,9 +297,9 @@ def calculate_increment_x_y(azimut, distance):
 
 
 def calculate_angle(azimut, distance):
-    '''
+    """
     Function returns azimuth variation using distance sign 
-    '''
+    """
 
     if distance >= 0:
         azimut = azimut + 90

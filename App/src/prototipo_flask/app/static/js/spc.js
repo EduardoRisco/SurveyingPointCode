@@ -69,6 +69,16 @@ let selectedColorPicker = '';
 
 document.addEventListener('DOMContentLoaded', () => {
 
+    // Automatically close alerts after 5 seconds
+    window.setTimeout(() => {
+        $('#alert').fadeTo(500, 0).slideUp(500, () => {
+            $(this).remove(); 
+        });
+    }, 5000);
+
+    // Animate custom file input
+    bsCustomFileInput.init();
+
     // Color picker instantiation
     $('input.color-picker').ColorPickerSliders({
         placement: 'bottom',
@@ -78,5 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
         preventtouchkeyboardonshow: true,
         order: {}
     });  
+    
+
+
 });
 

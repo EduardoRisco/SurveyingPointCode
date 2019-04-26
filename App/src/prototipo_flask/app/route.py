@@ -7,6 +7,7 @@
 
 import os
 import secrets
+import shutil
 import time
 
 from flask import (flash, redirect, render_template, request, send_file,
@@ -22,16 +23,15 @@ from app.conversor import (errors_rectangle, errors_square, generate_dxf,
                            get_errors_upload_topographical_file,
                            get_layers_table, get_symbols,
                            upload_topographical_file)
-from app.forms import LoginForm, RegistrationForm
+from app.forms import LoginForm, RegistrationForm, UploadForm
 from app.models import User
-from app.route_helper import add_session, logout_user
-from app.upload_optional_files import (error_symbols, file_empty,
-                                       get_config_file,
-                                       get_errors_cad_color_palette,
-                                       get_errors_config_file,
-                                       get_errors_config_file_duplicate_color,
-                                       get_errors_config_file_duplicate_elements,
-                                       upload_config_file, upload_symbols_file)
+from app.route_helper import (add_session, create_user_folder,
+                              save_upload_files, user_logout)
+from app.upload_optional_files import (
+    error_symbols, file_empty, get_config_file, get_errors_cad_color_palette,
+    get_errors_config_file, get_errors_config_file_duplicate_color,
+    get_errors_config_file_duplicate_elements, upload_config_file,
+    upload_symbols_file)
 
 app.secret_key = secrets.token_urlsafe(16)
 db.create_all()
@@ -44,13 +44,13 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-   
+
     if current_user.is_authenticated:
         return redirect(url_for('upload_file'))
 
     post = False
     email = ''
-    form = LoginForm()    
+    form = LoginForm()
     if request.method == 'POST':
         post = True
         if form.validate_on_submit():
@@ -60,13 +60,13 @@ def login():
                 return redirect(url_for('login'))
             login_user(user, remember=form.remember_me.data)
             next_page = request.args.get('next')
-            if not next_page or url_parse(next_page).netloc != '':                
+            if not next_page or url_parse(next_page).netloc != '':
                 add_session(user)
                 user.last_access = session['current_access']
                 db.session.commit()
-                next_page = url_for('upload_file')                
+                next_page = url_for('upload_file')
             return redirect(next_page)
-    return render_template('login.html', title='Sign In', form=form, email=email,post=post)
+    return render_template('login.html', title='Sign In', form=form, email=email, post=post)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -76,9 +76,9 @@ def register():
         return redirect(url_for('upload_file'))
     post = False
     data = {
-        'username' : '',
-        'email' : ''
-    }    
+        'username': '',
+        'email': ''
+    }
     form = RegistrationForm()
 
     if request.method == 'POST':
@@ -91,109 +91,58 @@ def register():
             flash('You are now a registered user!')
             return redirect(url_for('login'))
         if form.username.data is not None:
-            data['username'] = form.username.data    
+            data['username'] = form.username.data
         if form.email.data is not None:
-            data['email'] = form.email.data    
+            data['email'] = form.email.data
     return render_template('register.html', title='Register', form=form, post=post, data=data)
 
 
 @app.route("/upload", methods=["GET", "POST"])
 @login_required
 def upload_file():
+    if 'username' not in session:
+        user_logout()  
 
-    if request.method == "POST":
-        if "topographical_file" not in request.files:
-            flash("Error: topographic data file not selected.")
-            return render_template('upload.html', title='Carga Archivos')
-        f_topography = request.files["topographical_file"]
-        if "config_file" not in request.files:
-            f_config = ""
-        else:
-            f_config = request.files["config_file"]
-        if "symbols_file" not in request.files:
-            f_symbols = ""
-        else:
-            f_symbols = request.files["symbols_file"]
+    # Reset variables to prevent page regression
+    session['topographical_file'] = ''
+    session['config_file'] = ''
+    session['symbols_file'] = ''
+    session['files_folder'] = ''
+    session['dxf_filename'] = '' 
+    f_config = ""
+    f_symbols = ""
+    f_topo = ""
 
-        if f_topography.filename == "":
-            flash("Error: topographic data file not selected.")
-        if f_topography:
-            filename_topography = secure_filename(f_topography.filename)
-            filename_config = ''
-            if f_config:
-                filename_config = secure_filename(f_config.filename)
-                f_config.save(os.path.join(
-                    app.config["UPLOAD_FOLDER"], filename_config))
-            upload_config_file("./tmp/" + filename_config)
+    post = False
+    form = UploadForm()
 
-            f_topography.save(os.path.join(
-                app.config["UPLOAD_FOLDER"], filename_topography))
+    if request.method == 'POST':
+        post = True          
 
-            upload_topographical_file("./tmp/" + filename_topography)
-            filename_symbols = ''
-            if f_symbols:
-                filename_symbols = secure_filename(f_symbols.filename)
-                f_symbols.save(os.path.join(
-                    app.config["UPLOAD_FOLDER"], filename_symbols))
-            upload_symbols_file("./tmp/"+filename_symbols)
-           
-            if get_errors_upload_topographical_file():
-                flash(
-                    'Error: topographic data file has the following errors. \
-                         Check the file')
-                return render_template('upload.html', title='Carga Archivos')
+        if form.validate_on_submit():
+            if "config_file" in request.files:
+                f_config = request.files["config_file"]
 
-            elif file_empty( "./tmp/" + filename_topography):
-               
-                flash(
-                    'Error: config file is empty. \
-                        Check the file')
-                return render_template('upload.html', title='Carga Archivos')
+            if "symbols_file" in request.files:
+                f_symbols = request.files["symbols_file"]      
 
-            if errors_square():
-                flash(
-                    'Error: The number of points with "TC" code is not \
-                        multiple of 2. Check the file')
-                return render_template('upload.html', title='Carga Archivos')
-            if errors_rectangle():
-                flash(
-                    'Error: The number of points with "TR" code is not \
-                        multiple of 3. Check the file')
-                return render_template('upload.html', title='Carga Archivos')
-
-            if get_errors_config_file():
-                flash(
-                    'Error: config file has the following errors. \
-                        Check the file')
-                return render_template('upload.html', title='Carga Archivos')
-
-            #elif file_empty(get_config_file(), get_errors_config_file(),
-                            #get_errors_config_file_duplicate_color(
-                                #get_config_file(), get_code_layers()),
-                            #get_errors_config_file_duplicate_elements()):
-                #flash(
-                    #'Error: config file is empty. \
-                        #Check the file')
-                #return render_template('upload.html', title='Carga Archivos')
-            elif get_errors_config_file_duplicate_elements():
-                flash(
-                    'Error: config file has duplicate items on different lines. \
-                        Check the file')
-                return render_template('upload.html', title='Carga Archivos')
-
-            elif get_errors_config_file_duplicate_color(get_config_file(), get_code_layers()):
-                flash(
-                    'Error: config file has different colors on the same lines. \
-                        Check the file')
-
-                return render_template('upload.html', title='Carga Archivos')
-
-           
+            f_topo = request.files["topographical_file"]
+            session['topographical_file'] = secure_filename(f_topo.filename)
+            
+            # Create customized directory for each user
+            create_user_folder()
+            # Save field files, configuration and symbols in the user folder
+            save_upload_files(f_topo, f_config, f_symbols) 
+            # Analyze  topographical field
+            upload_topographical_file(os.path.join(session['files_folder'], session['topographical_file']))
+            # Analyze the configuration file (if it exists)
+            upload_config_file(os.path.join(session['files_folder'], session['config_file']))
+            # Analyze and extract the symbols from the file (if it exists)
+            upload_symbols_file(os.path.join(session['files_folder'], session['symbols_file']))
 
             return redirect(url_for("convert_file_dxf"))
-        flash("Error: the topografic data file type must be: .txt o .csv.")
 
-    return render_template('upload.html', title='Carga Archivos')
+    return render_template('upload.html', title='Upload Files', form=form, post=post)
 
 
 @app.route("/convert", methods=["GET", "POST"])
@@ -207,7 +156,7 @@ def convert_file_dxf():
         cad_version = form['cadversion']
         del form['cadversion']
 
-        # Actualizar las capas
+        # Updating the layers
         layers = []
         layer = {}
         i = 0
@@ -241,9 +190,8 @@ def convert_file_dxf():
                 flash('Successfully converted file')
                 return redirect(url_for("downloads"))
             else:
-               flash('Error: converted file')
-               return render_template('upload.html', title='Carga Archivos')    
-  
+                flash('Error: converted file')
+                return render_template('upload.html', title='Carga Archivos')
 
     return render_template('convert.html', title='Conversion DXF', form=form,
                            capas=get_layers_table(), symbols=get_symbols(),
