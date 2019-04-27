@@ -1,0 +1,13 @@
+﻿Ca,Cañada,(255,0,0)
+E,Edificio,(25, 255, 77)
+FA,Red_Eléctrica,(0, 0, 255),Farola
+TEL,Telecomunicaciones,(255, 127, 0)
+RE,Red_Eléctrica,(0, 0, 255)
+SAN,Saneamiento,(255, 0, 255)
+M,Muro,(190, 190, 0)
+B,Bordillo,(255, 255, 0)
+V,Vertice,(0, 0, 0),Vertice
+ARB,Arbol,(0, 255, 127),Arbol
+C,Calzada,(189, 46, 0)
+A,Acera,(255, 255, 0)
+Ar,Arcen,(47, 255, 0)

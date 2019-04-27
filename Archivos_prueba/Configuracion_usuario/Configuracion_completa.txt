@@ -1,0 +1,29 @@
+CA,Cañada,(255,0,0)
+VA,Valla,(255,255,0)
+ARB,Arbol,(0, 255, 127),Arbol
+P,Hidrología,(0,127,255),Pozo
+L,Hidrología,(0,127,255)
+E,Edificio,(255, 0,255)
+TO,Torreta,(0,0,0),Torreta_Media
+EXD,Expropiación,(0,0,0)
+EXI,Expropiación,(0,0,0)
+CAD,Canal,(0,0,255)
+CAI,Canal,(0,0,255)
+LEM,Línea_Eléctrica_Media,(255,63,0),Torreta_Media
+LEA,Línea_Eléctrica_Alta,(204,204,102),Torreta_Alta
+SAN,Saneamiento,(255, 0, 255)
+AC,Acera,(255,255,0)
+AR,Arcén,(0,0,0)
+MD,Mediana,(0,0,0)
+MI,Mediana,(0,0,0)
+RI,Hidrología,(0,127,255)
+PA,Parcela,(0,0,0)
+PI,Piscina,(0,255,255)
+FA,Farolas,(0, 0, 255),Farola_1
+REG,Red_Eléctrica,(0, 0, 255)
+TEL,Telecomunicaciones,(255, 127, 0)
+M,Muro_Ruina,(255, 191, 127)
+MU,Muro,(204,102,0)
+B,Bordillo,(255, 255, 0)
+V,Vértice_Topográfico,(255, 0, 0),Vertice
+C,Calzada,(189, 46, 0)
