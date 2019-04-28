@@ -4,11 +4,11 @@ from app.cad_utilities import cad_colors_palette, cad_versions
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 POSTGRES = {
-    'user': 'postgres',
-    'pw': 'cartometrix',
-    'db': 'TFG1',
-    'host': 'localhost',
-    'port': '5433',
+    'user': 'tfg',
+    'pw': 'f04f1b4d7734f0dc3c4da46f19c0a9f49b56',
+    'db': 'tfg',
+    'host': '172.18.0.2',
+    'port': '5432'
 }
 
 
