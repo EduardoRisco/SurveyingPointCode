@@ -23,7 +23,7 @@ Instrucciones configuración entorno:
    sh app_install_pgadmin.sh
    ```
    
-- URL  SurveyindPointCode  http://0.0.0.0:5000 
+- URL  SurveyingPointCode  http://0.0.0.0:5000 
 - URL  PgAdmin4  http://0.0.0.0:80
 
   
