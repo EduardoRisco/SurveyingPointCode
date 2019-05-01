@@ -28,8 +28,8 @@ services:
     networks:
       - pgnetwork
     environment:
-      - PGADMIN_DEFAULT_EMAIL=tfgrisco@gmail.com
-      - PGADMIN_DEFAULT_PASSWORD=tfg
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
     depends_on:
       - postgis
   flask:

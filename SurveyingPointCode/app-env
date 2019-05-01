@@ -1,0 +1,8 @@
+export POSTGRES_USER=tfg
+export POSTGRES_PASS=f04f1b4d7734f0dc3c4da46f19c0a9f49b56
+export POSTGRES_DBNAME=tfg
+export ALLOW_IP_RANGE=0.0.0.0\/0
+export POSTGRES_HOST=postgis
+export POSTGRES_PORT=5432
+export PGADMIN_DEFAULT_EMAIL=tfgrisco@gmail.com
+export PGADMIN_DEFAULT_PASSWORD=tfg

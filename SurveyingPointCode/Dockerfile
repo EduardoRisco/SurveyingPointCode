@@ -3,10 +3,10 @@ FROM python:3.7-alpine
 ## make a local directory
 RUN mkdir /SurveyingPointCode
 
-# set "counter_app" as the working directory from which CMD, RUN, ADD references
+# set "SurveyingPointCode" as the working directory from which CMD, RUN, ADD references
 WORKDIR /SurveyingPointCode
 
-# now copy all the files in this directory to /counter_app
+# now copy all the files in this directory to /SurveyingPointCode
 ADD . .
 
 RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev
