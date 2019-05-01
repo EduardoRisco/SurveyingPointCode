@@ -5,10 +5,10 @@ services:
     image: 'mdillon/postgis'
     container_name: postgis
     environment:
-      - POSTGRES_USER=tfg
-      - POSTGRES_PASS=f04f1b4d7734f0dc3c4da46f19c0a9f49b56
-      - POSTGRES_DBNAME=tfg
-      - ALLOW_IP_RANGE=0.0.0.0/0
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASS=${POSTGRES_PASS}
+      - POSTGRES_DBNAME=${POSTGRES_DBNAME}
+      - ALLOW_IP_RANGE=${ALLOW_IP_RANGE}
     networks:
       - pgnetwork
     volumes:
@@ -17,6 +17,7 @@ services:
       - '5432:5432'
     hostname: postgis  
     restart: always
+
   pgadmin:
     image: 'dpage/pgadmin4'
     ports:
@@ -39,10 +40,17 @@ services:
       - .:/SurveyingPointCode
     links:
       - postgis:postgres 
-    container_name: surveying_point_code 
+    container_name: surveying_point_code
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASS=${POSTGRES_PASS}
+      - POSTGRES_DBNAME=${POSTGRES_DBNAME}   
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT} 
     networks:
       - pgnetwork
     restart: always  
+
 volumes:
   pg_data:
     driver: local
