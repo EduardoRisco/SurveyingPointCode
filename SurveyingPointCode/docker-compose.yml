@@ -1,0 +1,53 @@
+# With the help of https://composerize.com/
+version: '2.1'
+services:
+  postgis:
+    image: 'mdillon/postgis'
+    container_name: postgis
+    environment:
+      - POSTGRES_USER=tfg
+      - POSTGRES_PASS=f04f1b4d7734f0dc3c4da46f19c0a9f49b56
+      - POSTGRES_DBNAME=tfg
+      - ALLOW_IP_RANGE=0.0.0.0/0
+    networks:
+      - pgnetwork
+    volumes:
+      - 'pg_data:/var/lib/postgresql'
+    ports:
+      - '5432:5432'
+    hostname: postgis  
+    restart: always
+  pgadmin:
+    image: 'dpage/pgadmin4'
+    ports:
+      - '80:80'
+    volumes:
+      - 'pga4volume:/var/lib/pgadmin'
+    container_name: pgadmin4
+    networks:
+      - pgnetwork
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=tfgrisco@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=tfg
+    depends_on:
+      - postgis
+  flask:
+    build: . # assuming there is a Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/SurveyingPointCode
+    links:
+      - postgis:postgres 
+    container_name: surveying_point_code 
+    networks:
+      - pgnetwork
+    restart: always  
+volumes:
+  pg_data:
+    driver: local
+  pga4volume:
+    driver: local
+networks:
+  pgnetwork:
+    driver: bridge

@@ -7,7 +7,7 @@ POSTGRES = {
     'user': 'tfg',
     'pw': 'f04f1b4d7734f0dc3c4da46f19c0a9f49b56',
     'db': 'tfg',
-    'host': '172.18.0.2',
+    'host': 'postgis',
     'port': '5432'
 }
 
