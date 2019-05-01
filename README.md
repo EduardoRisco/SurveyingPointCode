@@ -10,10 +10,11 @@ Allows to automate the delineation process in CAD, by coding points in a topogra
 Instrucciones configuración entorno:
 
 - Instalación de Docker.
-- Instalación de Docker Compose
+- Instalación de Docker Compose.
+- Clonar el repositorio.
 
 
-- Ejecutar en consola:
+- Ejecutar en  SurveyingPointCode/ :
 
    ```
    sh docker-compose-up.sh
@@ -24,7 +25,7 @@ Instrucciones configuración entorno:
    
 
    ```
-   docker-compose up
+   docker-compose up -d
    ```
 
 - URL  http://0.0.0.0:5000
