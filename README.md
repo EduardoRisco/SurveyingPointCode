@@ -12,22 +12,19 @@ Instrucciones configuración entorno:
 - Instalación de Docker.
 - Instalación de Docker Compose.
 - Clonar el repositorio.
-
-
-- Ejecutar en  SurveyingPointCode/ :
+- Ejecutar en el directorio SurveyingPointCode/ :
 
    ```
-   sh docker-compose-up.sh
+   sh app_install.sh
    ```
+- Para instalar con PgAdmin4, ejecutar en el directorio SurveyingPointCode/ :
 
-   o
-
+   ```
+   sh app_install_pgadmin.sh
+   ```
    
-
-   ```
-   docker-compose up -d
-   ```
-
-- URL  http://0.0.0.0:5000
+- URL  SurveyindPointCode  http://0.0.0.0:5000 
+- URL  PgAdmin4  http://0.0.0.0:80
 
   
+
