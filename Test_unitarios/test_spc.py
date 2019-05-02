@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
+# test_spc.py
 # Units test
 #
-# J. Eduardo Risco 25-03-2019
-#
-
+# Copyright (C) 2018,2019 J. Eduardo Risco
+# version 1.0
 
 import unittest
 
@@ -46,7 +46,7 @@ layers = ['Edificio', 'Acera', 'Farola', 'Telecomunicaciones', 'Red_Electrica',
 dwg = ezdxf.new('AC1018')
 msp = dwg.modelspace()
 create_layers(dwg, file_user)
-upload_topographical_file("Example_topographic_1.txt")
+upload_topographical_file("test/Example_topographic_1.txt")
 
 
 class SurveyingPointCode(unittest.TestCase):
@@ -112,7 +112,7 @@ class SurveyingPointCode(unittest.TestCase):
         for e in msp:
             if e.dxftype() == 'LWPOLYLINE' and e.dxf.count == 5:
                 n = n + 1
-        self.assertEqual(n, 4, FAILURE)
+        self.assertEqual(n,5, FAILURE)
         self.assertNotEqual(n, 0, FAILURE)
 
     def test_create_rectangles_number(self):
@@ -125,7 +125,7 @@ class SurveyingPointCode(unittest.TestCase):
         self.assertNotEqual(n, 0, FAILURE)
 
     def test_not_create_circles(self):
-        upload_topographical_file("Example_topographic_2.txt")
+        upload_topographical_file("test/Example_topographic_2.txt")
         dwg2 = ezdxf.new('AC1018')
         msp2 = dwg2.modelspace()
         create_circles(msp2, get_circles(), file_user)
@@ -136,7 +136,7 @@ class SurveyingPointCode(unittest.TestCase):
         self.assertEqual(n, 0, FAILURE)
 
     def test_not_create_splines(self):
-        upload_topographical_file("Example_topographic_2.txt")
+        upload_topographical_file("test/Example_topographic_2.txt")
         dwg2 = ezdxf.new('AC1018')
         msp2 = dwg2.modelspace()
         create_curves(msp2, get_curves(), file_user)
@@ -147,7 +147,7 @@ class SurveyingPointCode(unittest.TestCase):
         self.assertEqual(n, 0, FAILURE)
 
     def test_not_create_lines(self):
-        upload_topographical_file("Example_topographic_2.txt")
+        upload_topographical_file("test/Example_topographic_2.txt")
         dwg2 = ezdxf.new('AC1018')
         msp2 = dwg2.modelspace()
         create_lines(msp2, get_lines(), file_user)
@@ -159,7 +159,7 @@ class SurveyingPointCode(unittest.TestCase):
         self.assertEqual(n, 0, FAILURE)
 
     def test_not_create_squares_rectangles(self):
-        upload_topographical_file("Example_topographic_2.txt")
+        upload_topographical_file("test/Example_topographic_2.txt")
         dwg2 = ezdxf.new('AC1018')
         msp2 = dwg2.modelspace()
         create_squares(msp2, get_squares(), file_user)
@@ -199,7 +199,7 @@ class SurveyingPointCode(unittest.TestCase):
         self.assertNotEqual(calculate_angle(az, -10), 215, FAILURE)
 
     def test_extract_symbols(self):
-        upload_symbols_file("Example_simbology.dxf")
+        upload_symbols_file("test/Example_simbology.dxf")
         for s in get_symbols():
             self.assertIn(s, ['Farola', 'Arbol', 'Vertice'], FAILURE)
             self.assertNotIn(s, ['Casa', 'Banco'], FAILURE)
@@ -207,12 +207,12 @@ class SurveyingPointCode(unittest.TestCase):
         self.assertNotEqual(len(get_symbols()), 0, FAILURE)
 
     def test_number_lines_topographical_file(self):
-        upload_topographical_file("Example_topographic_1.txt")
+        upload_topographical_file("test/Example_topographic_1.txt")
         self.assertEqual(len(get_points()), 42, FAILURE)
         self.assertNotEqual(len(get_points()), 0, FAILURE)
 
     def test_number_lines_topographical_file_empty(self):
-        upload_topographical_file("Example_topographic_3.txt")
+        upload_topographical_file("test/Example_topographic_3.txt")
         self.assertEqual(len(get_points()), 0, FAILURE)
         self.assertNotEqual(len(get_points()), 5, FAILURE)
 
