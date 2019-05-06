@@ -1,0 +1,56 @@
+\capitulo{2}{Objetivos del proyecto}
+
+A continuación, se detallan los diferentes objetivos que han motivado la realización del proyecto.
+\section{Objetivos generales}
+\begin{itemize}
+
+	\item Desarrollar una aplicación web que permita obtener un archivo DXF a partir de los datos de un levantamiento topográfico.
+
+	\item Definir un tipo de codificación para los puntos medidos en campo, que sea interpretada por la aplicación, automatice el proceso de dibujo y mejore el rendimiento en el trabajo de campo.
+
+	\item Permitir al usuario crear una cuenta.
+
+	\item Permitir al usuario subir :  archivos de campo, archivos de configuración personalizados de la transformación y archivos DXF, con símbolos creados por el usuario.
+
+	\item Permitir al usuario modificar o elegir, en la interfaz, los nombres de las capas de CAD, colores y símbolos existentes, y asociarlos a los códigos de campo
+
+	\item Permitir al usuario elegir la versión de CAD para generar el archivo DXF.
+
+	\item Permitir al usuario almacenar en su equipo, el archivo DXF generado.
+\end{itemize}
+\section{Objetivos técnicos}
+
+\begin{itemize}
+\item Desarrollar una aplicación web utilizando el framework \textbf {Flask}.
+
+\item Utilizar \textbf {PLY}\footnote{\textsl{PLY}: \url{https://pypi.org/project/ply/}}   (Python Lex-Yacc), como analizador sintáctico, para reconocer la validez de los archivos de entrada.
+
+\item Utilizar \textbf {ezdxf}\footnote{\textsl{ezdf}: \url{https://ezdxf.readthedocs.io/en/latest/index.html}}  ,  para leer, modificar y crear archivos DXF. 
+
+\item Utilizar \textbf {Bootstrap}, para crear el sitio web.
+
+\item Utilizar \textbf {TinyColor}\footnote{\textsl{TinyColor}: \url{https://github.com/bgrins/TinyColor}} para poder definir los colores con los estándares de AutoCAD.
+
+\item Utilizar  \textbf {PostGIS}\footnote{\textsl{PostGIS}: \url{https://postgis.net/}} como sistema de base de datos.
+
+\item Realizar test unitarios.
+
+\item Hacer uso de la herramienta \textbf {CODEBEAT} para comprobar la calidad del código.
+
+\item Desplegar la aplicación usando \textbf {Docker} .
+
+\item Utilizar \textbf {Git} como sistema de control de versiones distribuido junto con la plataforma \textbf {GitHub}.
+
+\item Aplicar la metodología ágil \textbf {Scrum} para el desarrollo del software.
+
+\item Utilizar \textbf {ZenHub} como herramienta de gestión de proyectos.
+\end{itemize}
+
+\section{Objetivos personales}
+\begin{itemize}
+\item Mejorar los recursos invertidos y facilitar el trabajo, a la hora de realizar un levantamiento topográfico.
+
+\item Realizar el proyecto como un trabajo real, aplicando los conocimientos adquiridos en la realización del Grado.
+
+\item Utilizar herramientas y metodologías demandadas en el mercado laboral; Git, desarrollo Web, Docker, etc.
+\end{itemize}
