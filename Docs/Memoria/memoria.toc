@@ -1,8 +1,8 @@
 \babel@toc {spanish}{}
 \babel@toc {spanish}{}
 \contentsline {chapter}{\'{I}ndice general}{\es@scroman {iii}}{section*.1}% 
-\contentsline {chapter}{\'{I}ndice de figuras}{\es@scroman {iv}}{section*.2}% 
-\contentsline {chapter}{\'{I}ndice de tablas}{\es@scroman {v}}{section*.3}% 
+\contentsline {chapter}{\'{I}ndice de figuras}{\es@scroman {v}}{section*.2}% 
+\contentsline {chapter}{\'{I}ndice de tablas}{\es@scroman {vi}}{section*.3}% 
 \contentsline {chapter}{Introducci\IeC {\'o}n}{1}{chapter*.4}% 
 \contentsline {section}{\numberline {1.1}Introducci\IeC {\'o}n}{1}{section.1.1}% 
 \contentsline {section}{\numberline {1.2}Contenido del proyecto}{2}{section.1.2}% 
@@ -12,9 +12,31 @@
 \contentsline {section}{\numberline {2.3}Objetivos personales}{6}{section.2.3}% 
 \contentsline {chapter}{Conceptos te\IeC {\'o}ricos}{7}{chapter*.6}% 
 \contentsline {section}{\numberline {3.1}Levantamiento topogr\IeC {\'a}fico}{7}{section.3.1}% 
-\contentsline {section}{\numberline {3.2}Archivo DXF. Elementos del dibujo}{7}{section.3.2}% 
+\contentsline {section}{\numberline {3.2}Archivo DXF. Elementos del dibujo}{8}{section.3.2}% 
 \contentsline {section}{\numberline {3.3}Codificaci\IeC {\'o}n de los puntos}{11}{section.3.3}% 
 \contentsline {chapter}{T\IeC {\'e}cnicas y herramientas}{17}{chapter*.7}% 
-\contentsline {chapter}{Aspectos relevantes del desarrollo del proyecto}{19}{chapter*.8}% 
-\contentsline {chapter}{Trabajos relacionados}{21}{chapter*.9}% 
-\contentsline {chapter}{Conclusiones y L\IeC {\'\i }neas de trabajo futuras}{23}{chapter*.10}% 
+\contentsline {section}{\numberline {4.1}Metodolog\IeC {\'\i }as}{17}{section.4.1}% 
+\contentsline {section}{\numberline {4.2}Patrones de dise\IeC {\~n}o}{17}{section.4.2}% 
+\contentsline {section}{\numberline {4.3}Control de Versiones}{19}{section.4.3}% 
+\contentsline {section}{\numberline {4.4}Hosting del repositorio}{19}{section.4.4}% 
+\contentsline {section}{\numberline {4.5}Gesti\IeC {\'o}n del proyecto}{20}{section.4.5}% 
+\contentsline {section}{\numberline {4.6}Entorno de desarrollo integrado (IDE)}{20}{section.4.6}% 
+\contentsline {subsubsection}{Python}{20}{section*.8}% 
+\contentsline {subsubsection}{\LaTeX }{21}{section*.9}% 
+\contentsline {section}{\numberline {4.7}Servicios de integraci\IeC {\'o}n continua}{21}{section.4.7}% 
+\contentsline {subsubsection}{Calidad del c\IeC {\'o}digo}{21}{section*.10}% 
+\contentsline {section}{\numberline {4.8}Herramienta de an\IeC {\'a}lisis sint\IeC {\'a}ctico}{22}{section.4.8}% 
+\contentsline {section}{\numberline {4.9}Librer\IeC {\'\i }as}{22}{section.4.9}% 
+\contentsline {subsubsection}{ezdxf}{22}{section*.11}% 
+\contentsline {subsubsection}{Bootstrap}{23}{section*.12}% 
+\contentsline {subsubsection}{Colorpicker Bootstrap}{24}{section*.13}% 
+\contentsline {subsubsection}{TinyColor}{24}{section*.14}% 
+\contentsline {subsubsection}{bs-custom-file-input}{24}{section*.15}% 
+\contentsline {section}{\numberline {4.10}Desarrollo Web}{24}{section.4.10}% 
+\contentsline {section}{\numberline {4.11}Despliegue de la aplicaci\IeC {\'o}n}{25}{section.4.11}% 
+\contentsline {chapter}{Aspectos relevantes del desarrollo del proyecto}{27}{chapter*.16}% 
+\contentsline {section}{\numberline {5.1}Inicio del proyecto}{27}{section.5.1}% 
+\contentsline {section}{\numberline {5.2}Gesti\IeC {\'o}n del proyecto}{28}{section.5.2}% 
+\contentsline {section}{\numberline {5.3}Formaci\IeC {\'o}n}{29}{section.5.3}% 
+\contentsline {chapter}{Trabajos relacionados}{31}{chapter*.17}% 
+\contentsline {chapter}{Conclusiones y L\IeC {\'\i }neas de trabajo futuras}{33}{chapter*.18}% 

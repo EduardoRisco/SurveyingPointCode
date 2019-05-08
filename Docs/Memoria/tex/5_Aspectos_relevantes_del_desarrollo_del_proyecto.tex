@@ -1,7 +1,58 @@
 \capitulo{5}{Aspectos relevantes del desarrollo del proyecto}
 
-Este apartado pretende recoger los aspectos más interesantes del desarrollo del proyecto, comentados por los autores del mismo.
-Debe incluir desde la exposición del ciclo de vida utilizado, hasta los detalles de mayor relevancia de las fases de análisis, diseño e implementación.
-Se busca que no sea una mera operación de copiar y pegar diagramas y extractos del código fuente, sino que realmente se justifiquen los caminos de solución que se han tomado, especialmente aquellos que no sean triviales.
-Puede ser el lugar más adecuado para documentar los aspectos más interesantes del diseño y de la implementación, con un mayor hincapié en aspectos tales como el tipo de arquitectura elegido, los índices de las tablas de la base de datos, normalización y desnormalización, distribución en ficheros3, reglas de negocio dentro de las bases de datos (EDVHV GH GDWRV DFWLYDV), aspectos de desarrollo relacionados con el WWW...
-Este apartado, debe convertirse en el resumen de la experiencia práctica del proyecto, y por sí mismo justifica que la memoria se convierta en un documento útil, fuente de referencia para los autores, los tutores y futuros alumnos.
+Este apartado pretende recoger los aspectos más importantes del desarrollo del proyecto. Se tratará de exponer el camino que se ha tomado con sus correspondientes implicaciones, así como describir los diferentes problemas a
+los que ha habido que enfrentarse y las soluciones con las que se ha tratado de resolverlos.
+
+\section{Inicio del proyecto}
+
+Me considero una persona con muchas inquietudes y siempre pensando en mejorar tareas que suelo realizar con frecuencia. He desarrollado mi carrera profesional en el campo de la Topografía y la Geodesia, y actualmente está mas enfocado a temas relacionados con la Cartografía.
+
+Trabajando en varios proyectos, he podido observar la cantidad de tiempo y recursos que se empleaban, en realizar levantamientos topográficos y posteriormente gestionar todos esos datos para producir un plano. De ahí surge la idea de como mejorar el trabajo de campo mediante un tipo de codificación,  y que esta a su vez sirviera para automatizar al máximo el proceso de delineación, a la hora de  crear el plano.
+
+El profundizar en los conocimientos adquiridos cursando el Grado en Ingeniería Informática y a la vez poder facilitar el trabajo en este tipo de proyectos, me ha animado ha hacer viable este proyecto. A la hora de decidirme, también me ha parecido importante, la idea de que la aplicación desarrollada es de gran utilidad, y seguro que va a ser bien recibida por la comunidad de topógrafos.
+
+La idea fue aceptada por los tutores, y comenzamos con el proyecto.
+
+\imagen{logo_login}{Logo de SurveyingPointCode}
+
+\section{Gestión del proyecto}
+
+En la primera reunión con los tutores, se estableció cual iba a ser la metodología a seguir en la realización de este proyecto. Se iba a emplear la metodología ágil Scrum.
+
+Se realizarían una serie de sprints llevados a cabo con una periodicidad media semanal, donde se entregaría una parte del producto operativo, el incremento. Al finalizar cada sprint se realizarían reuniones para planificar las tareas a realizar en el el sprint siguiente, en forma de pila del sprint, y revisar si se habían alcanzado los objetivos marcados en el sprint anterior.
+
+En GitHub, con la herramienta ZenHub, se visualizarían el estado y prioridad de las tareas del sprint. Los avances y cambios en el desarrollo del proyecto, se almacenaría en GitHub, que nos permitiría seguir al detalle  todo el histórico del proyecto.
+
+Las reuniones de los sprints resultaron muy interesantes. En ellas hubo modificaciones sobre la idea inicial de la que se partía, en algunos casos desechado alguna funcionalidad, pero en la mayoría de los casos, aportando nuevas funcionalidades que hacían  crecer el valor de la aplicación, y sobre todo me aportaron una visión más realista a la hora de abordar unos determinados objetivos o ideas, preguntándome, si el tiempo o recursos invertidos merecían la pena o aportaban algún valor a la aplicación.
+
+\section{Formación}
+
+La realización del proyecto requería una serie de conocimientos técnicos, en general, en el desarrollo de aplicaciones web,y en particular en  tecnologías como;
+Flask, HTML5, CSS3, JavasSript, Docker y librerías como Ply, ezdxf, Boostrap, TinyColor,...
+
+Los mayores esfuerzos se pusieron en comprender el funcionamiento de Flask,Ply, ezdxf y Docker, ya que el óptimo funcionamiento de la aplicación  estos puntos, era fundamental para logar conseguir los objetivos finales. 
+
+Como la aplicación se ha desarrollado en Python, era importante conocer las guías de estilo y la convenciones de este lenguaje, PEP 8 y
+PEP 257 entre otras. Para ello se consultaron las siguientes fuentes:
+
+\begin{itemize}
+\item PEP 8 -- Style Guide for Python Code \cite{PEP8}
+\item PEP 257 -- Docstring Conventions \cite{PEP257}
+\end{itemize}
+
+
+Para la formación en Flask se consultaron las siguientes fuentes:
+
+\begin{itemize}
+\item Building Web Applications  with Flask \cite{Flask1}
+\item Instant Flask Web Development \cite{Flask2}
+\end{itemize}
+
+Para la formación en Ply se consultaron las siguientes fuentes:
+
+\begin{itemize}
+\item PLY homepage \cite{HomePly}
+\item Prototyping Interpreters using Python Lex-Yacc \cite{Ply2}
+\item Parses chemical equations using the PLY parser generator \cite{Ply3}
+
+\end{itemize}

@@ -5,7 +5,9 @@ En este apartado se explican conceptos los básicos necesarios para entender el 
 \section{Levantamiento topográfico}
 
 Un levantamiento topográfico consiste en la medición de distintos puntos, mediante cálculos topográficos, donde se obtienen las coordenadas de estos, generalmente las coordenadas X,Y y Z .Estas coordenadas nos indican su posición exacta en el espacio. 
+
 El software que tienen los equipos de topografía; como teodolitos, estaciones totales o GPS, permiten asociar a cada punto un texto en el momento de medir el punto y así, el punto queda registrado con ese campo.
+
 Este campo de texto, que de aquí en adelante llamaremos código de punto, es la clave de este proyecto. El algoritmo diseñado debe saber interpretar este código de punto. Como veremos más adelante, este nos puede indicar una o múltiples cosas a la vez, lo que conlleva mayor dificultad a la hora de definir el formato que debe tener este. Tiene que aportar la máxima información posible, pero a la vez tiene que ser muy sencillo en su estructura y de una longitud lo más corta posible. No es muy viable tener que estar mucho tiempo tecleando, ya que se perdería mucho tiempo y alargaría en exceso el trabajo de campo.
 
 \section{Archivo DXF. Elementos del dibujo}
@@ -35,12 +37,14 @@ Simplificando, se procede a hacer una diferenciación entre los elementos que qu
 \begin{itemize}
 
 \item\textbf{Capas:} Sirven para organizar mejor los objetos en nuestro dibujo ayudando a un mejor manejo a la hora de mover, copiar o identificarlos en el plano. Estas son un aspecto fundamental en el desarrollo del dibujo para poder obtener un plano bien organizado y con excelente presentación. En un buen trabajo, es casi imprescindible el uso de capas.
+
 Las capas son una forma de clasificar objetos en CAD, si tienes un plano muy extenso con muchos objetos, la forma más fácil de identificarlos es mediante su capa, cada objeto dibujado en CAD se le asociara una capa y esa capa la puedes crear asignándole un nombre, un color, entre otras cosas. Es la mejor forma de identificar cierto objeto dentro de tu dibujo.
 En esta aplicación, las capas tendrán un nombre y un color.
 
 \imagen{capas}{Capas en un programa de CAD}
 
 \item\textbf{Bloques:} Un bloque en CAD es un conjunto de objetos (llamados entidades), agrupados como un todo. Es decir, que podemos dibujar líneas, arcos, círculos, cada uno con propiedades distintas que los demás y luego invocar un comando para “juntarlos” a todos bajo un mismo nombre y asignarle un punto de inserción.
+
 En esta aplicación se pretende que el usuario pueda subir un archivo DXF personalizado con sus bloques, y poder asignarlo a diferentes puntos del levantamiento topográfico a través del código de punto
 
 \imagen{Simbolos}{Símbolos creados como entidades bloques de CAD}
@@ -50,6 +54,7 @@ En esta aplicación se pretende que el usuario pueda subir un archivo DXF person
 
 Como se ha mencionado anteriormente, la codificación de los puntos es la parte clave para el desarrollo de este proyecto, ya que en ella se va a basar la aplicación a la hora de crear los elementos del dibujo.
 Debe poder crear líneas y splines, interpretando donde empiezan y acaban. Crear círculos, cuadrados y rectángulos, insertar símbolos o bloques en determinados puntos y, por último, asociar cada elemento su capa correspondiente, con su color asignado.
+
 Todo esto, si eres un usuario con conocimientos en manejo de aplicaciones CAD, se haría de forma manual en su mayor parte. Con una buena definición del código de punto, se tratará de automatizar todo este proceso.
 Como ya sabemos, el código debe ser lo mas sencillo posible y a la vez aportar la máxima información posible, dejando que el usuario tenga libertad para elegir los códigos, salvo algunas partes, que deben de tener una sintaxis concreta. 
 
@@ -76,11 +81,14 @@ A continuación, veremos algunos ejemplos de codificación para distintos elemen
 
 \end{itemize}
 
-Otra gran ventaja que aporta esta codificación es que los puntos en campo que forman un elemento no estás obligado a medirlos de forma consecutiva, lo que supone un importantísimo ahorro de tiempo. Vamos a explicar esto con un ejemplo. Se pretende dibujar el plano de una carretera de 50 km, las líneas que nos interesan son; el eje de la carretera y las líneas de los arcenes. No podemos plantearnos el medir las líneas de forma consecutiva, por ejemplo, medir el arcén derecho, volver por el eje y, por último, el arcén izquierdo. Si hiciéramos esto, recorreríamos 150 km. Esta aplicación es capaz de crear distintas líneas, aunque no estén medidas en campo en un orden consecutivo. Una solución de codificación podría ser la siguiente secuencia de puntos: (‘AD I’,’E I’,’AI I’,’AI’,’E’,’AD’,’E’,’AD’,’AI’,…), donde ‘AD’ es el arcén derecho, ‘E’ el eje, ‘AI’ el arcén izquierdo. Así solo recorreríamos la carretera una sola vez. 
+Otra gran ventaja que aporta esta codificación es que los puntos en campo que forman un elemento no estás obligado a medirlos de forma consecutiva, lo que supone un importantísimo ahorro de tiempo. Vamos a explicar esto con un ejemplo.
+
+Se pretende dibujar el plano de una carretera de 50 km, las líneas que nos interesan son; el eje de la carretera y las líneas de los arcenes. No podemos plantearnos el medir las líneas de forma consecutiva, por ejemplo, medir el arcén derecho, volver por el eje y, por último, el arcén izquierdo. Si hiciéramos esto, recorreríamos 150 km. Esta aplicación es capaz de crear distintas líneas, aunque no estén medidas en campo en un orden consecutivo. Una solución de codificación podría ser la siguiente secuencia de puntos: (‘AD I’,’E I’,’AI I’,’AI’,’E’,’AD’,’E’,’AD’,’AI’,…), donde ‘AD’ es el arcén derecho, ‘E’ el eje, ‘AI’ el arcén izquierdo. Así solo recorreríamos la carretera una sola vez. 
 
 Vemos que este tipo de codificación definida no solo aporta la ventaja de generar automáticamente el plano, si no que, el tiempo ahorrado en el trabajo de campo, es la mayor ventaja. Esta parte del trabajo es la que tiene mayores costes y, por lo tanto, más peso a la hora de decidirse por un proyecto.
 
-\tablaSmall{Caracteres obligatorios y significado }{l c c c }{herramientasportipodeuso}
+\tablaSmall{Caracteres obligatorios y significado }{l c 
+}{herramientasportipodeuso}
 { \multicolumn{1}{l}{Caracter} & Significado \\}{ 
 'I'	& Punto inicio de línea\\
 'IC'& Punto inicio de curva\\
