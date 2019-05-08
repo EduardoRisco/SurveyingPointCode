@@ -87,9 +87,19 @@ document.addEventListener('DOMContentLoaded', () => {
         customswatches: false,
         preventtouchkeyboardonshow: true,
         order: {}
-    });  
-    
+    });
+
+    // Make items in the list of converted files clickable
+    $(document.body).on('click', '.alert.converted-item[data-clickable=true]', e => {
+        var href = $(e.currentTarget).data('href');
+        window.location = href;
+    });
 
 
 });
+// Show spinner when generating DXF file
+modal = () => {
+    $('.modal.load-spinner').modal('show');
+}
+
 
