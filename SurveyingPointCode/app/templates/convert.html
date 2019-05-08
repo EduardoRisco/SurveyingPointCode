@@ -149,14 +149,110 @@
             </div>
          </div>
 
+         <div class="col-12 d-md-none"> <!-- Hide on screens wider than md -->
+            <form action="" method="post" role="form" novalidate autocomplete="off">
+               <div class="card border-secondary">
+                  {% for i in range(layers|length): -%}
+                  <div class="card border-secondary m-2 shadow-sm">
+                     <div class="card-header bg-light my-0 py-1 px-2">
+                        <div class="form-group row my-0">
+                           <label for="code" class="col-5 col-sm-3 col-form-label">Point Code</label>
+                           <div class="col-7 col-sm-9">
+                              <input type="text" name="code-{{ i }}" id="code" class="form-control-plaintext font-weight-bold" readonly value="{{ layers[i]['code'] }}">
+                           </div>
+                        </div>
+                     </div>
+                     <div class="card-body px-2 pt-0 pb-2 mt-3">
+                        <div class="form-group row mb-0">
+                           <label for="layer" class="col-sm-3 col-form-label">CAD Layer</label>
+                           <div class="col-sm-9">
+                              <input type="text" name="layer-{{ i }}" id="layer" class="form-control form-control-sm" placeholder="Default Layer 0" value="{{ layers[i]['layer'] if layers[i]['layer'] }}">
+                           </div>
+                        </div>
+                        <div class="form-group row mb-0">
+                           <label for="color" class="col-sm-3 col-form-label">Layer Color</label>
+                           <div class="col-sm-9">
+                              <input type="text" name="color-{{ i }}" class="form-control form-control-sm color-picker" value="rgb{{ layers[i]['color'] }}">
+                           </div>
+                        </div>
+                        <div class="form-group row mb-0">
+                           <label for="symbol" class="col-sm-3 col-form-label">Symbol</label>
+                           <div class="col-sm-9">
+                              {% if symbols %}
+                              <select class="custom-select custom-select-sm" name="symbol-{{ i }}" id="symbol">
+                                 {% for s in symbols %}
+                                 <option {{ 'selected' if layers[i]['symbol'] == s }} value="{{ s }}">{{ s }}</option>
+                                 {% endfor -%}
+                                 {% if layers[i]['symbol'] not in symbols %}
+                                 <option selected value="No symbol found">No symbol found</option>
+                                 {% else %}
+                                 <option value="No symbol found">No symbol found</option>
+                                 {% endif %}
+                              </select>
+                              {% else %}
+                                 <input type="text" name="symbol-{{ i }}" class="form-control form-control-sm" value="No symbol found" readonly>
+                              {% endif %}
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  {% endfor -%}
 
+                  <div class="card border-secondary m-2 shadow-sm">
+                     <div class="card-body px-2 pt-0 pb-2 mt-3">
+                        <div class="form-group row mb-0">
+                           <label for="dxf_filename" class="col-sm-3 col-form-label">File name</label>
+                           <div class="col-sm-9">
+                              <input type="text" name="dxf_filename" id ="dxf_filename" class="form-control form-control-sm" placeholder="Default: {{ session['topographical_file'] }}.dxf" value="{{ dxf_filename if errors or duplicate_color_errors or cad_color_errors }}">
+                           </div>
+                        </div>
+                        <div class="form-group row mb-0">
+                           <label for="cad-versions" class="col-sm-3 col-form-label">CAD version</label>
+                           <div class="col-sm-9">
+                              <select class="custom-select custom-select-sm" name="cadversion" id="cad-versions">
+                                 {% for version, internal_version in cad_versions.items() %}
+                                 {% if (errors or duplicate_color_errors or cad_color_errors) and (internal_version == cad_version) %}
+                                 <option value="{{ internal_version }}" selected>{{ version }}</option>
+                                 {% else %}
+                                 <option value="{{ internal_version }}">{{ version }}</option>
+                                 {% endif %}
+                                 {% endfor -%}
+                              </select>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="form-row d-flex align-items-center justify-content-center mt-2">
+                     <button type="submit" class="btn btn-success mb-3" onclick="modal();"><i class="fas fa-magic"></i> Convert</button>
+                  </div>
+               </div>
+            </form>
+         </div>
       </div>
       {% endif %}
    </div>
 
-
+   <div class="modal fade load-spinner" data-backdrop="static" data-keyboard="false" tabindex="-1">
+      <div class="modal-dialog modal-sm">
+         <div class="modal-content">
+            <div class="multi-spinner-container">
+               <div class="multi-spinner">
+                  <div class="multi-spinner">
+                     <div class="multi-spinner">
+                        <div class="multi-spinner">
+                           <div class="multi-spinner"></div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <h2 class="text-center font-weight-bolder">Generating DXF...</h2>
+         </div>
+      </div>
+   </div>
 {% endblock %}
 
 {% block footer %}
 {% include "footer.html" %}
 {% endblock %}
+

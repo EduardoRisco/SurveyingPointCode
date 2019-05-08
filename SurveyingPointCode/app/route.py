@@ -5,7 +5,6 @@
 #
 # Module to manage server with Flask.
 
-
 import os
 import secrets
 import shutil
@@ -16,6 +15,8 @@ from flask_login import (current_user, login_required,
                          login_user, logout_user)
 from werkzeug.urls import url_parse
 from werkzeug.utils import secure_filename
+from zipfile import ZipFile, ZIP_DEFLATED
+
 
 from app import app, db
 from app.conversor import (generate_dxf, get_errors_upload_topographical_file,
@@ -41,19 +42,22 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-
-    if current_user.is_authenticated:
+    if current_user.is_authenticated and 'username' in session:
         return redirect(url_for('upload_file'))
+    else:
+        user_logout()
 
     post = False
     email = ''
     form = LoginForm()
+
     if request.method == 'POST':
         post = True
+
         if form.validate_on_submit():
             user = User.query.filter_by(email=form.email.data).first()
             if user is None or not user.check_password(form.password.data):
-                flash('Error: Invalid email or password')
+                flash('Error: Invalid username or password')
                 return redirect(url_for('login'))
             login_user(user, remember=form.remember_me.data)
             next_page = request.args.get('next')
@@ -63,14 +67,18 @@ def login():
                 db.session.commit()
                 next_page = url_for('upload_file')
             return redirect(next_page)
-    return render_template('login.html', title='Sign In', form=form, email=email, post=post)
+        if form.email.data is not None:
+            email = form.email.data
+    return render_template('login.html', title='Sign In', form=form, post=post, email=email)
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-
-    if current_user.is_authenticated:
+    if current_user.is_authenticated and 'username' in session:
         return redirect(url_for('upload_file'))
+    else:
+        user_logout()
+
     post = False
     data = {
         'username': '',
@@ -80,6 +88,7 @@ def register():
 
     if request.method == 'POST':
         post = True
+
         if form.validate_on_submit():
             user = User(username=form.username.data, email=form.email.data)
             user.set_password(form.password.data)
@@ -98,38 +107,38 @@ def register():
 @login_required
 def upload_file():
     if 'username' not in session:
-        user_logout()  
+        user_logout()
 
-    # Reset variables to prevent page rollback
+        # Reset variables to prevent page rollback
     session['topographical_file'] = ''
     session['config_file'] = ''
     session['symbols_file'] = ''
     session['files_folder'] = ''
-    session['dxf_filename'] = '' 
+    session['dxf_filename'] = ''
     f_config = ""
     f_symbols = ""
-    f_topo=""
+    f_topo = ""
 
     post = False
     form = UploadForm()
 
     if request.method == 'POST':
-        post = True          
+        post = True
 
         if form.validate_on_submit():
             if "config_file" in request.files:
                 f_config = request.files["config_file"]
 
             if "symbols_file" in request.files:
-                f_symbols = request.files["symbols_file"]      
+                f_symbols = request.files["symbols_file"]
 
             f_topo = request.files["topographical_file"]
             session['topographical_file'] = secure_filename(f_topo.filename)
-            
+
             # Create customized directory for each user
             create_user_folder()
             # Save topography files, configuration and symbols in the user folder
-            save_upload_files(f_topo, f_config, f_symbols) 
+            save_upload_files(f_topo, f_config, f_symbols)
             # Analyze topography file
             upload_topographical_file(os.path.join(session['files_folder'], session['topographical_file']))
             # Analyze the configuration file (if it exists)
@@ -212,30 +221,51 @@ def convert_file_dxf():
 @app.route("/download", methods=["GET", "POST"])
 @login_required
 def downloads():
+    if 'username' not in session:
+        user_logout()
+
     if request.method == "POST":
         return redirect(url_for("download_file"))
+
     return render_template('download.html')
 
 
-@app.route('/download_files')
+@app.route('/download_files', defaults={'fileindex': -1})
+@app.route('/download_files/<int:fileindex>')
 @login_required
-def download_file():
+def download_file(fileindex):
+    if 'username' not in session:
+        user_logout()
+
     try:
-        return send_from_directory(
-            app.config['UPLOAD_FOLDER'],
-            session['dxf_output'],
-            as_attachment=True)
+        if fileindex >= 0:
+            # Download the selected file
+            file_folder = session['converted_files'][fileindex]['folder']
+            file_name = session['converted_files'][fileindex]['file']
+            return send_from_directory(file_folder, file_name, as_attachment=True)
+        else:
+            # Compress all in zip to return them
+            i = 1
+            with ZipFile(os.path.join(session['user_folder'], 'converted_files.zip'), 'w') as zip_directory:
+                for file_to_zip in session['converted_files']:
+                    zip_directory.write(os.path.join(file_to_zip['folder'], file_to_zip['file']),
+                                        os.path.join(str(i), file_to_zip['file']),
+                                        compress_type=ZIP_DEFLATED)
+                    i += 1
+
+            zip_directory.close()
+            return send_from_directory(session['user_folder'], 'converted_files.zip', as_attachment=True)
     except Exception as e:
         return str(e)
 
 
 @app.route('/logout')
-@login_required
 def logout():
     # Delete custom folders
     if 'user_folder' in session and os.path.exists(session['user_folder']):
         shutil.rmtree(session['user_folder'])
-
     logout_user()
     session.clear()
+
     return redirect(url_for('index'))
+
