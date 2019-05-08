@@ -170,7 +170,14 @@ A continuación, vemos el resto de las librerías necesarias en el desarrollo de
 
 \subsubsection{ezdxf}
 
-ezdxf es la librería más importante del proyecto. En un principio, se tuvieron en cuenta otras opciones como; dxfgrabber, SDXF y  dxfwrite, resultando la opción más interesante ezdxf, ya que era la única que cubría todas las necesidades que aquí se planteaban.
+ezdxf es la librería más importante del proyecto. En un principio, se tuvieron en cuenta otras opciones como:
+\begin{itemize}
+\item dxfgrabber
+\item SDXF
+\item dxfwrite
+\end{itemize}
+
+resultando la opción más interesante ezdxf, ya que era la única que cubría todas las necesidades que aquí se planteaban.
 
 \textbf{ezdxf} es una interfaz de Python para el formato DXF, desarrollado por Autodesk, y que permite a los desarrolladores leer y modificar dibujos DXF existentes o crear nuevos dibujos DXF.
 
@@ -180,6 +187,14 @@ ezdxf es independiente del sistema operativo y se ejecuta en todas las plataform
 Una parte a destacar, es que nos permite generar el DXF en distintas versiones de un archivo CAD, lo cual es muy interesante. 
 
 \imagen{Cad_versions}{Versiones de CAD}
+
+\subsubsection{SQLAlchemy}
+
+Se ha elegido la librería de Python \textbf{SQLAlchemy} por que es el ORM que mejor se adapta para trabajar con Flask y PostgreSQL
+
+\subsubsection{Flask-Login}
+
+Se ha elegido la librería de Python \textbf{Flask-Login} para poder realizar la gestión de sesiones de usuarios en la aplicación.
 
 
 \subsubsection{Bootstrap}
