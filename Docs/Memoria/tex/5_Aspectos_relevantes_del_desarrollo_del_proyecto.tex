@@ -111,3 +111,259 @@ Para la formación en \textbf{Docker} se consultaron las siguientes fuentes:
 \end{itemize}
 
 \section{Desarrollo de la aplicación}
+
+Los primeros pasos en el desarrollo de la aplicación consistieron en desarrollar un pequeño prototipo funcional, que fuera incrementando su funcionalidad progresivamente.
+
+El primer prototipo, tenía que conseguir leer un archivo de campo y darlo por válido o como erróneo. Una vez que se tuvo clara como iba a ser la codificación de cada punto, (según hemos visto en el apartado 3.3 Codificación de los puntos), el siguiente paso era definir una gramática para ese tipo de archivo, para poder validarla. Entre los formatos de archivo más comunes que podemos obtener de los equipos topográficos, se decidió que los archivos deberían ser de tipo “csv” o “txt”, separando sus campos por comas. Los campos son; número de punto, coordenada x, coordenada y, coordenada z y código del punto. 
+
+A continuación, vemos un ejemplo, con todas las posibilidades de codificación que aceptará la aplicación: 
+\begin{verbatim}
+1,355776.180,4611015.011,691.055,E I
+2,355773.203,4611028.546,691.055,E
+3,355781.359,4611129.076,691.055,TR REG
+4,355786.052,4611135.542,691.055,TC TEL
+5,355783.215,4611143.179,691.055,TX 2 SAN
+6,355754.037,4611145.893,691.055,A IC
+7,355755.345,4611150.953,691.055,A C
+8,355857.822,4611095.993,691.055,E -14.1 20.5 -25.75
+\end{verbatim}
+
+Se estudió detenidamente esta sintaxis y la formalización de la gramática quedo de la siguiente forma:
+
+\begin{verbatim}
+entrada: líneas
+
+líneas: línea | líneas '\n' línea
+
+línea: núm_punto coordenadas código
+
+núm_punto: INT
+
+coordenadas: FLOAT, FLOAT, FLOAT
+
+INT: [0-9]+
+
+FLOAT: -?( [0-9]*.[0-9]+)
+
+ID: [a-zA-Z] +
+
+código: código_capa CÓDIGO_GEOMÉTRICO
+| CÓDIGO_ELEMENTO_SINGULAR código_valor_texto
+| código_capa código_no_accesible
+| código_elemento_singular
+| código_capa
+
+código_capa: ID
+
+CÓDIGO_GEOMÉTRICO: "I" | "IC" | "C"
+
+CÓDIGO_ELEMENTO_SINGULAR: "TC" | "TR" | "TX"
+
+código_valor_texto: FLOAT ID
+    | INT ID
+    | FLOAT
+    | INT
+    | ID
+    
+código_no_accesible: (FLOAT | INT)+
+\end{verbatim}
+
+El prototipo utilizando la librería \textbf{Ply} y con esta gramática,  consiguió validar un archivo correcto.
+
+Otro punto clave en el desarrollo del algoritmo fue descifrar los códigos que contenía el archivo de entrada. Como se ha comentado anteriormente, este código puede tener distintos significados dependiendo de su estructura, por ejemplo:
+
+\begin{itemize}
+\item AR, puede ser un punto que se guarde en una futura capa llamada Árboles.
+\item TX 2 SAN, puede ser un punto que es el centro de un circulo de radio 2 y que se guarde en una futura capa llamada Saneamiento.
+\item M I, puede ser un punto donde comienza una línea que define un muro y que se guarde en una futura capa llamada Muros.
+\item …
+\end{itemize}
+
+El algoritmo debía extraer del archivo todos los elementos, identificarlos y guardarlos en alguna estructura de datos, clasificados por:
+
+\begin{itemize}
+\item Capas
+\item Puntos
+\item Líneas
+\item Curvas
+\item Cuadrados
+\item Rectángulos 
+\item Círculos
+\end{itemize}
+
+Añadiendo complejidad al archivo de entrada, se comprobó que el algoritmo resolvía de forma satisfactoria este paso.
+
+Por último, para poder tener un prototipo básico que cumpliera los objetivos, debíamos comprobar que el prototipo era capaz de crear un archivo \textbf{DXF}, con los elementos del archivo de entrada. Incorporando la librería \textbf{ezdxf}, y haciendo uso de sus métodos y atributos, se testeó que dibujara en un primer momento solo líneas y curvas, siendo capaz de generarlas en el orden correcto.
+
+Con estos datos de entrada:
+
+\begin{verbatim}
+1,355776.180,4611015.011,691.055,E I
+2,355773.203,4611028.546,691.055,E
+3,355761.305,4611083.365,691.055,E
+4,355767.050,4611086.462,691.055,A I
+5,355774.447,4611083.001,691.055,M I
+6,355769.692,4611104.977,691.055,M
+7,355763.294,4611103.572,691.055,A
+8,355756.420,4611105.247,691.055,E
+9,355781.359,4611129.076,691.055,TR RE
+10,355782.355,4611131.314,691.055,TR RE
+11,355788.919,4611128.392,691.055,TR RE
+12,355766.146,4611121.294,691.055,M
+13,355759.713,4611119.882,691.055,A
+14,355750.443,4611133.259,691.055,E
+15,355786.052,4611135.542,691.055,TC TEL
+16,355786.849,4611136.145,691.055,TC TEL
+17,355764.814,4611134.156,691.055,ARB
+18,355783.215,4611143.179,691.055,TX 0.5 SAN
+19,355761.943,4611140.629,691.055,M
+20,355755.486,4611139.240,691.055,A
+21,355754.037,4611145.893,691.055,A IC
+22,355745.977,4611153.511,691.055,E
+23,355755.345,4611150.953,691.055,A C
+24,355758.897,4611153.511,691.055,A C
+\end{verbatim}
+
+El resultado fue:
+
+\imagen{proto_1}{Dibujo obtenido con el prototipo inicial}
+
+Es resultado fue el esperado, por lo que se concluyó está primera etapa del desarrollo con un pequeño prototipo que cumplía las funcionalidades previstas inicialmente:
+
+\begin{itemize}
+\item Leer y validar un archivo con una gramática determinada.
+\item Interpretar y organizar todos los elementos del archivo, a partir de su codificación.
+\item Crear un archivo DXF con estos elementos.
+\end{itemize}
+
+A partir de aquí, como ya se había decidido que iba a ser una aplicación Web, el próximo objetivo era desarrollar la aplicación Web con \textbf{Flask}. El proceso iba a ser el mismo que con el prototipo anterior, desarrollar un prototipo de aplicación Web que fuera incrementando sus funcionalidades.
+
+A continuación, se enumeran brevemente y ordenadas temporalmente, las funcionalidades más importantes que se han ido añadiendo al prototipo Web:
+\begin{itemize}
+\item Subir un archivo al servidor.
+\item Procesar y descargar un archivo al equipo del usuario.
+\item Conexión con una BBDD. (En este punto se comenzó a trabajar con Docker, la BBDD iba dentro de un contenedor).
+\item Login, Logout y Registro. Para implementar esta parte se trabajó con la biblioteca Flask-Login.
+\item Sesiones de usuarios. 
+\end{itemize}
+
+Estas funcionalidades cubrían las expectativas de que la aplicación fuera una aplicación Web, el prototipo Web ya se había conseguido.
+
+A partir de aquí, se han ido desarrollando todas las funcionalidades de la aplicación tanto en Frontend como en  Backend.
+
+\section{Problemas y curiosidades surgidos en el desarrollo del proyecto}
+
+A continuación, se exponen algunos puntos críticos, problemas surgidos, curiosidades, y como se abordaron.
+
+\subsubsection{Conflicto entre parsers}
+
+Más adelante surgió la idea que el usuario pudiera subir un archivo con una configuración personalizada para hacer la conversión de archivo de campo a archivo DXF. 
+
+Como vemos en la Tabla 5.2, relacionamos códigos de punto, con capas de CAD, colores y símbolos. Cuando exista un trabajo con múltiples códigos, capas y colores, se quiere dar al usuario la posibilidad de no tener que configurar cada vez esta conversión en la interfaz, sino que a través de un archivo personalizado, con sus códigos, capas, colores y símbolos esto sea también automático.
+
+\tablaSmall{Esquema archivo de configuración}{l c c c
+}{config}
+{ \multicolumn{1}{l}{Código de punto} & Capa de CAD & Color & Símbolo \\}{ 
+E & Edificación & Rojo\\
+AR & Vegetación & Verde & Árbol\\
+SAN & Saneamiento & Amarillo \\
+P & Saneamiento & Amarillo & Pozo \\
+}
+
+Para ello se formalizó otra gramática para validar este tipo de archivos y detectar sus errores. La gramática elegida fue la siguiente:
+
+
+
+\begin{verbatim}
+entrada: líneas
+
+líneas: línea | líneas '\n' línea
+
+línea: TEXT COMA TEXT COMA color COMA TEXT
+| TEXT COMA TEXT COMA color
+
+color: LPAREN INT COMA INT COMA INT RPAREN
+
+TEXT: [a-zA-Z0-9_] +
+
+INT: [0-9] +
+
+LPAREN = '\('
+
+RPAREN = '\)'
+\end{verbatim}
+
+Los parsers estaban definidos en diferentes módulos, el parser para el archivo del campo estaba en módulo \textit{conversor.py} y el del archivo de configuración en el módulo \textit{uploadoptionalfiles.py}. Cuando se ejecutan, se crean los archivos \textit{parser.out} y \textit{parsetab.py}. Probando a cargar los dos archivos a la vez, se pudo comprobar que  se parseaba un archivo con el parser que no le correspondía, esto no sucedía siempre, si no que pasaba  de una forma aleatoria, como si en algún momento se cruzara la información entre parsers.
+
+Esto se solucionó añadiendo un parámetro personalizado para cada archivo, al ahora de ejecutar el parser. En un principio estaba definido de esta forma para ambos casos:
+
+\begin{verbatim}
+lex.lex() # lexer part
+...
+punto = parser.parse(line) # parser part
+\end{verbatim}
+
+Definiendo parámetros independientes en cada caso, quedó de la siguiente forma.
+
+Para el archivo de campo:
+
+\begin{verbatim}
+lexer_topographycal=lex.lex() # lexer part
+...
+# añadiendo el nuevo parámetro
+punto = parser.parse(line,lexer=lexer_topographycal)
+\end{verbatim}
+
+Para el archivo de configuración:
+
+\begin{verbatim}
+lexer_config = lex.lex() # lexer part
+...
+# añadiendo el nuevo parámetro
+c_line = parser.parse(line, lexer=lexer_config)
+\end{verbatim}
+Para dar con esta solución, se consultó la documentación de PLY, concretamente el apartado \textbf{Multiple Parsers and Lexers}\cite{Parser}.
+
+\subsubsection{Codificación UTF-8}
+
+Hasta ahora la aplicación funcionaba correctamente a la hora de subir los archivos y validarlos. Se decidió modificar la gramática del archivo de configuración, para que aceptará la letra 'ñ' y todos los tipos de tildes, ya que se suelen utilizar al poner los nombres de las capas de CAD. 
+
+Simplemente se sustituyó:
+
+\begin{verbatim}
+TEXT: [a-zA-Z0-9_] +
+\end{verbatim}
+
+por; 
+
+\begin{verbatim}
+TEXT: [a-zA-ZÀ-ÿ0-9ñÑ_] +
+\end{verbatim}
+
+Con esto debería funcionar perfectamente, pero no fue así, el archivo que contenía el carácter 'ñ', daba errores. Se estaba probando la aplicación simultáneamente en 2 sistemas operativos Windows y Linux, y para mayor sorpresa en Linux funcionaba y en Windows no.
+
+Al final, dedujimos que se podía tratar de un problema de codificación del archivo, e investigando en esa linea decidimos probar dos configuraciones, UTF-8 y Latin-1, en los 2 sistemas , y en cada uno sucedía lo contrario, como se puede ver en la Tabla 5.3.
+
+
+\tablaSmall{Test Windows vs Linux para UTF-8 y Latin-1}{l c c c
+}{WL}
+{ \multicolumn{1}{l}{Sistema Operativo} & UTF-8 & Latin-1 \\}{ 
+Windows & Fallo & Correcto\\
+Linux & Correcto & Fallo\\
+}
+ 
+La solución encontrada fue añadir en la función que abre el archivo, el parámetro \textit{encoding} indicando el tipo de codificación específicamente , en este caso UTF-8. 
+
+En el código se sustituyó:
+\begin{verbatim}
+  with open(input_file) as f:
+\end{verbatim}
+
+por;
+\begin{verbatim}
+  with open(input_file, encoding='utf-8') as f:
+\end{verbatim}
+
+Se comprobó en ambos sistemas operativos, y el resultado fue correcto, por que que se dio esta solución como válida.
+
+\subsubsection{Paleta de colores en CAD}

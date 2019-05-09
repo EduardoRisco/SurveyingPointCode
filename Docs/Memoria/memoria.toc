@@ -35,11 +35,16 @@
 \contentsline {subsubsection}{TinyColor}{24}{section*.16}% 
 \contentsline {subsubsection}{bs-custom-file-input}{24}{section*.17}% 
 \contentsline {section}{\numberline {4.10}Desarrollo Web}{24}{section.4.10}% 
-\contentsline {section}{\numberline {4.11}Despliegue de la aplicaci\IeC {\'o}n}{25}{section.4.11}% 
+\contentsline {section}{\numberline {4.11}Base de Datos. PostGIS}{25}{section.4.11}% 
+\contentsline {section}{\numberline {4.12}Despliegue de la aplicaci\IeC {\'o}n}{26}{section.4.12}% 
 \contentsline {chapter}{Aspectos relevantes del desarrollo del proyecto}{27}{chapter*.18}% 
 \contentsline {section}{\numberline {5.1}Inicio del proyecto}{27}{section.5.1}% 
 \contentsline {section}{\numberline {5.2}Gesti\IeC {\'o}n del proyecto}{28}{section.5.2}% 
 \contentsline {section}{\numberline {5.3}Formaci\IeC {\'o}n}{29}{section.5.3}% 
 \contentsline {section}{\numberline {5.4}Desarrollo de la aplicaci\IeC {\'o}n}{31}{section.5.4}% 
-\contentsline {chapter}{Trabajos relacionados}{33}{chapter*.19}% 
-\contentsline {chapter}{Conclusiones y L\IeC {\'\i }neas de trabajo futuras}{35}{chapter*.20}% 
+\contentsline {section}{\numberline {5.5}Problemas y curiosidades surgidos en el desarrollo del proyecto}{36}{section.5.5}% 
+\contentsline {subsubsection}{Conflicto entre parsers}{36}{section*.19}% 
+\contentsline {subsubsection}{Codificaci\IeC {\'o}n UTF-8}{38}{section*.20}% 
+\contentsline {subsubsection}{Paleta de colores en CAD}{39}{section*.21}% 
+\contentsline {chapter}{Trabajos relacionados}{41}{chapter*.22}% 
+\contentsline {chapter}{Conclusiones y L\IeC {\'\i }neas de trabajo futuras}{43}{chapter*.23}% 

@@ -234,6 +234,17 @@ Entre algunas de sus ventajas, están:
 \item Extensa documentación.
 \end{itemize}
 
+\section{Base de Datos. PostGIS}
+
+Como sistema de base de datos se ha decidido utilizar \textbf{PostGIS}. PostGIS convierte al sistema de administración de bases de datos \textbf{PostgreSQL} en una base de datos espacial mediante la adición de tres características: tipos de datos espaciales, índices espaciales y funciones que operan sobre ellos.
+
+Puede parecer en un principio, que el uso de esta base de datos no está justificada en este proyecto, ya que de momento solo sirve para gestionar a los usuarios de la aplicación. Habitualmente trabajo con bases de datos espaciales y PostGIS es la más usada en en el campo de los sistemas de información geográfica. A parte de poder usarla en desarrollos particulares, como este, programas de GIS como QGis, gvSIG o ArcGis, que son aplicaciones de escritorio,  permiten una conexión directa con PostGIS. 
+La idea es que en un futuro ese contenedor pueda almacenar bases de datos espaciales, de otras aplicaciones de futuros desarrollos o de las que uso habitualmente. Ya que la vamos a tener en un contenedor Docker con una base de datos alojada en el, darle el máximo uso en el futuro.
+
+En España casi todas las instituciones que trabajan con datos geoespaciales , trabajan con PostGIS, es una buena oportunidad para familiarizarse con ella.
+
+La aplicación \textbf{SurveyingPointCode}, en un futuro, aumentará sus funcionalidades y para ello será necesario trabajar con PostGIS.
+
 \section{Despliegue de la aplicación}
 
 Para el despliegue de la aplicación se ha optado por utilizar \textbf{Docker}. Principalmente, porque es una herramienta de mucha actualidad y con un gran potencial, tanto en el desarrollo, como en el despliegue de aplicaciones.
