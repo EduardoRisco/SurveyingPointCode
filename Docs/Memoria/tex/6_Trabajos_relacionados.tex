@@ -1,3 +1,33 @@
 \capitulo{6}{Trabajos relacionados}
 
-Este apartado sería parecido a un estado del arte de una tesis o tesina. En un trabajo final grado no parece obligada su presencia, aunque se puede dejar a juicio del tutor el incluir un pequeño resumen comentado de los trabajos y proyectos ya realizados en el campo del proyecto en curso. 
+En este apartado se recogen de manera resumida algunos proyectos o aplicaciones con objetivos similares, la mayoría son aplicaciones comerciales.
+
+\section{Ordinario}
+
+Pequeño programa en Python, realizado por unos alumnos de la Universidad de Colima, México, que dibuja un polígono en un archivo DXF, a partir de datos de un levantamiento topográfico. El programa es muy simple, con muy pocas funcionalidades, no interpreta códigos, ni permite dibujar símbolos. 
+
+Web del proyecto: \url{https://github.com/burissanz/Ordinario-}
+
+
+\section{RapidDXF}
+
+Aplicación comercial, que permite dibujar puntos, textos y líneas, interpretando un archivo de texto. No permite una codificación aleatoria, dibujar otros elementos distintos de lineas, ni insertar símbolos por codificación.
+
+Web de la aplicación: \url{https://www.delicad.com/en/rapiddxf.php}
+
+
+\section{RTOPO 3.3}
+Aplicación comercial, que permite dibujar puntos, textos y líneas, interpretando un archivo de texto, permite dibujar \emph{splines} y también insertar símbolos por codificación.
+
+Web de la aplicación: \url{https://rcad.eu/rtopo/}
+
+La aplicación que mas se aproxima a \emph{SurveyingPointCode} es \emph{RTOPO 3.3}, aunque no puede realizar funciones, que \emph{SurveyingPointCode} resuelve, como:
+\begin{itemize}
+\item Dibujar un cuadrado definiendo solo dos puntos.
+\item Dibujar un rectángulo definiendo solo tres puntos.
+\item Dibujar un círculo definiendo solo un punto y su radio.
+\item Crear una linea que contiene puntos no medidos.
+\end{itemize}
+
+
+Existen en el mercado programas de CAD como Autocad Civil 3D\footnote{\textsl{Civil 3D}: \url{https://www.autodesk.es/products/civil-3d/overview}}, que incorporan módulos de topografía, en los cuales el usuario podría llegar a conseguir algo similar, pero tampoco se cumplirían todas las funcionalidades que aquí estamos desarrollando, con el inconveniente, que el usuario debe tener un conocimiento avanzado en este tipo de aplicaciones.
