@@ -4,13 +4,16 @@ A continuación, se detallan los diferentes objetivos que han motivado la realiz
 \section{Objetivos generales}
 \begin{itemize}
 
-	\item Desarrollar una aplicación web que permita obtener un archivo DXF a partir de los datos de un levantamiento topográfico.
-
 	\item Definir un tipo de codificación para los puntos medidos en campo, que sea interpretada por la aplicación, automatice el proceso de dibujo y mejore el rendimiento en el trabajo de campo.
+	
+	\item Desarrollar una aplicación que permita la traducción de la codificación de puntos al formato DXF.
+	
+	\item Implementar las siguientes operaciones de interacción con la aplicación:
+\begin{itemize}
 
 	\item Permitir al usuario crear una cuenta.
 
-	\item Permitir al usuario subir :  archivos de campo, archivos de configuración personalizados de la transformación y archivos DXF, con símbolos creados por el usuario.
+	\item Permitir al usuario subir:  archivos de campo, archivos de configuración personalizados de la transformación y archivos DXF, con símbolos creados por el usuario.
 
 	\item Permitir al usuario modificar o elegir, en la interfaz, los nombres de las capas de CAD, colores y símbolos existentes, y asociarlos a los códigos de campo
 
@@ -18,20 +21,22 @@ A continuación, se detallan los diferentes objetivos que han motivado la realiz
 
 	\item Permitir al usuario almacenar en su equipo, el archivo DXF generado.
 \end{itemize}
+
+\end{itemize}
 \section{Objetivos técnicos}
 
 \begin{itemize}
-\item Desarrollar una aplicación web utilizando el framework \textbf {Flask}.
+\item Desarrollar una aplicación web utilizando el \english{framework} \textbf {Flask}.
 
-\item Utilizar \textbf {PLY}\footnote{\textsl{PLY}: \url{https://pypi.org/project/ply/}}   (Python Lex-Yacc), como analizador sintáctico, para reconocer la validez de los archivos de entrada.
+\item Utilizar \textbf {PLY}, como analizador sintáctico, para reconocer la validez de los archivos de entrada.
 
-\item Utilizar \textbf {ezdxf}\footnote{\textsl{ezdf}: \url{https://ezdxf.readthedocs.io/en/latest/index.html}}  ,  para leer, modificar y crear archivos DXF. 
+\item Utilizar \textbf{ezdxf}, para leer, modificar y crear archivos DXF. 
 
 \item Utilizar \textbf {Bootstrap}, para crear el sitio web.
 
-\item Utilizar \textbf {TinyColor}\footnote{\textsl{TinyColor}: \url{https://github.com/bgrins/TinyColor}} para poder definir los colores con los estándares de AutoCAD.
+\item Utilizar \textbf {TinyColor} para poder definir los colores con los estándares de AutoCAD.
 
-\item Utilizar  \textbf {PostGIS}\footnote{\textsl{PostGIS}: \url{https://postgis.net/}} como sistema de base de datos.
+\item Utilizar  \textbf {PostGIS}, como sistema de base de datos. «(las razones de esta decisión se explicitan en la Sección~\ref{sec:postgis} en la página~\pageref{sec:postgis})» 
 
 \item Realizar test unitarios.
 
@@ -51,6 +56,6 @@ A continuación, se detallan los diferentes objetivos que han motivado la realiz
 \item Mejorar los recursos invertidos y facilitar el trabajo, a la hora de realizar un levantamiento topográfico.
 
 \item Realizar el proyecto como un trabajo real, aplicando los conocimientos adquiridos en la realización del Grado.
-
-\item Utilizar herramientas y metodologías demandadas en el mercado laboral; Git, desarrollo Web, Docker, etc.
+\item Profundizar en la utilización de Git en un proyecto de más envergadura que las prácticas vistas en la titulación.
+\item Aprovechar el proyecto para estudiar tecnologías demandadas en el mercado laboral que no han sido tratadas en la carrera: desarrollo Web, Docker, etc.
 \end{itemize}

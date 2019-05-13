@@ -4,18 +4,18 @@ En este apartado se explican conceptos los básicos necesarios para entender el 
 
 \section{Levantamiento topográfico}
 
-Un levantamiento topográfico consiste en la medición de distintos puntos, mediante cálculos topográficos, donde se obtienen las coordenadas de estos, generalmente las coordenadas X,Y y Z .Estas coordenadas nos indican su posición exacta en el espacio. 
+Un levantamiento topográfico consiste en la medición de distintos puntos, mediante cálculos topográficos, donde se obtienen las coordenadas de estos, generalmente las coordenadas $X$,$Y$ y $Z$. Estas coordenadas nos indican su posición exacta en el espacio. 
 
 El software que tienen los equipos de topografía; como teodolitos, estaciones totales o GPS, permiten asociar a cada punto un texto en el momento de medir el punto y así, el punto queda registrado con ese campo.
 
-Este campo de texto, que de aquí en adelante llamaremos código de punto, es la clave de este proyecto. El algoritmo diseñado debe saber interpretar este código de punto. Como veremos más adelante, este nos puede indicar una o múltiples cosas a la vez, lo que conlleva mayor dificultad a la hora de definir el formato que debe tener este. Tiene que aportar la máxima información posible, pero a la vez tiene que ser muy sencillo en su estructura y de una longitud lo más corta posible. No es muy viable tener que estar mucho tiempo tecleando, ya que se perdería mucho tiempo y alargaría en exceso el trabajo de campo.
+Este campo de texto, que de aquí en adelante llamaremos código de punto, es el elemento en el que se centra este proyecto. El algoritmo diseñado debe saber interpretar este código de punto. Como veremos más adelante, este nos puede indicar una o múltiples cosas a la vez, lo que conlleva mayor dificultad a la hora de definir el formato que debe tener este. Tiene que aportar la máxima información posible, pero a la vez tiene que ser muy sencillo en su estructura y de una longitud lo más corta posible. No es muy viable tener que estar mucho tiempo tecleando, ya que se perdería mucho tiempo y alargaría en exceso el trabajo de campo.
 
-\section{Archivo DXF. Elementos del dibujo}
+\section{Archivo DXF---Elementos del dibujo}
 
 DXF (acrónimo del inglés Drawing Exchange Format) es un formato de archivo para dibujos de diseño asistido por computadora, creado por AutoCAD. Formato muy extendido y utilizado por la mayoría de programas de CAD, como por ejemplo: AutoCAD, MicroStation ,FreeCAD,  DraftSight,… y también por programas de GIS, como: ArcGIS,QGIS,gvSIG,..
 
-Para entender de forma sencilla los elementos de los que está compuesto un archivo DXF, solo se trataran aquellos elementos que se utilizan en esta aplicación, de otra forma, la explicación sería muy extensa.
-Simplificando, se procede a hacer una diferenciación entre los elementos que queremos dibujar que llamaremos elementos gráficos, y los elementos no gráficos.
+Para entender de forma sencilla los elementos de los que está compuesto un archivo DXF, solo se tratarán aquellos elementos que se utilizan en esta aplicación, de otra forma, la explicación sería muy extensa.
+Simplificando, se procede a hacer una diferenciación entre los elementos que queremos dibujar, que llamaremos elementos gráficos, y los elementos no gráficos.
 
 \textbf {Elementos gráficos}
 \begin{itemize}
@@ -25,7 +25,7 @@ Simplificando, se procede a hacer una diferenciación entre los elementos que qu
 
 \item\textbf{Splines:} Curvas interpoladas en una sucesión de puntos, pueden ser abiertas o cerradas. Deben tener un punto inicial y otro final.
 
-\item\textbf{Círculos:} En esta aplicación los definiremos por un punto, que es el centro del circulo y un radio.
+\item\textbf{Círculos:} En esta aplicación los definiremos por un punto, que es el centro del círculo y un radio.
 
 \item\textbf{Textos:} Es un texto cuya posición en el dibujo se define, por la posición de un punto y una distancia a este.
 
@@ -38,12 +38,12 @@ Simplificando, se procede a hacer una diferenciación entre los elementos que qu
 
 \item\textbf{Capas:} Sirven para organizar mejor los objetos en nuestro dibujo ayudando a un mejor manejo a la hora de mover, copiar o identificarlos en el plano. Estas son un aspecto fundamental en el desarrollo del dibujo para poder obtener un plano bien organizado y con excelente presentación. En un buen trabajo, es casi imprescindible el uso de capas.
 
-Las capas son una forma de clasificar objetos en CAD, si tienes un plano muy extenso con muchos objetos, la forma más fácil de identificarlos es mediante su capa, cada objeto dibujado en CAD se le asociara una capa y esa capa la puedes crear asignándole un nombre, un color, entre otras cosas. Es la mejor forma de identificar cierto objeto dentro de tu dibujo.
+Las capas son una forma de clasificar objetos en CAD, si tienes un plano muy extenso con muchos objetos, la forma más fácil de identificarlos es mediante su capa, cada objeto dibujado en CAD se le asociara una capa y esa capa la puedes crear asignándole un nombre y un color, entre otras cosas. Es la mejor forma de identificar cierto objeto dentro de tu dibujo.
 En esta aplicación, las capas tendrán un nombre y un color.
 
 \imagen{capas}{Capas en un programa de CAD}
 
-\item\textbf{Bloques:} Un bloque en CAD es un conjunto de objetos (llamados entidades), agrupados como un todo. Es decir, que podemos dibujar líneas, arcos, círculos, cada uno con propiedades distintas que los demás y luego invocar un comando para “juntarlos” a todos bajo un mismo nombre y asignarle un punto de inserción.
+\item\textbf{Bloques:} Un bloque en CAD es un conjunto de objetos (llamados entidades), agrupados como un todo. Es decir, que podemos dibujar líneas, arcos, círculos, cada uno con propiedades distintas que los demás y luego invocar un comando para <<juntarlos>> a todos bajo un mismo nombre y asignarle un punto de inserción.
 
 En esta aplicación se pretende que el usuario pueda subir un archivo DXF personalizado con sus bloques, y poder asignarlo a diferentes puntos del levantamiento topográfico a través del código de punto
 
@@ -76,7 +76,7 @@ A continuación, veremos algunos ejemplos de codificación para distintos elemen
 \item Se quiere dibujar un círculo, por ejemplo, una tapa de registro perteneciente a la red eléctrica.  El código de punto debe comenzar obligatoriamente por ‘TX’, seguido de la descripción que queramos asignarle, en este caso como es la red de eléctrica usaremos ‘RE’. En este código necesitaremos también incluir en radio de la circunferencia, por ejemplo 0.5 metros, por lo que al final el código queda ‘TX 0.5 RE’.
 \imagen{CRC}{Representación de un rectángulo, un cuadrado y un círculo }
 
-\item Por último, planteamos una opción más complicada y suele ser habitual en los trabajos de campo, la representación de elementos que realmente no se han medido en campo, porque pueden no ser accesibles. Queremos representar la línea de la fachada de un edificio, donde existen dos puntos inaccesibles, que no podemos medir topográficamente, pero conocemos su longitud (por ejemplo, hemos extraído estos datos de un plano catastral). Como es un edificio, podríamos representarlo con el texto ‘E’. La siguiente secuencia de 4 puntos con su codificación, construirá la línea final formada por 6 puntos, (‘E I’,’E 1.5 -2’,’E’,’E’). El código el punto 2, ’E 1.5 -2’, indica que cuando la línea llegue a ese punto, debe continuar perpendicular a su derecha durante 1.5 metros, después, 2 metros, también en perpendicular, hacia su izquierda, y por último debe unirse con el siguiente punto que forma la línea. 
+\item Por último, planteamos una opción más complicada, que suele ser habitual en los trabajos de campo, la representación de elementos que realmente no se han medido en campo, porque pueden no ser accesibles. Queremos representar la línea de la fachada de un edificio, donde existen dos puntos inaccesibles, que no podemos medir topográficamente, pero conocemos su longitud (por ejemplo, hemos extraído estos datos de un plano catastral). Como es un edificio, podríamos representarlo con el texto ‘E’. La siguiente secuencia de 4 puntos con su codificación, construirá la línea final formada por 6 puntos, (‘E I’,’E 1.5 -2’,’E’,’E’). El código el punto 2, ’E 1.5 -2’, indica que cuando la línea llegue a ese punto, debe continuar perpendicular a su derecha durante 1.5 metros, después, 2 metros, también en perpendicular, hacia su izquierda, y por último debe unirse con el siguiente punto que forma la línea. 
 \imagen{Inaccesibles}{Representación de como se crearía una linea formada por puntos inaccesibles }
 
 \end{itemize}
@@ -87,7 +87,7 @@ Se pretende dibujar el plano de una carretera de 50 km, las líneas que nos inte
 
 Vemos que este tipo de codificación definida no solo aporta la ventaja de generar automáticamente el plano, si no que, el tiempo ahorrado en el trabajo de campo, es la mayor ventaja. Esta parte del trabajo es la que tiene mayores costes y, por lo tanto, más peso a la hora de decidirse por un proyecto.
 
-\tablaSmall{Caracteres obligatorios y significado }{l c 
+\tablaSmall{Caracteres obligatorios y significado.}{l c 
 }{herramientasportipodeuso}
 { \multicolumn{1}{l}{Caracter} & Significado \\}{ 
 'I'	& Punto inicio de línea\\
