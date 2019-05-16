@@ -2,9 +2,100 @@
 
 \section{Introducción}
 
+En este anexo se describen los servicios que ha de ofrecer la aplicación \emph{SurveyingPointCode} y las restricciones asociadas a su funcionamiento. La función principal de la especificación de requisitos es servir como medio de comunicación entre clientes, usuarios, y desarrolladores.
+
+Se recogerán todos los requisitos funcionales y no funcionales.
+
 \section{Objetivos generales}
+En este apartado se detallarán los distintos objetivos generales que se persiguen con este proyecto:
+
+\begin{itemize}
+\item Definir una codificación de puntos en un levantamiento topográfico que permita la automatización del proceso e delineación y mejore la toma de datos en campo.
+\item Desarrollar una aplicación Web, que permita la conversión de un archivo de campo, con datos topográficos a un archivo DXF, interpretando la codificación y generando todos los elementos del dibujo de forma automática.
+\item Trabajar con archivos personalizados del usuario como: configuración de la conversión y archivo DXF de símbolos, para la obtención del DXF final.
+\item El usuario debe estar registrado, para acceder a la aplicación.
+\end{itemize}
 
 \section{Catalogo de requisitos}
+
+A continuación,  definirán tanto los requisitos funcionales como los no
+funcionales necesarios para cumplir con los objetivos generales.
+
+\subsection{Requisitos funcionales}
+
+\begin{itemize}
+\item \textbf{RF-1 Acceso a la aplicación: }el usuario debe estar \emph{logeado} para acceder a la aplicación, para ello debe estar previamente registrado. 
+
+\begin{itemize}
+\item \textbf{RF-1.1 Registro de usuario: }el usuario debe poder 		registrarse, mediante un nombre, un e-mail y una contraseña.
+	
+\item \textbf{RF-1.2 \emph{Login} de usuario: }el usuario debe poder 	\emph{logearse}, mediante un e-mail y una contraseña.
+
+
+\end{itemize}
+
+\item \textbf{RF-2 Carga de archivos: }el usuario debe ser capaz de gestionar diferentes tipos de archivos: de campo, de configuración de la conversión y de símbolos.
+
+\begin{itemize}
+\item \textbf{RF-2.1 Carga de archivo de campo: }el usuario debe poder cargar este archivo con los datos de un levantamiento topográfico, indicando su validez y en caso contrario, indicando cual es su error. Este archivo es obligatorio.
+
+\item \textbf{RF-2.2 Carga de archivo de configuración: }el usuario debe poder cargar este archivo con los datos de una configuración personalizada para la conversión, indicando su validez y en caso contrario, indicando cual es su error. Este archivo es opcional.
+
+\item \textbf{RF-2.3 Carga de archivo DXF con simbología: }el usuario debe poder cargar este archivo DXF con símbolos personalizados, indicando su validez y en caso contrario, indicando cual es su error. Este archivo es opcional.
+	
+\end{itemize}
+
+\item \textbf{RF-3 Configuración de la conversión a DXF: }el usuario debe ser capaz de generar un archivo DXF, partiendo del archivo de campo, pudiendo configurar esa conversión utilizando los archivos opcionales. Debe también existir la posibilidad de configurar desde cero o modificar una configuración de la conversión existente a través de la interfaz gráfica. El usuario debe poder elegir la versión de CAD para el DXF a generar, y ponerle un nombre personalizado al archivo generado.
+
+\begin{itemize}
+\item \textbf{RF-3.1 Visualización de códigos generados: }la aplicación presentará una tabla o lista con los códigos generados donde el usuario podrá asociarle, capas, colores y símbolos. 
+
+\item \textbf{RF-3.2 Asociar capas y colores: }el usuario debe poder asociar capas y colores, a los códigos, a través del archivo configuración de la conversión o de la interfaz. 
+
+\item \textbf{RF-3.3 Asociar símbolos: }el usuario debe poder asociar símbolos a los códigos. Previamente debe haber cargado un archivo válido con símbolos. 
+
+\item \textbf{RF-3.4 Elección de versión de CAD: }el usuario debe poder elegir la versión de CAD para generar el DXF, a través de un desplegable con las versiones disponibles.
+
+\item \textbf{RF-3.5 Nombre del archivo DXF generado: }el usuario debe poder dar un nombre personalizado al archivo DXF generado.
+	
+\item \textbf{RF-3.6 Conversión a DXF: }el usuario debe poder realizar la conversión, si todo está correcto. El usuario debe poder convertir varios archivo en la misma sesión, sin descargarlos.
+\end{itemize}
+
+\item \textbf{RF-4 Descarga de archivos :} el usuario debe poder descargar los archivos generados a su equipo.
+
+\begin{itemize}
+\item \textbf{RF-4.1 Descargar un archivo: }el usuario debe poder descargar un archivo de forma individual.
+
+\item \textbf{RF-4.1 Descargar varios archivos: }el usuario debe poder descargar varios archivos en formato comprimido.
+
+\end{itemize}
+
+\item \textbf{RF-5 Cierre de la aplicación: }el usuario debe poder cerrar la aplicación.
+
+\begin{itemize}
+\item \textbf{RF-5.1 \emph{Logout} de la aplicación: }el usuario debe poder cerrar la sesión.
+
+\item \textbf{RF-5.2 Limpieza de archivos almacenados en el servidor: }la aplicación debe eliminar los archivos utilizados durante la sesión, al cerrar la sesión.
+
+\end{itemize}
+
+\end{itemize}
+
+
+\subsection{Requisitos no funcionales}
+
+\begin{itemize}
+\item \textbf{RNF-1 Usabilidad: }la aplicación debe ser intuitiva, con una curva baja de aprendizaje y mensajes de errores claros para el usuario.
+
+\item \textbf{RNF-2 Soporte: }la aplicación debe funcionar en los navegadores Web más usuales, como: Google Chrome, Mozilla Firefox y Microsoft Edge.
+
+\item \textbf{RNF-3 Rendimiento: }la aplicación debe tener unos tiempos de conversión del archivo mínimos con archivos de campo de tamaño grande (5.000 puntos).
+
+\item \textbf{RNF-4 Escalabilidad: }la aplicación debe ser desarrollada de manera que permita la escalabilidad de la misma de forma sencilla.
+
+\item \textbf{RNF-5 Seguridad:} la aplicación debe gestionar de forma adecuada todos los datos sensibles, como claves, tokens, etc.
+
+\end{itemize}
 
 \section{Especificación de requisitos}
 
