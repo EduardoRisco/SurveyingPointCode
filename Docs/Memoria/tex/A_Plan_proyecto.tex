@@ -106,12 +106,8 @@ Como objetivo se planteó seguir con el desarrollo de este primer prototipo, amp
 \item Comenzando con biblioteca \texttt{ezdxf}: Se comienza a estudiar la biblioteca \texttt{ezdxf} y a realizar pequeñas pruebas, incluyendo estas en el prototipo. Dibujar las líneas y \emph{splines} de un fichero de entrada.
 
 El resultado fue correcto, lo podemos ver en la siguiente imagen.
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1\textwidth]{proto_1}
-	\caption{Dibujo con líneas y \emph{splines}}
-	\label{fig:proto_1}
-\end{figure}
+\imagen{proto_1}{Dibujo con líneas y \emph{splines}}
+
 \end{itemize}
 
 
@@ -259,6 +255,19 @@ En este \emph{sprint} y como parte final de la aplicación, el objetivo era que 
 \subsection{\emph{Sprint} 12 (02/05/2019 - 15/05/2019)}
 
 En este \emph{sprint} se tratará de redactar la documentación del proyecto.
+
+\subsection{\emph{Sprint} 13 (16/05/2019 - 22/05/2019)}
+
+En este \emph{sprint} se continuará con la redacción de la documentación del proyecto. Además se añadirán las siguientes funcionalidades:
+
+\begin{itemize}
+\item Mensaje de \emph{Cookies}.
+
+\item Tiempo de caducidad de la sesión de usuario
+
+\item ...................
+\end{itemize}
+
 
 \section{Estudio de viabilidad}
 
@@ -429,7 +438,7 @@ Total\strut
 
 \subsubsection{Beneficios}
 
-Se está pensando en distribuir la aplicación comercialmente en un futuro. Un modelo de negocio que se está teniendo en cuenta es, establecer diferentes cuotas por tramos, en función del tamaño de los archivos o del número de puntos a convertir.
+En un principio se desplegará o distribuirá la aplicación de forma gratuita. Se evaluará su grado de aceptación en el mercado y si es viable, se estudiará como distribuir la aplicación comercialmente. Un modelo de negocio podría ser, establecer diferentes cuotas por tramos, en función del tamaño de los archivos o del número de puntos a convertir.
 
 Por ejemplo:
 \begin{longtable}[]{@{}lr@{}}
@@ -483,3 +492,174 @@ Podría existir una funcionalidad gratuita, que permitiera visualizar el archivo
 
 
 \subsection{Viabilidad legal}
+\subsubsection{Licencias de \emph{software}}
+
+En este apartado se mostraran las licencias de las herramientas y bibliotecas de \emph{software} utilizadas en el desarrollo del proyecto. Por otra parte, asignaremos una licencia a este proyecto.
+
+En la tabla siguiente se pueden ver las licencias de las dependencias utilizadas.
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.18\columnwidth}\raggedright\strut
+Dependencia\strut
+\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\raggedright\strut
+Versión\strut
+\end{minipage} & \begin{minipage}[b]{0.49\columnwidth}\raggedright\strut
+Descripción\strut
+\end{minipage} & \begin{minipage}[b]{0.11\columnwidth}\raggedright\strut
+Licencia\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.18\columnwidth}\raggedright\strut
+\texttt{Flask}\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+1.0.2\strut
+\end{minipage} & \begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
+\emph{Micro framework} Python crear aplicaciones Web.\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+BSD\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.18\columnwidth}\raggedright\strut
+\texttt{Ply}\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+3.11\strut
+\end{minipage} & \begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
+Herramienta de análisis sintáctico en Python.\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+BSD\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.18\columnwidth}\raggedright\strut
+\texttt{ezdxf} \strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+0.8.9\strut
+\end{minipage} & \begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
+Paquete de Python para crear y modificar dibujos DXF.\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+MIT\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.18\columnwidth}\raggedright\strut
+\texttt{SQLAlchemy}\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+1.2.18\strut
+\end{minipage} & \begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
+Conjunto de bibliotecas SQL de Python y ORM.\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+MIT\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.18\columnwidth}\raggedright\strut
+\texttt{flask-login}\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+0.4.1\strut
+\end{minipage} & \begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
+Biblioteca para gestionar sesiones de usuarios en \texttt{Flask}.\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+MIT\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.18\columnwidth}\raggedright\strut
+\texttt{WTForms}\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+2.2.1\strut
+\end{minipage} & \begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
+Biblioteca para generar y validar formularios Web en Python\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+BSD\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.18\columnwidth}\raggedright\strut
+\texttt{bs custom file input}\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+1.3.2\strut
+\end{minipage} & \begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
+\emph{Plugin} de Bootstrap para entrada de archivos.\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+MIT\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.18\columnwidth}\raggedright\strut
+\texttt{Bootstrap}\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+4\strut
+\end{minipage} & \begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
+Bootstrap es una biblioteca multiplataforma para el diseño de sitios Web.\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+MIT\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.18\columnwidth}\raggedright\strut
+\texttt{Bootstrap Colorpicker}\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+3.1.1\strut
+\end{minipage} & \begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
+\emph{Plugin} de selector de color modular para Bootstrap 4.\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+MIT\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.18\columnwidth}\raggedright\strut
+\texttt{TinyColor}\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+1.4.1\strut
+\end{minipage} & \begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
+Es un \emph{micro framework} que permite la manipulación y conversión de color en JavaScript\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+MIT\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\caption{Dependencias del proyecto.}
+\end{longtable}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{c_licencias}
+	\caption{Compatibilidad entre licencias\cite{licencias}.}
+	\label{fig:c_licencias}
+\end{figure}
+
+Como se puede observar en la figura anterior, podemos aplicar cualquier licencia a nuestro proyecto respecto a las dependencias que tenemos.
+
+Se ha optado por: 
+
+\textbf{GNU General Public License v3.0}\
+
+<<Exige la publicación del código fuente y que todos los trabajos derivados del original conserven la misma licencia GPL, no permite enlaces con módulos privativos (de código cerrado) y requiere que todos los cambios realizados a la versión original sean reflejados en el código fuente con sus respectivos autores.
+Los derechos de autor deben conservarse tanto en el código fuente como en los binarios.>>\cite{GNU}
+
+\subsubsection{Política de \emph{Cookies}}
+
+El desarrollo de la aplicación ha implicado el uso de sesiones y por consiguiente, el uso de \emph{Cookies}. 
+
+Las obligaciones legales de las \emph{cookies} se encuentran en: el artículo 22.2 LSSI, este sentido el Grupo de Trabajo del Artículo 29 en su Dictamen 4/2012, indica que, quedan exceptuadas las que tienen por finalidad:
+
+\begin{itemize}
+
+\item\emph{Cookies} de entrada del usuario.
+\item\emph{Cookies} de autenticación o identificación de usuario (únicamente de sesión)
+\item\emph{Cookies} de seguridad del usuario
+\item\emph{Cookies} de sesión de reproductor multimedia
+\item\emph{Cookies} de sesión para equilibrar la carga
+\item\emph{Cookies} de personalización de la interfaz de usuario
+\item\emph{Cookies} de complemento (\emph{plugin}) para intercambiar contenidos sociales
+
+\end{itemize}
+
+En este caso, no estamos obligados a informar\cite{cookies}, las que usa \emph{SurveyingPointCode} son de tipo:
+
+<<\emph{Cookies} de autenticación o identificación de usuario (únicamente de sesión).>>
+
+Aun así se ha implementado un mensaje informando de que se está utilizando \emph{cookies} y cual es su uso.
+
+El mensaje es el siguiente:
+ 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\textwidth]{cookies}
+	\caption{Mensaje de aviso de \emph{Cookies}.}
+	\label{fig:Scrum}
+\end{figure}
+
+
+\subsubsection{Licencia en la documentación}
+
+Con respecto a la documentación se ha optado por una licencia de tipo \emph{Creative Commons} y se ha elegido la siguiente:
+
+\textbf{CC BY-NC-SA 4.0}\cite{creativec}
+
+Esta licencia permite a otros entremezclar, ajustar y construir a partir de su obra con fines no comerciales, siempre y cuando le reconozcan la autoría y sus nuevas creaciones estén bajo una licencia con los mismos términos.
+
