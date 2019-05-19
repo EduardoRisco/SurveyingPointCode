@@ -68,11 +68,19 @@ CAD_COLORS = [
 let selectedColorPicker = '';
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Show cookies advise
+    if (!$.cookie('spc-visited')) {
+        $.cookie('spc-visited', 'visited', { expires: 7, path: '/' });
+        $('#cookies-advise').modal({show:true});
+        $('#cookies-advise').on('show.bs.modal', () => {
+            $('#cookies-advise').css('margin-right', $(window).width() - $('.modal-content').width());
+        });
+    }
 
     // Automatically close alerts after 5 seconds
     window.setTimeout(() => {
         $('#alert').fadeTo(500, 0).slideUp(500, () => {
-            $(this).remove(); 
+            $(this).remove();
         });
     }, 5000);
 
@@ -89,17 +97,27 @@ document.addEventListener('DOMContentLoaded', () => {
         order: {}
     });
 
+    // Set color picker input readonly when selected
+    $('input.color-picker').click(function(e) {
+        selectedColorPicker = $(this).attr('name');
+        $(this).prop('readonly', true);
+        $(this).trigger('colorpickersliders.show');
+    });
+
+    // Hide color picker popover when color is selected
+    $(document).on('click', '.cp-popover-container div.btn.btn-default.cp-swatch', function(e) {
+        $('input.color-picker[name=' + selectedColorPicker + ']').trigger('colorpickersliders.hide');
+        selectedColorPicker = '';
+    });
+
     // Make items in the list of converted files clickable
     $(document.body).on('click', '.alert.converted-item[data-clickable=true]', e => {
         var href = $(e.currentTarget).data('href');
         window.location = href;
     });
-
-
 });
+
 // Show spinner when generating DXF file
 modal = () => {
     $('.modal.load-spinner').modal('show');
 }
-
-
