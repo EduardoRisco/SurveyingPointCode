@@ -1,29 +1,45 @@
 <header class="header fixed-top">
     <div class="container-fluid">
         <div class="row justify-content-between align-items-center">
-                   <div class="col-4">
-                
+            <div class="col-4">
                 <div class="row justify-content-start">
-               
-                <a href="/"><img src="{{ url_for('static', filename='images/logo_login_min.svg') }}" alt="Home" class="img-fluid my-1 ml-3"></a>
+                    <a href="/"><img src="{{ url_for('static', filename='images/logo_login_min.svg') }}"
+                                     alt="Surveying Point Code Logo" class="img-fluid my-1 ml-3"></a>
                 </div>
             </div>
-              
             <div class="col-8">
-              
                 <nav class="nav flex-row text-center d-flex justify-content-end mb-2 mb-md-0">
-                {% if current_user and 'username' in session: %}
-                <a href="#" class="nav-link d-none d-md-block" id="welcome_user">User  <strong>{{ current_user.username }}</strong></a>
-               
-                <a href="#" class="nav-link d-none d-md-block" id="last_access">Last access <strong>{{ session['last_access'] if 'last_access' in session else '' }}</strong></a>
-               
-                <a class="btn btn-danger d-none d-md-block" href="{{ url_for('logout') }}" role="button"><i class="fas fa-sign-out-alt"></i> Sign out</a>
-             
-                {% else %}
-               
-                <a class="btn btn-success d-none d-md-block" href="{{ url_for('login') }}" role="button"><i class="fas fa-sign-in-alt"></i> Sign in</a>
-       
-                {% endif %}
+                    {% if current_user and 'username' in session: %}
+                    <div class="nav-item dropdown">
+                        <a class="dropdown-toggle btn btn-info mt-2 mt-md-auto font-weight-bold d-none d-md-block"
+                           href="#" role="button" data-toggle="dropdown">
+                            <i class="far fa-user"></i>&nbsp;&nbsp;<span class="d-inline-block text-truncate my-n1"
+                                                                         style="max-width: 80px;">{{ current_user.username }}</span>
+                        </a>
+                        <a class="btn btn-info mt-2 font-weight-bold d-md-none" href="#" role="button"
+                           data-toggle="dropdown">
+                            <i class="fas fa-bars"></i>
+                        </a>
+                        <div class="dropdown-menu shadow" id="menu">
+                            <a class="dropdown-item font-weight-bold" href="{{ url_for('upload_file') }}"><i
+                                    class="fas fa-upload"></i> Upload files</a>
+                            <a class="dropdown-item {{ 'disabled' if not session['converted_files'] }} font-weight-bold"
+                               href="{{ url_for('downloads') }}"><i class="fas fa-download"></i> Download files</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item font-weight-bold" href="{{ url_for('logout') }}"><i
+                                    class="fas fa-sign-out-alt"></i> Sign out</a></a>
+                        </div>
+                    </div>
+                    {% else %}
+                    <a class="btn btn-success mt-2 mt-md-auto d-none d-md-block" href="{{ url_for('login') }}"
+                       role="button"><i class="fas fa-sign-in-alt"></i> Sign in</a>
+                    <a class="btn btn-success mt-2 d-md-none" href="{{ url_for('login') }}" role="button"><i
+                            class="fas fa-sign-in-alt"></i></a>
+                    <a class="btn btn-primary ml-1 mt-2 mt-md-auto d-none d-md-block" href="{{ url_for('register') }}"
+                       role="button"><i class="far fa-paper-plane"></i> Register</a>
+                    <a class="btn btn-primary ml-1 mt-2 d-md-none" href="{{ url_for('register') }}" role="button"><i
+                            class="far fa-paper-plane"></i></a>
+                    {% endif %}
                 </nav>
             </div>
         </div>
