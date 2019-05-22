@@ -24,8 +24,10 @@ from app.upload_optional_files import (file_empty, get_errors_config_file,
 
 TOPOGRAPHIC_PARSER_ERROR = 'Topographic data file has the following errors.'
 EMPTY_TOPOGRAPHIC_FILE = 'Topographic data file is empty.'
-SQUARE_ERROR = 'The number of points with "TC" code in the topographic data file is not multiple of 2.'
-RECTANGLE_ERROR = 'The number of points with "TR" code in the topographic data file is not multiple of 3.'
+SQUARE_ERROR = 'The number of points with "TC" code in the topographic data file' \
+               ' is not multiple of 2.'
+RECTANGLE_ERROR = 'The number of points with "TR" code in the topographic data' \
+                  ' file is not multiple of 3.'
 CONFIG_PARSER_ERROR = 'User configuration file file has the following errors.'
 EMPTY_CONFIG_FILE = 'User configuration file is empty.'
 DUPLICATE_ELEMENTS = 'User configuration file has duplicate items on different lines.'
@@ -42,7 +44,8 @@ def add_session(user):
     session['current_access'] = datetime.now()
     session['last_access'] = user.last_access
     session['entry_time'] = str(time.time())
-    session['user_folder'] = os.path.join(app.config["UPLOAD_FOLDER"], session['username'] + session['entry_time'])
+    session['user_folder'] = os.path.join(app.config["UPLOAD_FOLDER"],
+                                          session['username'] + session['entry_time'])
     session['topographical_file'] = ''
     session['config_file'] = ''
     session['symbols_file'] = ''
@@ -119,9 +122,11 @@ def check_files_errors(layers, post):
 
     if get_errors_upload_topographical_file():
         topographic_errors.append(
-            {'message': TOPOGRAPHIC_PARSER_ERROR, 'errors': get_errors_upload_topographical_file()})
+            {'message': TOPOGRAPHIC_PARSER_ERROR,
+             'errors': get_errors_upload_topographical_file()})
     else:
-        if file_empty(os.path.join(session['files_folder'], session['topographical_file'])):
+        if file_empty(os.path.join(session['files_folder'],
+                                   session['topographical_file'])):
             topographic_errors.append({'message': EMPTY_TOPOGRAPHIC_FILE})
         else:
             if errors_square():
@@ -131,14 +136,17 @@ def check_files_errors(layers, post):
 
     if session['config_file'] or post:
         if get_errors_config_file():
-            config_errors.append({'message': CONFIG_PARSER_ERROR, 'errors': get_errors_config_file()})
+            config_errors.append({'message': CONFIG_PARSER_ERROR,
+                                  'errors': get_errors_config_file()})
         else:
-            if file_empty(os.path.join(session['files_folder'], session['config_file'])):
+            if file_empty(os.path.join(session['files_folder'],
+                                       session['config_file'])):
                 config_errors.append({'message': EMPTY_CONFIG_FILE})
             else:
                 if get_errors_config_file_duplicate_elements():
                     config_errors.append(
-                        {'message': DUPLICATE_ELEMENTS, 'errors': get_errors_config_file_duplicate_elements()})
+                        {'message': DUPLICATE_ELEMENTS,
+                         'errors': get_errors_config_file_duplicate_elements()})
                 if get_errors_config_file_duplicate_color(layers, get_code_layers()):
                     duplicate_color_errors = {'message': DUPLICATE_COLORS,
                                               'errors': get_errors_config_file_duplicate_color(layers,
