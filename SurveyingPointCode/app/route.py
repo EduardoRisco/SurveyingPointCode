@@ -11,14 +11,13 @@ import shutil
 import time
 from zipfile import ZipFile, ZIP_DEFLATED
 
-from flask import (flash, redirect, render_template, request,
-                   send_from_directory, url_for, session)
+from flask import (flash, redirect, render_template, request, send_from_directory, url_for, session)
 from flask_login import (current_user, login_required,
                          login_user, logout_user)
 from werkzeug.urls import url_parse
 from werkzeug.utils import secure_filename
 
-from app import app, db
+from app import app, db, login_manager
 from app.conversor import (generate_dxf, get_errors_upload_topographical_file,
                            errors_rectangle, errors_square, upload_topographical_file,
                            get_layers_table, get_dxf_configuration)
