@@ -34,6 +34,12 @@ from app.upload_optional_files import (upload_symbols_file, get_symbols, upload_
 app.secret_key = secrets.token_urlsafe(16)
 db.create_all()
 
+# Guarantees callback for login failures
+@login_manager.unauthorized_handler
+def unauthorized_callback():
+    user_logout()
+    flash('You must be logged in to access this page.')
+    return redirect(url_for('login'))
 
 # Check downtime (max. 5 min) before making any request
 @app.before_request
