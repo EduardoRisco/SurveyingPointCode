@@ -5,7 +5,6 @@ html {
 }
 
 body {
-  /*background: linear-gradient(to bottom, #979797 0%, #e0e0e0 100%) no-repeat center center fixed;*/
   background: #f1f1f1;
   padding-top: 75px;
   padding-bottom: 75px;
@@ -15,7 +14,6 @@ body {
   height: 90vh;
   max-width: 90vw;
   opacity : .1;
-  /*position : absolute;*/
   background-repeat: no-repeat;
   background-position: bottom left;
   background-attachment: fixed;
@@ -23,7 +21,7 @@ body {
   bottom: 0;
   margin-left: 1rem;
   margin-bottom: 1rem;
-  z-index: -1000;  
+  z-index: -1000;
 }
 
 /* HEADER AND FOOTER CSS */
@@ -33,8 +31,6 @@ header, footer {
 
 footer {
   line-height: normal;
-  /*-webkit-box-shadow: 0 -0.5rem 1rem rgba(0, 0, 0, 0.25) !important;
-  box-shadow: 0 -0.5rem 1rem rgba(0, 0, 0, 0.25) !important;*/
 }
 
 nav > a {
@@ -45,6 +41,19 @@ nav > a {
   pointer-events: none;
 }
 
+#menu {
+  background-color: #cadfe2;
+  border-color: #b1cccf;
+}
+
+#menu .dropdown-divider {
+  border-color: #b1cccf;
+}
+
+#menu .dropdown-item:hover {
+  background-color: #a6c8ce;
+}
+
 /* CARDS */
 /* LOGIN AND REGISTER CSS */
 #login_card,
@@ -53,7 +62,7 @@ nav > a {
   border-radius: 1rem;
   margin-top: 5rem;
   margin-bottom: 2rem;
-  -webkit-box-shadow: 0px 0px 3px 4px rgba(0,68,86,0.83); 
+  -webkit-box-shadow: 0px 0px 3px 4px rgba(0,68,86,0.83);
   box-shadow: 0px 0px 3px 4px rgba(0,68,86,0.83);
 }
 
@@ -70,7 +79,7 @@ nav > a {
 #login_top_logo {
   background: #aebbbe;
   border-top-left-radius: 1rem;
-  border-top-right-radius: 1rem;    
+  border-top-right-radius: 1rem;
 }
 
 /* FORMS CSS && LIST OF CONVERTED FILES */
@@ -86,7 +95,7 @@ nav > a {
   position: -webkit-sticky;
   position: sticky;
   top: 103px;
-  z-index: 1010;  
+  z-index: 1010;
   background-color: #ffffff;
 }
 
@@ -96,4 +105,106 @@ nav > a {
 
 .alert.converted-item:hover {
   background-color: #d1cfcd !important;
+}
+
+/* SPINNER - LOADING */
+.load-spinner .modal-dialog {
+  display: table;
+  position: relative;
+  margin: 0 auto;
+  top: calc(33% - 24px);
+}
+
+.load-spinner h2 {
+  color: #E95420;
+  text-shadow: -1px 0 #000000,
+    0 1px #000000,
+    1px 0 #000000,
+    0 -1px #000000;
+}
+
+.load-spinner .modal-dialog .modal-content {
+  background-color: transparent;
+  border: none;
+}
+
+.multi-spinner-container {
+  width: 150px;
+  height: 150px;
+  position: relative;
+  margin: 30px auto;
+  overflow: hidden;
+}
+
+.multi-spinner {
+  position: absolute;
+  width: calc(100% - 9.9px);
+  height: calc(100% - 9.9px);
+  border: 7px solid transparent;
+  border-top-color: #E95420;
+  border-radius: 50%;
+  -webkit-animation: spin 5s cubic-bezier(0.17, 0.49, 0.96, 0.76) infinite;
+  animation: spin 5s cubic-bezier(0.17, 0.49, 0.96, 0.76) infinite;
+}
+
+@-webkit-keyframes spin {
+    from {
+        -webkit-transform: rotate(0deg);
+         transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    from {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+/* COLOR-PICKER-SLIDERS */
+.popover-content .cp-container.cp-container-sm {
+  width: 100px;
+}
+
+.cp-container .cp-swatches ul {
+  margin: -3px -3px 0 0;
+}
+
+.cp-container .cp-swatches li {
+  margin: 3px 3px 0 0;
+}
+
+.cp-swatches button {
+  margin: 3px 3px 0 0;
+}
+
+.cp-container .cp-swatch {
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 767.98px) {
+  .cp-popover-container .popover {
+    max-width: 80%;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .cp-popover-container .popover {
+    max-width: 40%;
+  }
+}
+
+@media (min-width: 992px) {
+  .cp-popover-container .popover {
+    max-width: 380px;
+  }
 }
