@@ -8,7 +8,7 @@
 
 import os
 import time
-from datetime import datetime
+from datetime import date
 
 from flask import session
 from flask_login import logout_user
@@ -41,7 +41,7 @@ def add_session(user):
     This function adds variables to the user session.
     """
     session['username'] = user.username
-    session['current_access'] = datetime.now()
+    session['current_access'] = date.today()
     session['last_access'] = user.last_access
     session['entry_time'] = str(time.time())
     session['user_folder'] = os.path.join(app.config["UPLOAD_FOLDER"],
@@ -53,6 +53,7 @@ def add_session(user):
     session['dxf_filename'] = ''
     session['converted_files'] = []
     session['last_activity'] = time.time()
+    session['id'] = ''
 
 
 def user_logout():
@@ -72,6 +73,7 @@ def user_logout():
     session.pop('dxf_filename', None)
     session.pop('converted_files', None)
     session.pop('last_activity', None)
+    session.pop('id', None)
 
 
 def create_user_folder():

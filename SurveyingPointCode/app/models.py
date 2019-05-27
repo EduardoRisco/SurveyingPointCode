@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 #
-# Clase Usuario
+# J. Eduardo Risco 27-05-2019
 #
-# J. Eduardo Risco 25-02-2019
-#
+from flask_login import UserMixin
+from sqlalchemy import ForeignKeyConstraint, UniqueConstraint
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db, login_manager
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin
 
 
 class User(UserMixin, db.Model):
@@ -24,9 +23,22 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-        
+
     def __repr__(self):
         return '<User {}>'.format(self.username)
+
+
+class Statistic( db.Model):
+    __tablename__ = 'statistics'
+
+    id = db.Column(db.DateTime, primary_key=True)
+    username_id = db.Column(db.Integer, primary_key=True)
+    file_converts = db.Column(db.Integer)
+    file_downloads = db.Column(db.Integer)
+    _table_args__ = (
+        ForeignKeyConstraint(['username_id'], ['users.id']),
+        UniqueConstraint(''),
+    )
 
 
 @login_manager.user_loader

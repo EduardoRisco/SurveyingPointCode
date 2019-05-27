@@ -11,6 +11,7 @@ import shutil
 import time
 from zipfile import ZipFile, ZIP_DEFLATED
 
+from datetime import date
 from flask import (flash, redirect, render_template, request, send_from_directory, url_for, session)
 from flask_login import (current_user, login_required,
                          login_user, logout_user)
@@ -22,7 +23,7 @@ from app.conversor import (generate_dxf, get_errors_upload_topographical_file,
                            errors_rectangle, errors_square, upload_topographical_file,
                            get_layers_table, get_dxf_configuration)
 from app.forms import LoginForm, RegistrationForm, UploadForm
-from app.models import User
+from app.models import User,Statistic
 from app.route_helper import (add_session, check_files_errors, update_layers, check_DXF_ext,
                               user_logout, create_user_folder, save_upload_files)
 from app.upload_optional_files import (upload_symbols_file, get_symbols, upload_config_file,
@@ -90,6 +91,7 @@ def login():
                 add_session(user)
                 user.last_access = session['current_access']
                 db.session.commit()
+                session['id'] = user.id
                 next_page = url_for('upload_file')
             return redirect(next_page)
         if form.email.data is not None:
@@ -224,7 +226,7 @@ def convert_file_dxf():
         layers = update_layers(form)
 
         # Load possible file errors
-        errors, duplicate_color_errors,\
+        errors, duplicate_color_errors, \
             cad_color_errors = check_files_errors(get_dxf_configuration(layers), post)
 
         if duplicate_color_errors or cad_color_errors:
@@ -243,6 +245,20 @@ def convert_file_dxf():
         if converted:
             session['converted_files'].append({'folder': session['files_folder'],
                                                'file': session['dxf_filename']})
+
+            # Accounting of files converted by the user
+            statistic_query = Statistic.query.filter_by(username_id=session['id'],
+                                                        id=date.today()).first()
+            if statistic_query is None:
+                st = Statistic(id=date.today(), username_id=session['id'])
+                db.session.add(st)
+                st.file_converts = 1
+            else:
+
+                statistic_query.file_converts = statistic_query.file_converts + 1
+                db.session.add(statistic_query)
+            db.session.commit()
+
             flash('File successfully converted!!!')
         else:
             flash('Error: File could not be generated!!!')
@@ -283,6 +299,17 @@ def download_file(fileindex):
             # Download the selected file
             file_folder = session['converted_files'][fileindex]['folder']
             file_name = session['converted_files'][fileindex]['file']
+
+            # Accounting of files downloaded by the user
+            statistic_query = Statistic.query.filter_by(username_id=session['id'],
+                                                        id=date.today()).first()
+            if statistic_query.file_downloads is None:
+                statistic_query.file_downloads = 1
+                db.session.add(statistic_query)
+            else:
+                statistic_query.file_downloads = statistic_query.file_downloads + 1
+                db.session.add(statistic_query)
+            db.session.commit()
             return send_from_directory(file_folder, file_name, as_attachment=True)
         else:
             # Compress all in zip to return them
@@ -297,6 +324,17 @@ def download_file(fileindex):
                     i += 1
 
             zip_directory.close()
+
+            # Accounting of files downloaded by the user
+            statistic_query = Statistic.query.filter_by(username_id=session['id'],
+                                                        id=date.today()).first()
+            if statistic_query.file_downloads is None:
+                statistic_query.file_downloads = i - 1
+                db.session.add(statistic_query)
+            else:
+                statistic_query.file_downloads = statistic_query.file_downloads + i - 1
+                db.session.add(statistic_query)
+            db.session.commit()
             return send_from_directory(session['user_folder'], 'converted_files.zip',
                                        as_attachment=True)
     except Exception as e:
@@ -312,4 +350,5 @@ def logout():
     session.clear()
 
     return redirect(url_for('index'))
+
 
