@@ -1,11 +1,1004 @@
 \apendice{Documentación técnica de programación}
 
 \section{Introducción}
+En este apartado se detalla la documentación técnica de programación, estructura de la aplicación, instalación de la aplicación, test realizados, etc. Datos necesarios que pueden servir de guía a cualquier programador pretenda continuar con este proyecto.
 
 \section{Estructura de directorios}
 
+\emph{Flask} permite una gran libertad a la hora de estructurar un proyecto, aunque por convención sigue una estructura determinada. Esta aplicación ha seguido esa estructura. A continuación se expone:
+
+\begin{itemize}
+
+\item \texttt{\textbf{SurveyingPointCode/:}} directorio raíz de la aplicación que contiene archivos como: \texttt{surveyingpointcode.py} y \texttt{config.py}, que son de inicio y configuración de la aplicación, respectivamente. También se encuentra un archivo con los requerimientos necesarios \texttt{requirements.txt} y un archivo con las variables de entorno que se deben cargar al sistema \texttt{app-env}. Por otra parte, se incluyen los archivos necesarios para el despliegue con \emph{Docker}, estos de detallarán más adelante.
+
+\item \texttt{\textbf{SurveyingPointCode/app/:}} contiene todos los archivos que definen la lógica del negocio. 
+
+\item \texttt{\textbf{SurveyingPointCode/app/templates/:}} contiene todos los archivos con las plantillas \emph{ html}. 
+
+\item \texttt{\textbf{SurveyingPointCode/app/static/:}} contiene todos los archivos estáticos.
+
+\item \texttt{\textbf{SurveyingPointCode/app/static/css:}} contiene todos los archivos con los estilos.
+
+\item \texttt{\textbf{SurveyingPointCode/app/static/js:}} contiene todos los archivos \emph{JavaScript}.
+
+\item \texttt{\textbf{SurveyingPointCode/app/static/images/:}} contiene todos los archivos con las imágenes de la que se usan en la aplicación Web.
+
+\item \texttt{\textbf{SurveyingPointCode/app/static/webfonts/:}} contiene todos los archivos con las fuentes de la que se usan en la aplicación Web.
+
+\item \texttt{\textbf{SurveyingPointCode/tmp/:}} contiene todos los archivos temporales que se generan en cada sesión, tanto los archivos subidos por el usuario, como las conversiones.
+
+\item \texttt{\textbf{Archivos\_Prueba/:}} contiene diferentes archivos de ejemplo para cargar en la aplicación, tanto válidos como con errores.
+
+\item \texttt{\textbf{Archivos\_Prueba/Datos\_de\_campo/:}} contiene diferentes archivos de campo, procedentes de un levantamiento topográfico.
+
+\item \texttt{\textbf{Archivos\_Prueba/Configuración\_usuario/:}} contiene diferentes archivos de configuración de la conversión.
+
+\item \texttt{\textbf{Archivos\_Prueba/Simbolos/:}} contiene diferentes archivos DXF, algunos válidos con símbolos definidos y otros vacíos.
+
+\item \texttt{\textbf{Test\_unitarios/:}} contiene diferentes archivos para realizar los test unitarios.
+
+\end{itemize}
+
+
 \section{Manual del programador}
 
-\section{Compilación, instalación y ejecución del proyecto}
+Este manual tiene como objetivo servir de referencia a futuros programadores que trabajen en la aplicación o a cualquier persona interesada en su construcción. 
+
+Existen dos vías a seguir:
+
+\begin{enumerate}
+
+\item Configuración del entorno de desarrollo en un equipo instalando todas las herramientas necesarias. 
+
+\item Utilizar \emph{Docker} como entorno de desarrollo. 
+
+\end{enumerate}
+
+En este proyecto se han seguido las dos vías. Se llevó a cabo todo el proceso con la primera, hasta que la aplicación estuvo montada completamente en \emph{Docker}, por lo que se siguió con la segunda vía. 
+El proyecto se ha desarrollado utilizando un equipo con sistema operativo \emph{Linux} en su distribución \emph{Linux Mint 18.3 Sylvia}. Los comandos a continuación detallados son para ese sistema operativo.
+
+\subsection{Configuración del entorno de desarrollo en un equipo}
+
+Esta es la forma más convencional de realizar un desarrollo, instalar  las herramientas, bibliotecas y módulos en el equipo. A continuación se describen brevemente los pasos seguidos:
+
+\begin{enumerate}
+
+\item En primer lugar descargar el código de la aplicación que se encuentra en \emph{GitHub} o clonar el repositorio al equipo local.
+
+\item Instalación de \emph{Anaconda} con Python 3.6. La opción de usar \emph{Anaconda} es para facilitar la opción de trabajar con entornos virtuales personalizados, sin necesidad de instalar dependencias directamente en nuestro equipo.
+
+\item Creación de un entorno virtual en \emph{Anaconda}.
+
+\texttt{conda create -n nombre\_de\_entorno python=3.6 anaconda}
+
+\item Activar el entorno virtual en \emph{Anaconda}.
+
+\texttt{source activate  nombre\_de\_entorno}
+
+\item Instalar las dependencias dentro del entorno virtual creado. Para ello necesitamos el archivo \texttt{requirements.txt}, mencionado anteriormente.
+\texttt{pip install -r requirements.txt}
+
+\texttt Para trabajar con la base de datos \emph{PostGIS}, se utiliza un contenedor \emph{Docker}. En este punto se debe tener instalado \emph{Docker}. El contenedor de \emph{PostGIS} se crea con este comando:
+
+\begin{verbatim}
+sudo docker run --name=postgis --hostname=postgres --network=pgnetwork
+-d -e POSTGRES_USER=tfg -e POSTGRES_PASS=f04f1b4d7734f0dc3c4da46f19c0a9f49b56
+-e POSTGRES_DBNAME=tfg -e ALLOW_IP_RANGE=0.0.0.0/0 
+-p 5432:5432 -v pg_data:/var/lib/postgresql --restart=always mdillon/postgis
+\end{verbatim}
+
+siendo sus parámetros de conexión con la BBDD:
+
+\begin{verbatim}
+user=tfg
+password=f04f1b4d7734f0dc3c4da46f19c0a9f49b56
+db_name=tfg
+port=5432
+host=postgis
+
+\end{verbatim}
+
+
+\end{enumerate}
+El entorno de desarrollo está configurado a falta del sistema de bases de datos. El \emph{IDE} o editor de texto utilizado es una opción personal del desarrollador, en este proyecto se ha usado \emph{PyCharm}.
+
+
+
+\subsection{Utilizar \emph{Docker} como entorno de desarrollo.}
+
+Entre las múltiples ventajas de usar \emph{Docker}, es importante destacar que se puede usar tanto en la etapa de desarrollo como, finalmente en el despliegue. Garantiza que el entorno de desarrollo va a ser siempre el mismo, independientemente del equipo en que se trabaje.
+
+En este proyecto, el uso de \emph{Docker} facilitará la continuidad del desarrollo, solamente hace falta tener instalado en el equipo, la aplicación \emph{Docker}. Siguiendo las instrucciones del archivo \texttt{README.txt} que a continuación se enumeran:
+
+\begin{enumerate}
+\item Instalación de \emph{Docker.}
+\item Instalación de \emph{Docker Compose.}
+\item Clonar el repositorio.
+\item Ejecutar en el directorio \texttt{SurveyingPointCode/}:
+
+\texttt{sh app\_install.sh}
+
+Cada vez que realicemos un cambio en el código, debemos actualizar este cambio en el contenedor correspondiente, y lo haremos de la siguiente forma:
+\begin{enumerate}
+
+\item Ejecutamos \texttt{docker-compose down} para detener el contendedor.
+
+\item Ejecutamos \texttt{docker-compose up -d} para volver a construir los contenedores y levantarlos.
+\end{enumerate}
+
+\end{enumerate}
+
+Los archivos \texttt{Dockerfile} y \texttt{docker-compose.yml}, ya comentados en el documento de la memoria( ver apartado Despliegue de la aplicación — \emph{Docker Compose}.), son la base para la construcción de los contenedores y por consiguiente, de los servicios ofrecidos. 
+
+Como contrapunto, se ha encontrado una desventaja al usar \emph{Docker} como entorno de desarrollo, el tiempo invertido en volver a construir el contenedor. A medida que el proyecto crece y se van aumentando las dependencias, el tiempo de creación del contenedor se alarga. Es conveniente seguir investigando sobre como solucionar este problema.
+
+\section{Compilación, instalación y ejecución del proyecto}\label{sec:instalacion}
+
+Como en el apartado anterior la instalación de la aplicación es sencillo gracias al uso de \emph{Docker} y tambien garantiza que se va a comportar igual independientemente del equipo donde se instale. Siguiendo las instrucciones del archivo \texttt{README.txt} que a continuación se enumeran, se realiza la instalación:
+
+\begin{enumerate}
+\item Instalación de \emph{Docker.}
+\item Instalación de \emph{Docker Compose.}
+\item Clonar el repositorio.
+\item Ejecutar en el directorio \texttt{SurveyingPointCode/}:
+
+\begin{itemize}
+\item Si se desea solo instalar a aplicación \emph{SurveyingPointCode}:
+
+\texttt{sh app\_install.sh}
+
+\item Si se desea instalar ademas la aplicación \emph{PgAdmin4}:
+
+\texttt{sh app\_install\_pgadmin.sh}
+
+\end{itemize}
+
+\item Acceder en el navegador a la dirección \url{http://0.0.0.0:5000} para \emph{SurveyingPointCode}:
+
+\item Acceder en el navegador a la dirección \url{http://0.0.0.0:80} para \emph{PgAdmin 4}:
+
+\end{enumerate}
+
 
 \section{Pruebas del sistema}
+
+Para comprobar el funcionamiento de las funciones principales de la aplicación se han realizado una serie de test unitarios. 
+
+Se ha utilizado la biblioteca de python \texttt{unittest}.
+
+
+\subsection{Caso de prueba CP-01}
+
+\textbf{Descripción:} Comprueba si el número de capas creadas en un modelo de dibujo es correcto una vez cargado y procesado un archivo de campo, con la función \texttt{create\_layers()}.
+
+\textbf{Datos de entrada:} \texttt{Example\_topographic\_1.txt}
+
+\newpage
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.6\columnwidth}\raggedright\strut
+Función\strut
+\end{minipage} & \begin{minipage}[b]{0.20\columnwidth}\raggedright\strut
+Condición\strut
+\end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\raggedright\strut
+Salida Esperada\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\raggedright\strut
+Ok\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+test\_create\_layers\_number()\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿Es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+8\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿No es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+
+\bottomrule
+\caption{Caso de prueba CP-01.}
+\end{longtable}
+
+\subsection{Caso de prueba CP-02}
+
+\textbf{Descripción:} Comprueba el nombre de las capas creadas es correcto una vez cargado y procesado un archivo de campo, con la función \texttt{create\_layers()}.
+
+\textbf{Datos de entrada:} \texttt{Example\_topographic\_1.txt}
+
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.6\columnwidth}\raggedright\strut
+Función\strut
+\end{minipage} & \begin{minipage}[b]{0.20\columnwidth}\raggedright\strut
+Condición\strut
+\end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\raggedright\strut
+Salida Esperada\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\raggedright\strut
+Ok\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+test\_create\_layers\_types()\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿Contiene?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\caption{Caso de prueba CP-02.}
+\end{longtable}
+
+\subsection{Caso de prueba CP-03}
+
+\textbf{Descripción:} Comprueba si el número de puntos insertados en un modelo de dibujo es correcto una vez cargado y procesado un archivo de campo, con la función \texttt{get\_points()}.
+
+\textbf{Datos de entrada:} \texttt{Example\_topographic\_1.txt}
+
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.6\columnwidth}\raggedright\strut
+Función\strut
+\end{minipage} & \begin{minipage}[b]{0.20\columnwidth}\raggedright\strut
+Condición\strut
+\end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\raggedright\strut
+Salida Esperada\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\raggedright\strut
+Ok\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+test\_create\_points\_number\_file\_correct()\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿Es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+42\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿No es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+
+\bottomrule
+\caption{Caso de prueba CP-03.}
+\end{longtable}
+
+\subsection{Caso de prueba CP-04}
+
+\textbf{Descripción:} Comprueba si el número de textos insertados en un modelo de dibujo es correcto una vez cargado y procesado un archivo de campo, con la función \texttt{get\_points()}.
+
+\textbf{Datos de entrada:} \texttt{Example\_topographic\_1.txt}
+
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.6\columnwidth}\raggedright\strut
+Función\strut
+\end{minipage} & \begin{minipage}[b]{0.20\columnwidth}\raggedright\strut
+Condición\strut
+\end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\raggedright\strut
+Salida Esperada\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\raggedright\strut
+Ok\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+test\_create\_points\_texts\_file\_correct()\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿Es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+126\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿No es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+
+\bottomrule
+\caption{Caso de prueba CP-04.}
+\end{longtable}
+
+\subsection{Caso de prueba CP-05}
+
+\textbf{Descripción:} Comprueba si el número de círculos insertados en un modelo de dibujo es correcto una vez cargado y procesado un archivo de campo, con la función \texttt{get\_circles()}.
+
+\textbf{Datos de entrada:} \texttt{Example\_topographic\_1.txt}
+
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.6\columnwidth}\raggedright\strut
+Función\strut
+\end{minipage} & \begin{minipage}[b]{0.20\columnwidth}\raggedright\strut
+Condición\strut
+\end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\raggedright\strut
+Salida Esperada\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\raggedright\strut
+Ok\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+test\_create\_circles\_number()\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿Es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+2\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿No es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+
+\bottomrule
+\caption{Caso de prueba CP-05.}
+\end{longtable}
+
+\subsection{Caso de prueba CP-06}
+
+\textbf{Descripción:} Comprueba si el número de \emph{splines} insertados en un modelo de dibujo es correcto una vez cargado y procesado un archivo de campo, con la función \texttt{get\_splines()}.
+
+\textbf{Datos de entrada:} \texttt{Example\_topographic\_1.txt}
+
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.6\columnwidth}\raggedright\strut
+Función\strut
+\end{minipage} & \begin{minipage}[b]{0.20\columnwidth}\raggedright\strut
+Condición\strut
+\end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\raggedright\strut
+Salida Esperada\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\raggedright\strut
+Ok\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+test\_create\_splines\_number()\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿Es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+1\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿No es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+
+\bottomrule
+\caption{Caso de prueba CP-06.}
+\end{longtable}
+
+\subsection{Caso de prueba CP-07}
+
+\textbf{Descripción:} Comprueba si el número de líneas insertadas en un modelo de dibujo es correcto una vez cargado y procesado un archivo de campo, con la función \texttt{get\_lines()}.
+
+\textbf{Datos de entrada:} \texttt{Example\_topographic\_1.txt}
+
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.6\columnwidth}\raggedright\strut
+Función\strut
+\end{minipage} & \begin{minipage}[b]{0.20\columnwidth}\raggedright\strut
+Condición\strut
+\end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\raggedright\strut
+Salida Esperada\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\raggedright\strut
+Ok\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+test\_create\_lines\_number()\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿Es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+5\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿No es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+
+\bottomrule
+\caption{Caso de prueba CP-07.}
+\end{longtable}
+
+\subsection{Caso de prueba CP-08}
+
+\textbf{Descripción:} Comprueba si el número de cuadrados insertados en un modelo de dibujo es correcto una vez cargado y procesado un archivo de campo, con la función \texttt{get\_squares()}.
+
+\textbf{Datos de entrada:} \texttt{Example\_topographic\_1.txt}
+
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.6\columnwidth}\raggedright\strut
+Función\strut
+\end{minipage} & \begin{minipage}[b]{0.20\columnwidth}\raggedright\strut
+Condición\strut
+\end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\raggedright\strut
+Salida Esperada\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\raggedright\strut
+Ok\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+test\_create\_squares\_number()\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿Es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+5\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿No es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+
+\bottomrule
+\caption{Caso de prueba CP-08.}
+\end{longtable}
+
+\subsection{Caso de prueba CP-09}
+
+\textbf{Descripción:} Comprueba si el número de rectángulos insertados en un modelo de dibujo es correcto una vez cargado y procesado un archivo de campo, con la función \texttt{get\_rectangles()}.
+
+\textbf{Datos de entrada:} \texttt{Example\_topographic\_1.txt}
+
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.6\columnwidth}\raggedright\strut
+Función\strut
+\end{minipage} & \begin{minipage}[b]{0.20\columnwidth}\raggedright\strut
+Condición\strut
+\end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\raggedright\strut
+Salida Esperada\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\raggedright\strut
+Ok\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+test\_create\_squares\_number()\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿Es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+1\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿No es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+
+\bottomrule
+\caption{Caso de prueba CP-09.}
+\end{longtable}
+
+\subsection{Caso de prueba CP-10}
+
+\textbf{Descripción:} Comprueba que un archivo sin círculos no crea ningún círculo en un modelo de dibujo una vez cargado y procesado un archivo de campo, con la función \texttt{get\_circles()}.
+
+\textbf{Datos de entrada:} \texttt{Example\_topographic\_2.txt}
+
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.6\columnwidth}\raggedright\strut
+Función\strut
+\end{minipage} & \begin{minipage}[b]{0.20\columnwidth}\raggedright\strut
+Condición\strut
+\end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\raggedright\strut
+Salida Esperada\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\raggedright\strut
+Ok\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+test\_not\_create\_circles()\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿Es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+
+\bottomrule
+\caption{Caso de prueba CP-10.}
+\end{longtable}
+
+\subsection{Caso de prueba CP-11}
+
+\textbf{Descripción:} Comprueba que un archivo sin \emph{splines} no crea ninguna \emph{spline} en un modelo de dibujo una vez cargado y procesado un archivo de campo, con la función \texttt{get\_splines()}.
+
+\textbf{Datos de entrada:} \texttt{Example\_topographic\_2.txt}
+
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.6\columnwidth}\raggedright\strut
+Función\strut
+\end{minipage} & \begin{minipage}[b]{0.20\columnwidth}\raggedright\strut
+Condición\strut
+\end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\raggedright\strut
+Salida Esperada\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\raggedright\strut
+Ok\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+test\_not\_create\_splines()\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿Es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+
+\bottomrule
+\caption{Caso de prueba CP-11.}
+\end{longtable}
+
+\subsection{Caso de prueba CP-12}
+
+\textbf{Descripción:} Comprueba que un archivo sin líneas no crea ninguna línea en un modelo de dibujo una vez cargado y procesado un archivo de campo, con la función \texttt{get\_lines()}.
+
+\textbf{Datos de entrada:} \texttt{Example\_topographic\_2.txt}
+
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.6\columnwidth}\raggedright\strut
+Función\strut
+\end{minipage} & \begin{minipage}[b]{0.20\columnwidth}\raggedright\strut
+Condición\strut
+\end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\raggedright\strut
+Salida Esperada\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\raggedright\strut
+Ok\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+test\_not\_create\_lines()\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿Es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+
+\bottomrule
+\caption{Caso de prueba CP-12.}
+\end{longtable}
+
+
+\subsection{Caso de prueba CP-13}
+
+\textbf{Descripción:} Comprueba que un archivo sin cuadrados ni rectángulos, no los crea en un modelo de dibujo una vez cargado y procesado un archivo de campo, con la función \texttt{get\_lines()}.
+
+\textbf{Datos de entrada:} \texttt{Example\_topographic\_2.txt}
+
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.6\columnwidth}\raggedright\strut
+Función\strut
+\end{minipage} & \begin{minipage}[b]{0.20\columnwidth}\raggedright\strut
+Condición\strut
+\end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\raggedright\strut
+Salida Esperada\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\raggedright\strut
+Ok\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+test\_not\_create\_squares\_rectangles()\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿Es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+
+\bottomrule
+\caption{Caso de prueba CP-13.}
+\end{longtable}
+
+\subsection{Caso de prueba CP-14}
+
+\textbf{Descripción:} Comprueba que use calculan correctamente el acimut y la distancia entre dos puntos, a y b, con la función \texttt{calculate\_azimut\_distance()}
+
+\textbf{Datos de entrada:} \texttt{a = [1, (0, 0, 0), 'E'] y  b = [2, (100, 100, 0), 'E']}
+
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.6\columnwidth}\raggedright\strut
+Función\strut
+\end{minipage} & \begin{minipage}[b]{0.20\columnwidth}\raggedright\strut
+Condición\strut
+\end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\raggedright\strut
+Salida Esperada\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\raggedright\strut
+Ok\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+test\_azimut\_distance()\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿Es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+az=45º dist=141.4213\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿No es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+az=50º dist=145\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+
+\bottomrule
+\caption{Caso de prueba CP-14.}
+\end{longtable}
+
+
+
+\subsection{Caso de prueba CP-15}
+
+\textbf{Descripción:} Comprueba que se calculan correctamente el incremento de $X$ y de $Y$, entre dos puntos, conociendo el acimut y la distancia entre ellos, con la función \texttt{calculate\_increment\_x\_y()}
+
+\textbf{Datos de entrada:} \texttt{az = 45º y dist = 141.4213562373095}
+
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.6\columnwidth}\raggedright\strut
+Función\strut
+\end{minipage} & \begin{minipage}[b]{0.20\columnwidth}\raggedright\strut
+Condición\strut
+\end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\raggedright\strut
+Salida Esperada\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\raggedright\strut
+Ok\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+test\_increment\_x\_y()\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿Es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+In\_x=100 In\_y=100\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿No es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+In\_x=150 In\_y=145\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+
+\bottomrule
+\caption{Caso de prueba CP-15.}
+\end{longtable}
+
+
+\subsection{Caso de prueba CP-16}
+
+\textbf{Descripción:} Comprueba que se calculan correctamente un angulo, introduciendo un angulo y una distancia positiva o negativa, con la función \texttt{calculate\_angle()}
+
+\textbf{Datos de entrada:} \texttt{az = 125º y dist =-10}
+
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.6\columnwidth}\raggedright\strut
+Función\strut
+\end{minipage} & \begin{minipage}[b]{0.20\columnwidth}\raggedright\strut
+Condición\strut
+\end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\raggedright\strut
+Salida Esperada\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\raggedright\strut
+Ok\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+test\_angle\_direction()\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿Es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+35º\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿No es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+215º\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+
+\bottomrule
+\caption{Caso de prueba CP-16.}
+\end{longtable}
+
+\subsection{Caso de prueba CP-17}
+
+\textbf{Descripción:} Comprueba si se extraen correctamente los símbolos de un archivo DXF subido por el usuario y también comprueba que se han extraído todos, con la función  \texttt{upload\_symbols\_file()}
+
+\textbf{Datos de entrada:} \texttt{Example\_simbology.dxf}
+
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.6\columnwidth}\raggedright\strut
+Función\strut
+\end{minipage} & \begin{minipage}[b]{0.20\columnwidth}\raggedright\strut
+Condición\strut
+\end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\raggedright\strut
+Salida Esperada\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\raggedright\strut
+Ok\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
+test\_angle\_direction()\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿Incluye?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+'Farola', 'Arbol', 'Vertice'\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.5\columnwidth}\raggedright\strut
+\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿No incluye?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+'Casa', 'Banco'\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.5\columnwidth}\raggedright\strut
+test\_angle\_direction()\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿Es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+3\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.5\columnwidth}\raggedright\strut
+\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿No es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\caption{Caso de prueba CP-17.}
+\end{longtable}
+
+\subsection{Caso de prueba CP-18}
+
+\textbf{Descripción:} Comprueba el número de líneas o puntos que contiene un archivo de campo, con la función \texttt{upload\_topographical\_file()}
+
+\textbf{Datos de entrada:} \texttt{Example\_topographic\_1.txt}
+
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.5\columnwidth}\raggedright\strut
+Función\strut
+\end{minipage} & \begin{minipage}[b]{0.20\columnwidth}\raggedright\strut
+Condición\strut
+\end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\raggedright\strut
+Salida Esperada\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\raggedright\strut
+Ok\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.5\columnwidth}\raggedright\strut
+test\_number\_lines\_topographical\_file()\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿Es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+42\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.5\columnwidth}\raggedright\strut
+\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿No es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+
+\bottomrule
+\caption{Caso de prueba CP-18.}
+\end{longtable}
+
+\subsection{Caso de prueba CP-19}
+
+\textbf{Descripción:} Comprueba el número de líneas o puntos que contiene un archivo de campo que está vacío, con la función \texttt{upload\_topographical\_file()}
+
+\textbf{Datos de entrada:} \texttt{Example\_topographic\_1.txt}
+
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.5\columnwidth}\raggedright\strut
+Función\strut
+\end{minipage} & \begin{minipage}[b]{0.20\columnwidth}\raggedright\strut
+Condición\strut
+\end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\raggedright\strut
+Salida Esperada\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\raggedright\strut
+Ok\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.5\columnwidth}\raggedright\strut
+test\_number\_lines\_topographical\_file()\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿Es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.5\columnwidth}\raggedright\strut
+\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿No es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+5\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+
+\bottomrule
+\caption{Caso de prueba CP-19.}
+\end{longtable}
+
+\subsection{Caso de prueba CP-20}
+
+\textbf{Descripción:} Comprueba que el archivo DXF a generar tiene la versión correcta de CAD.
+
+\textbf{Datos de entrada:} \texttt{Example\_topographic\_1.txt}
+
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.5\columnwidth}\raggedright\strut
+Función\strut
+\end{minipage} & \begin{minipage}[b]{0.20\columnwidth}\raggedright\strut
+Condición\strut
+\end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\raggedright\strut
+Salida Esperada\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\raggedright\strut
+Ok\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.5\columnwidth}\raggedright\strut
+test\_version\_cad()\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿Es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+AC1018\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.5\columnwidth}\raggedright\strut
+\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+¿No es igual?\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
+AC1019\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
+Si\strut
+\end{minipage}\tabularnewline
+
+\bottomrule
+\caption{Caso de prueba CP-20.}
+\end{longtable}

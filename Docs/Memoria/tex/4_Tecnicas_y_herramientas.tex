@@ -2,55 +2,60 @@
 \section{Metodologías}
 
 Como metodología para el desarrollo del proyecto se ha utilizado \textbf {Scrum}.
-Scrum es un marco de trabajo. Es el método ágil de desarrollo de Software más utilizado del mundo.
+\emph{Scrum} es un marco de trabajo. Es el método ágil de desarrollo de Software más utilizado del mundo.
 Entre sus características principales están:
 utilizar una estrategia de desarrollo incremental, en lugar de la planificación y ejecución completa del producto. 
 La calidad del resultado obtenido depende más del conocimiento tácito de las personas, que de la calidad de los procesos usados. 
 Este método permite el solapamiento entre diferentes fases del proyecto.
 Algunos de sus componentes principales son: 
 \begin{itemize}
-\item{Sprint:} Parte básica en este tipo de desarrollos, donde se desarrolla un incremento del producto que pueda ser utilizado.
-\item{Pila del producto:} donde están los requisitos de usuario, esta información no es rígida, puede variar según va evolucionando el producto.
-\item{Pila del sprint:} lista con las tareas a realizar durante un \english{sprint}.
+\item\textbf{Sprint:} Parte básica en este tipo de desarrollos, donde se desarrolla un incremento del producto que pueda ser utilizado.
+\item\textbf{Pila del producto:} donde están los requisitos de usuario, esta información no es rígida, puede variar según va evolucionando el producto.
+\item\textbf{Pila del \emph{sprint}:} lista con las tareas a realizar durante un \english{sprint}.
 \item{Incremento:} Parte del desarrollo obtenida al final de cada \english{sprint}.
 \end{itemize}
 Durante todo el proyecto se han ido realizando los diferentes \english{sprints}, en los cuales se han planificado las tareas siguientes y revisado, si se han ido cumpliendo los objetivos marcados en el \english{sprint} anterior.
 
 
 \section{Patrones de diseño}
+\emph{Flask} utiliza como patrón de diseño, \textbf {MTV}.
+El patrón \emph{MTV} es similar al conocido \emph{MVC}, pero con algunas diferencias:
 
-Flask utiliza como patrón de diseño, \textbf {MTV}.
-El patrón MTV es similar al conocido MVC, pero con algunas diferencias:
-
-En el patrón MVC:
+En el patrón \emph{MVC}:
 \begin{itemize}
 \item\textbf{Modelo:} Es la parte que manipula la información.
 \item\textbf{Vista:} Decide como se mostrará la información.
 \item\textbf{Controlador:} Comunica el modelo con la vista.
 \end{itemize}
-Podemos ver a continuación sus equivalencias, para este caso, usando el \english{framework} Flask:
+Podemos ver a continuación sus equivalencias, para este caso, usando el \english{framework} \texttt{Flask}:
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{lr}
+\toprule
+\textbf{MVC}& \multicolumn{1}{r}{\textbf{MTV}} \\ 
+\midrule
+Modelo & Modelo\\
+Vista & Vista y Template\\
+Controlador & \texttt{Flask} \\ 
+\bottomrule
+\end{tabular}
+\caption{MVC vs MTV.}
+\label{stats}
+\end{table}
 
 
-\begin{flushleft}
-\textbf{\emph{MVC vs	MTV\\}}
-Modelo=Modelo\\
-Vista=Vista y Template\\
-Controlador=Flask\\
-\end{flushleft}
-
-
-
-Aquí, el framework Flask, es el que toma el papel del controlador.
-Resumiendo, en el patrón MTV, tenemos:
+Aquí, el \emph{framework} \texttt{Flask}, es el que toma el papel del controlador.
+Resumiendo, en el patrón \emph{MTV}, tenemos:
 \begin{itemize}
 \item\textbf{Modelo:} Es la parte que manipula la información, se encuentra en forma de clases de Python.
 \item\textbf{Vista:} Decide qué información se muestra y en que \english{template}.
-\item\textbf{Template:} Coge toda la información, la organiza y ve la manera en que esta se va a mostrar. Básicamente una página HTML con algunas etiquetas extras propias de Jinja2 el motor de plantillas utilizado por defecto por Flask.
+\item\textbf{Template:} Coge toda la información, la organiza y ve la manera en que esta se va a mostrar. Básicamente una página \emph{HTML} con algunas etiquetas extras propias de \emph{Jinja2} el motor de plantillas utilizado por defecto por \texttt{Flask}.
 \end{itemize}
 
-\imagen{MTV}{Esquema de un patrón MTV}
+\imagen{MTV}{Esquema de un patrón \emph{MTV}}
 
-En la imagen anterior podemos ver como son las relaciones en el patrón MTV:
+En la imagen anterior podemos ver como son las relaciones en el patrón \emph{MTV}:
 \begin{enumerate}
 \item El Navegador manda una solicitud 
 \item La vista interactúa con el modelo para obtener datos. 
@@ -69,7 +74,7 @@ Existen varias herramientas en el mercado para el control de versiones:
 
 Nos hemos decantado por \textbf {Git}, ya que es la que se ha venido usando durante la realización del grado y es una de las mas extendidas en el mercado.
 
-Git es un sistema de control de versiones distribuido, libre y de código abierto. Git se distribuye bajo la licencia de software libre GNU LGPL v2.1. 
+\emph{Git} es un sistema de control de versiones distribuido, libre y de código abierto. \emph{Git} se distribuye bajo la licencia de software libre GNU LGPL v2.1. 
 
 \section{Hosting del repositorio}
 
@@ -82,9 +87,9 @@ Al igual que en el apartado anterior, aunque existen diversas posibilidades:
 
 Como en el apartado anterior, por familiaridad con la plataforma durante el grado y también por ser una de las más usadas, de decidió usar \textbf {GitHub}.
 
-GitHub permite tener cuentas gratuitas y de pago. Además, un tipo de cuenta para estudiantes, como alumno se puede solicitar acogerte al programa <<\english{GitHub education for students}>>, que te permite tener repositorios privadas y da acceso a herramientas adicionales.
+\emph{GitHub} permite tener cuentas gratuitas y de pago. Además, un tipo de cuenta para estudiantes, como alumno se puede solicitar acogerte al programa <<\english{GitHub education for students}>>, que te permite tener repositorios privadas y da acceso a herramientas adicionales.
 
-Además, GitHub ofrece otras funcionalidades y servicios como, por ejemplo; revisión de código, documentación, gestión de tareas, \english{wikis} e integraciones con otros servicios como por ejemplo CodeBeat.
+Además, \emph{GitHub} ofrece otras funcionalidades y servicios como, por ejemplo; revisión de código, documentación, gestión de tareas, \english{wikis} e integraciones con otros servicios como por ejemplo \emph{CodeBeat}.
 
 \section{Gestión del proyecto}
 
@@ -95,9 +100,9 @@ Dentro de las muchas herramientas existentes como por ejemplo;
 \item \textbf{VersionOn}\footnote{\textsl{VersionOne}: \url{https://www.collab.net/}}
 \end{itemize}
 
-Se ha optado por usar  \textbf {ZenHub} ya que se encuentra integrado en el propio GitHub, funciona como una aplicación nativa en su interfaz y podemos controlar nuestros proyectos usando paneles de trabajo bastante intuitivos, así como conectar con varios repositorios en el panel de tareas y ver todos los temas abiertos que requieren de la atención.
+Se ha optado por usar  \textbf {ZenHub} ya que se encuentra integrado en el propio \emph{GitHub}, funciona como una aplicación nativa en su interfaz y podemos controlar nuestros proyectos usando paneles de trabajo bastante intuitivos, así como conectar con varios repositorios en el panel de tareas y ver todos los temas abiertos que requieren de la atención.
 
-Se trata de una plataforma de gestión de proyectos de software y entre las principales características de ZenHub están la de convertir los \english{issues} de GitHub en dinámicos tablones Kanban.
+Se trata de una plataforma de gestión de proyectos de software y entre las principales características de ZenHub están la de convertir los \english{issues} de \emph{GitHub} en dinámicos tablones \emph{Kanban}.
 
 \section{Entorno de desarrollo integrado (IDE)}
 
@@ -113,9 +118,9 @@ Como en los apartados anteriores se han tenido en cuenta diferentes herramientas
 
 \end{itemize}
 
-Tanto Microsoft Visual Studio Code como PyCharm son perfectamente válidas y las más completas para realizar este tipo de proyectos, abarcan casi todos los lenguajes de programación, contienen bastantes \english{plugins} y facilitan el trabajo a la hora de realizar los test.
+Tanto \emph{Microsoft Visual Studio Code} como \emph{PyCharm} son perfectamente válidas y las más completas para realizar este tipo de proyectos, abarcan casi todos los lenguajes de programación, contienen bastantes \english{plugins} y facilitan el trabajo a la hora de realizar los test.
 
-Al final nos hemos decantado por \textbf{PyCharm}. Al haberse realizado el proyecto con Python, este entorno ha sido diseñado para este lenguaje, por lo que ofrece algunas ventajas más, respecto a Microsoft Visual Studio Code. PyCharm es soportado por Windows, Mac OS y Linux, y su versión gratuita es bastante completa. Existen también licencias individuales para estudiantes.
+Al final nos hemos decantado por \textbf{PyCharm}. Al haberse realizado el proyecto con Python, este entorno ha sido diseñado para este lenguaje, por lo que ofrece algunas ventajas más, respecto a \emph{Microsoft Visual Studio Code}. \emph{PyCharm} es soportado por Windows, Mac OS y Linux, y su versión gratuita es bastante completa. Existen también licencias individuales para estudiantes.
 
 
 
@@ -142,7 +147,7 @@ Las diferentes herramientas consideradas para este propósito han sido:
 \item \textbf{CodeBeat}\footnote{\textsl{CodeBeat}: \url{https://codebeat.co/}}
 \end{itemize}
 
-Se ha optado por \textbf{CodeBeat}, ya que se integra perfectamente con GitHub. Es una herramienta gratuita, que soporta gran cantidad de lenguajes y permite personalizar totalmente, las métricas que usa para el análisis de la calidad del código.
+Se ha optado por \textbf{CodeBeat}, ya que se integra perfectamente con \emph{GitHub}. Es una herramienta gratuita, que soporta gran cantidad de lenguajes y permite personalizar totalmente, las métricas que usa para el análisis de la calidad del código.
 
 \section{Herramienta de análisis sintáctico}
 
@@ -179,22 +184,23 @@ A continuación, vemos el resto de las bibliotecas necesarias en el desarrollo d
 \item \textbf{dxfwrite}\footnote{\textsl{dxfwrite}: \url{https://pypi.org/project/dxfwrite/}}
 \end{itemize}
 
-Resultando la opción más interesante ezdxf, ya que era la única que cubría todas las necesidades que aquí se planteaban.
+Resultando la opción más interesante \texttt{ezdxf}, ya que era la única que cubría todas las necesidades que aquí se planteaban.
 
-\texttt{ezdxf} es una interfaz de Python para el formato DXF, desarrollado por Autodesk, y que permite a los desarrolladores leer y modificar dibujos DXF existentes o crear nuevos dibujos DXF.
+\texttt{ezdxf} es una interfaz de Python para el formato DXF, desarrollado por \emph{Autodesk}, y que permite a los desarrolladores leer y modificar dibujos DXF existentes o crear nuevos dibujos DXF.
 
 Con sus métodos y atributos nos permite crear, modificar, eliminar o consultar las propiedades de todos los elementos que puede contener un archivo de CAD.
 \texttt{ezdxf} es independiente del sistema operativo y se ejecuta en todas las plataformas que proporcionan un intérprete de Python adecuado (> = 3.6). Está bajo la licencia MIT-License.
 
 Una parte a destacar, es que nos permite generar el DXF en distintas versiones de un archivo CAD, lo cual es muy interesante. 
 
-%\imagen{Cad_versions}{Versiones de CAD}
+
 \begin{figure}[!h]
 	\centering
-	\includegraphics[width=0.6\textwidth]{Cad_versions}
+	\includegraphics[width=0.4\textwidth]{Cad_versions}
 	\caption{Versiones de CAD.}
 	\label{fig:Cad_versions}
 \end{figure}
+
 \subsubsection{SQLAlchemy}
 Las diferentes herramientas consideradas para este propósito han sido:
 
@@ -213,10 +219,10 @@ Las diferentes herramientas consideradas para este propósito han sido:
 \item \textbf{Flask-Login}\footnote{\textsl{Flask-Login}: \url{https://flask-login.readthedocs.io/en/latest/}}
 \end{itemize}
 
-Se ha elegido la biblioteca de Python \textbf{Flask-Login}, ofrece todo lo necesario y es la utilizada en todos la mayoría de los ejemplos de autentificación de usuarios con Flask.
+Se ha elegido la biblioteca de Python \textbf{Flask-Login}, ofrece todo lo necesario y es la utilizada en la mayoría de los ejemplos de autentificación de usuarios con \texttt{Flask}.
 
 \subsubsection{Bootstrap}
-Las diferentes herramientas consideradas para este propósito han sido:
+Los diferentes \english{frameworks} CSS consideradas para este propósito han sido:
 
 \begin{itemize}
 \item \textbf{Bootstrap}\footnote{\textsl{Bootstrap}: \url{https://getbootstrap.com/}}
@@ -224,22 +230,22 @@ Las diferentes herramientas consideradas para este propósito han sido:
 \item \textbf{Materialize}\footnote{\textsl{Materialize}: \url{https://materializecss.com/}}
 \end{itemize}
 
-Se ha elegido \textbf{Bootstrap}, es  el \english{framework} de uso más extendido, y como consecuencia con mejor soporte a la hora de hacer búsquedas para resolver problemas.Es una herramienta Open Source.
+Se ha elegido \textbf{Bootstrap}, es  el \english{framework} de uso más extendido, y como consecuencia con mejor soporte a la hora de hacer búsquedas para resolver problemas.Es un english{framework} Open Source.
 
 
 \subsubsection{Colorpicker Bootstrap}
 
-\textbf{Colorpicker Bootstrap},  es un \english{plugin} de selector de color modular para Bootstrap 4. Está bajo la licencia MIT-License.
+\textbf{Colorpicker Bootstrap}, es un \english{plugin} de selector de color modular para\emph{ Bootstrap 4}. Está bajo la licencia MIT-License.
 
 
 \subsubsection{TinyColor}
 
-Es un micro \english{framework} que permite la manipulación y conversión de color en JavaScript. Permite muchas formas de entrada, mientras que proporciona conversiones de color y otras funciones de utilidad de color. No tiene dependencias. Está bajo la licencia MIT-License.
+Es un micro \english{framework} que permite la manipulación y conversión de color en \emph{JavaScript}. Permite muchas formas de entrada, mientras que proporciona conversiones de color y otras funciones de utilidad de color. No tiene dependencias. Está bajo la licencia MIT-License.
 
 
 \subsubsection{bs-custom-file-input}
 
-\textbf{bs-custom-file-input}, es un \english{plugin} para Bootstrap 4. Ayuda a crear una entrada de selección de archivos personalizada con el botón del navegador para cargar archivos. También es compatible con múltiples selecciones de archivos y arrastrar y soltar.
+\textbf{bs-custom-file-input}, es un \english{plugin} para \emph{Bootstrap 4}. Ayuda a crear una entrada de selección de archivos personalizada con el botón del navegador para cargar archivos. También es compatible con múltiples selecciones de archivos y arrastrar y soltar.
 No tiene dependencias. Está bajo la licencia MIT-License.
 
 \subsubsection{jquery.cookie}
@@ -252,44 +258,44 @@ No tiene dependencias. Está bajo la licencia MIT-License.
 \section{Desarrollo Web}
 
 Para el desarrollo web, del lado del servidor, se ha optado por utilizar \textbf{Flask}, siguiendo, como se ha comentado anteriormente con la idea de englobar lo máximo posible en Python.
-Flask es un \english{micro framework} escrito en Python y concebido para facilitar el desarrollo de aplicaciones Web bajo el patrón MTV.
+\texttt{Flask} es un \english{micro framework} escrito en Python y concebido para facilitar el desarrollo de aplicaciones Web bajo el patrón MTV.
 
 Entre algunas de sus ventajas, están:
 \begin{itemize}
 \item Desarrollo de aplicaciones web de una forma ágil y rápida, tiene una buena curva de aprendizaje
-\item No se necesita una infraestructura con un servidor web.
-\item Compatible con wsgi.
+\item En desarrollo no se necesita una infraestructura con un servidor web.
+\item Compatible con \emph{wsgi}.
 \item Soporta de manera nativa el uso de \english{cookies} seguras.
 \item Se pueden usar sesiones.
-\item Flask es Open Source y tiene una licencia BSD.
+\item \texttt{Flask} es Open Source y tiene una licencia BSD.
 \item Extensa documentación.
 \end{itemize}
 
-\section{Base de Datos. PostGIS}\label{sec:postgis}
+\section{Base de Datos: PostGIS}\label{sec:postgis}
 
-Como sistema de base de datos se ha decidido utilizar \textbf{PostGIS}. PostGIS convierte al sistema de administración de bases de datos \textbf{PostgreSQL} en una base de datos espacial mediante la adición de tres características: tipos de datos espaciales, índices espaciales y funciones que operan sobre ellos.
+Como sistema de base de datos se ha decidido utilizar \textbf{PostGIS}. \emph{PostGIS} convierte al sistema de administración de bases de datos \textbf{PostgreSQL} en una base de datos espacial mediante la adición de tres características: tipos de datos espaciales, índices espaciales y funciones que operan sobre ellos.
 
-Puede parecer en un principio, que el uso de esta base de datos no está justificada en este proyecto, ya que de momento solo sirve para gestionar a los usuarios de la aplicación. Habitualmente trabajo con bases de datos espaciales y PostGIS es la más usada en en el campo de los sistemas de información geográfica. A parte de poder usarla en desarrollos particulares, como este, programas de GIS como QGis, gvSIG o ArcGis, que son aplicaciones de escritorio,  permiten una conexión directa con PostGIS. 
-La idea es que en un futuro ese contenedor pueda almacenar bases de datos espaciales, de otras aplicaciones de futuros desarrollos o de las que uso habitualmente. Ya que la vamos a tener en un contenedor Docker con una base de datos alojada en el, darle el máximo uso en el futuro.
+Puede parecer en un principio, que el uso de esta base de datos no está justificada en este proyecto, ya que de momento solo sirve para gestionar a los usuarios de la aplicación. Habitualmente trabajo con bases de datos espaciales y \emph{PostGIS} es la más usada en en el campo de los sistemas de información geográfica. A parte de poder usarla en desarrollos particulares, como este, programas de GIS como \emph{QGis, gvSIG o ArcGis}, que son aplicaciones de escritorio,  permiten una conexión directa con \emph{PostGIS}. 
+La idea es que en un futuro ese contenedor pueda almacenar bases de datos espaciales, de otras aplicaciones de futuros desarrollos o de las que uso habitualmente. Ya que la vamos a tener en un contenedor \emph{Docker} con una base de datos alojada en él, darle el máximo uso en el futuro.
 
-En España casi todas las instituciones que trabajan con datos geoespaciales , trabajan con PostGIS, es una buena oportunidad para familiarizarse con ella.
+En España casi todas las instituciones que trabajan con datos geoespaciales, trabajan con \emph{PostGIS}, es una buena oportunidad para familiarizarse con ella.
 
-La aplicación \textbf{SurveyingPointCode}, en un futuro, aumentará sus funcionalidades y para ello será necesario trabajar con PostGIS.
+La aplicación \textbf{SurveyingPointCode}, en un futuro, aumentará sus funcionalidades y para ello será necesario trabajar con \emph{PostGIS}.
 
 \section{Despliegue de la aplicación}
 
 Para el despliegue de la aplicación se ha optado por utilizar \textbf{Docker}. Principalmente, porque es una herramienta de mucha actualidad y con un gran potencial, tanto en el desarrollo, como en el despliegue de aplicaciones.
 
-La idea básica de su funcionamiento es la creación de una serie de contenedores muy ligeros y portables, así las aplicaciones, podrán ejecutarse en cualquier equipo, solamente con tener Docker instalado, con independencia del sistema operativo.
+La idea básica de su funcionamiento es la creación de una serie de contenedores muy ligeros y portables, así las aplicaciones, podrán ejecutarse en cualquier equipo, solamente con tener \emph{Docker} instalado, con independencia del sistema operativo.
 
 Entre algunas de sus ventajas, están:
 
 \begin{itemize}
 \item Es muy sencillo de usar.
 \item Ahorra tiempo, no necesitamos instalar diferentes programas.
-\item los contenedores son muy ligeros, a diferencia de las máquinas virtuales ya que no necesitan un sistema operativo completo, cogen lo que necesitan de cada máquina anfitriona.
+\item Los contenedores son muy ligeros, a diferencia de las máquinas virtuales, ya que no necesitan un sistema operativo completo, cogen lo que necesitan de cada máquina anfitriona.
 \item Portabilidad.
-\item Los repositorios Docker, nos permite acceder a gran cantidad de imágenes y así poder de ejecutar prácticamente todas las aplicaciones.
+\item Los repositorios \emph{Docker}, permiten acceder a gran cantidad de imágenes y así poder de ejecutar prácticamente todas las aplicaciones.
 \item Es un entorno seguro y no ofrece variaciones, da igual cual sea el equipo ni el ambiente. Facilita las pruebas, el desarrollo y las visualizaciones por parte del cliente.
 \item Es Open Source.
 \item Extensa documentación.

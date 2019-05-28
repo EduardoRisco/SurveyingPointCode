@@ -9,13 +9,13 @@ Me considero una persona con muchas inquietudes y siempre pensando en mejorar ta
 
 Trabajando en varios proyectos, he podido observar la cantidad de tiempo y recursos que se empleaban, en realizar levantamientos topográficos y posteriormente gestionar todos esos datos para producir un plano. De ahí surge la idea de como mejorar el trabajo de campo mediante un tipo de codificación,  y que esta a su vez sirviera para automatizar al máximo el proceso de delineación, a la hora de  crear el plano.
 
-El profundizar en los conocimientos adquiridos cursando el Grado en Ingeniería Informática y a la vez poder facilitar el trabajo en este tipo de proyectos, me ha animado ha hacer viable este proyecto. A la hora de decidirme, también me ha parecido importante, la idea de que la aplicación desarrollada es de gran utilidad, y seguro que va a ser bien recibida por la comunidad de topógrafos.
+El profundizar en los conocimientos adquiridos cursando el Grado en Ingeniería Informática y a la vez poder facilitar el trabajo en este tipo de proyectos, me ha animado a hacer viable este proyecto. A la hora de decidirme, también me ha parecido importante, la idea de que la aplicación desarrollada es de gran utilidad, y seguro que va a ser bien recibida por la comunidad de topógrafos.
 
 La idea fue aceptada por los tutores, y comenzamos con el proyecto.
 
 \begin{figure}[!h]
 	\centering
-	\includegraphics[width=0.5\textwidth]{SPC}
+	\includegraphics[width=0.4\textwidth]{SPC}
 	\caption{Logo de \emph{SurveyingPointCode}.}
 	\label{fig:SPC}
 \end{figure}
@@ -121,7 +121,7 @@ Para la formación en \textbf{Docker} se consultaron las siguientes fuentes:
 
 Los primeros pasos en el desarrollo de la aplicación consistieron en desarrollar un pequeño prototipo funcional, que fuera incrementando su funcionalidad progresivamente.
 
-El primer prototipo, tenía que conseguir leer un archivo de campo y darlo por válido o como erróneo. Una vez que se tuvo clara como iba a ser la codificación de cada punto, (según hemos visto en el apartado 3.3 Codificación de los puntos), el siguiente paso era definir una gramática para ese tipo de archivo, para poder validarla. Entre los formatos de archivo más comunes que podemos obtener de los equipos topográficos, se decidió que los archivos deberían ser de tipo <<csv>> o <<txt>>, separando sus campos por comas. Los campos son; número de punto, coordenada x, coordenada y, coordenada z y código del punto. 
+El primer prototipo, tenía que conseguir leer un archivo de campo y darlo por válido o como erróneo. Una vez que se tuvo clara como iba a ser la codificación de cada punto, (según hemos visto en la Sección~\ref{sec:codificacion} en la página~\pageref{sec:codificacion}), el siguiente paso era definir una gramática para ese tipo de archivo, para poder validarla. Entre los formatos de archivo más comunes que podemos obtener de los equipos topográficos, se decidió que los archivos deberían ser de tipo <<csv>> o <<txt>>, separando sus campos por comas. Los campos son; número de punto, coordenada $x$, coordenada $y$, coordenada $z$ y código del punto. 
 
 A continuación, vemos un ejemplo, con todas las posibilidades de codificación que aceptará la aplicación: 
 \begin{verbatim}
@@ -135,9 +135,9 @@ A continuación, vemos un ejemplo, con todas las posibilidades de codificación 
 8,355857.822,4611095.993,691.055,E -14.1 20.5 -25.75
 \end{verbatim}
 
-Se estudió detenidamente esta sintaxis y la formalización de la gramática quedo de la siguiente forma:
+Se estudió detenidamente esta sintaxis y la formalización de la gramática quedó de la siguiente forma:
 
-\begin{verbatim}
+\begin{verbatim}[frame=single]
 entrada: líneas
 
 líneas: línea | líneas '\n' línea
@@ -152,13 +152,13 @@ INT: [0-9]+
 
 FLOAT: -?( [0-9]*.[0-9]+)
 
-ID: [a-zA-Z] +
+ID: [a-zA-Z]+
 
 código: código_capa CÓDIGO_GEOMÉTRICO
-| CÓDIGO_ELEMENTO_SINGULAR código_valor_texto
-| código_capa código_no_accesible
-| código_elemento_singular
-| código_capa
+      | CÓDIGO_ELEMENTO_SINGULAR código_valor_texto
+      | código_capa código_no_accesible
+      | código_elemento_singular
+      | código_capa
 
 código_capa: ID
 
@@ -167,10 +167,10 @@ CÓDIGO_GEOMÉTRICO: "I" | "IC" | "C"
 CÓDIGO_ELEMENTO_SINGULAR: "TC" | "TR" | "TX"
 
 código_valor_texto: FLOAT ID
-    | INT ID
-    | FLOAT
-    | INT
-    | ID
+                  | INT ID
+                  | FLOAT
+                  | INT
+                  | ID
     
 código_no_accesible: (FLOAT | INT)+
 \end{verbatim}
@@ -235,7 +235,7 @@ El resultado fue:
 
 \imagen{proto_1}{Dibujo obtenido con el prototipo inicial}
 
-Es resultado fue el esperado, por lo que se concluyó está primera etapa del desarrollo con un pequeño prototipo que cumplía las funcionalidades previstas inicialmente:
+Es resultado fue el esperado, por lo que se concluyó esta primera etapa del desarrollo con un pequeño prototipo que cumplía las funcionalidades previstas inicialmente:
 
 \begin{itemize}
 \item Leer y validar un archivo con una gramática determinada.
@@ -249,7 +249,7 @@ A continuación, se enumeran brevemente y ordenadas temporalmente, las funcional
 \begin{itemize}
 \item Subir un archivo al servidor.
 \item Procesar y descargar un archivo al equipo del usuario.
-\item Conexión con una BBDD. (En este punto se comenzó a trabajar con Docker, la BBDD iba dentro de un contenedor).
+\item Conexión con una BBDD. (en este punto se comenzó a trabajar con Docker, la BBDD iba dentro de un contenedor).
 \item \emph{Login}, \emph{Logout} y Registro. Para implementar esta parte se trabajó con la biblioteca \texttt{Flask-Login}.
 \item Sesiones de usuarios. 
 \end{itemize}
@@ -265,7 +265,7 @@ A continuación, se exponen algunos  problemas surgidos, incidencias y como se a
 
 \subsubsection{Conflicto entre \emph{parsers}}
 
-Más adelante surgió la idea que el usuario pudiera subir un archivo con una configuración personalizada para hacer la conversión de archivo de campo a archivo DXF. 
+Tras obtener el prototipo inicial, con la funcionalidad que se tenía en mente en un principio,  surgió la idea que el usuario pudiera subir un archivo con una configuración personalizada para hacer la conversión de archivo de campo a archivo DXF. 
 
 Como podemos ver en la Tabla~\ref{tabla:config}, relacionamos códigos de punto, con capas de CAD, colores y símbolos. Cuando exista un trabajo con múltiples códigos, capas y colores, se quiere dar al usuario la posibilidad de no tener que configurar cada vez esta conversión en la interfaz, sino que a través de un archivo personalizado, con sus códigos, capas, colores y símbolos, esta parte sea también automática.
 
@@ -280,7 +280,7 @@ P & Saneamiento & Amarillo & Pozo \\
 
 Para ello se formalizó otra gramática para validar este tipo de archivos y detectar sus errores. La gramática elegida fue la siguiente:
 
-
+\newpage
 
 \begin{verbatim}
 entrada: líneas
@@ -288,20 +288,20 @@ entrada: líneas
 líneas: línea | líneas '\n' línea
 
 línea: TEXT COMA TEXT COMA color COMA TEXT
-| TEXT COMA TEXT COMA color
+     | TEXT COMA TEXT COMA color
 
 color: LPAREN INT COMA INT COMA INT RPAREN
 
-TEXT: [a-zA-Z0-9_] +
+TEXT: [a-zA-Z0-9_]+
 
-INT: [0-9] +
+INT: [0-9]+
 
 LPAREN = '\('
 
 RPAREN = '\)'
 \end{verbatim}
 
-Los \emph{parsers} estaban definidos en diferentes módulos, el \emph{parser} para el archivo del campo estaba en módulo \emph{conversor.py} y el del archivo de configuración en el módulo \emph{uploadoptionalfiles.py}. Cuando se ejecutan, se crean los archivos \emph{parser.out} y \emph{parsetab.py}. Probando a cargar los dos archivos a la vez, se pudo comprobar que se parseaba un archivo con el \emph{parser} que no le correspondía. Esto no sucedía siempre, si no que pasaba  de una forma aleatoria, como si en algún momento se cruzara la información entre \emph{parsers}.
+Los \emph{parsers} estaban definidos en diferentes módulos, el \emph{parser} para el archivo del campo estaba en módulo \ruta{conversor.py} y el del archivo de configuración en el módulo \ruta{upload\_optional\_files.py}. Cuando se ejecutan, se crean los archivos \ruta{parser.out} y \ruta{parsetab.py}. Probando a cargar los dos archivos a la vez, se pudo comprobar que se parseaba un archivo con el \emph{parser} que no le correspondía. Esto no sucedía siempre, si no que pasaba  de una forma aleatoria, como si en algún momento se cruzara la información entre \emph{parsers}.
 
 Se solucionó esta parte añadiendo un parámetro personalizado para cada tipo de \emph{parser}. En un principio estaba definido de esta forma para ambos casos:
 
@@ -330,7 +330,7 @@ lexer_config = lex.lex() # lexer part
 # añadiendo el nuevo parámetro
 c_line = parser.parse(line, lexer=lexer_config)
 \end{verbatim}
-Para dar con esta solución, se consultó la documentación de \emph{Ply}, concretamente el apartado \textbf{Multiple Parsers and Lexers}\cite{Parser}.
+Para dar con esta solución, se consultó la documentación de \texttt{Ply}, concretamente el apartado \textbf{Multiple Parsers and Lexers} \cite{Parser}.
 
 
 \subsubsection{Codificación \texttt{UTF-8}}
@@ -340,18 +340,18 @@ Hasta ahora la aplicación funcionaba correctamente a la hora de subir los archi
 Simplemente se sustituyó:
 
 \begin{verbatim}
-TEXT: [a-zA-Z0-9_] +
+TEXT: [a-zA-Z0-9_]+
 \end{verbatim}
 
 por; 
 
 \begin{verbatim}
-TEXT: [a-zA-ZÀ-ÿ0-9ñÑ_] +
+TEXT: [a-zA-ZÀ-ÿ0-9ñÑ_]+
 \end{verbatim}
 
 Con esto debería funcionar perfectamente, pero no fue así, el archivo que contenía el carácter <<ñ>>, daba errores. Se estaba probando la aplicación simultáneamente en 2 sistemas operativos Windows y Linux, y para mayor sorpresa en Linux funcionaba y en Windows no.
 
-Al final, se dedujo que se podía tratar de un problema de codificación del archivo, e investigando en esa linea decidimos probar dos configuraciones, \texttt{UTF-8} y \texttt{Latin-1}, en los 2 sistemas , y en cada uno sucedía lo contrario, como se puede ver en la Tabla Tabla~\ref{tabla:WL}
+Al final, se dedujo que se podía tratar de un problema de codificación del archivo, e investigando en esa línea decidimos probar dos configuraciones, \texttt{UTF-8} y \texttt{Latin-1}, en los 2 sistemas , y en cada uno sucedía lo contrario, como se puede ver en la Tabla Tabla~\ref{tabla:WL}
 
 
 \tablaSmall{Test Windows vs Linux para \texttt{UTF-8} y \texttt{Latin-1}}{l c c c
@@ -368,12 +368,12 @@ En el código se sustituyó:
   with open(input_file) as f:
 \end{verbatim}
 
-por;
+por:
 \begin{verbatim}
   with open(input_file, encoding='utf-8') as f:
 \end{verbatim}
 
-Se comprobó en ambos sistemas operativos, y el resultado fue correcto, por que que se dio esta solución como válida.
+Se comprobó en ambos sistemas operativos, y el resultado fue correcto, así que se dio esta solución como válida.
 
 
 \subsubsection{Paleta de colores en CAD}
@@ -387,7 +387,7 @@ La función para crear una nueva capa de la biblioteca \texttt{ezdxf},
   # atributo color, en este ejemplo igual a 1
 \end{verbatim}
 
-solo permite colores entre 0 y 255, por lo que en un principio, se pensó en usar esta paleta de colores o si la entrada se producía en formato RGB, tanto en el archivo de configuración o a través de la interfaz, se transformaría de RGB a 256 colores, mediante la siguiente trasformación:
+\noindent solo permite colores entre 0 y 255, por lo que en un principio, se pensó en usar esta paleta de colores o si la entrada se producía en formato RGB, tanto en el archivo de configuración o a través de la interfaz, se transformaría de RGB a 256 colores, mediante la siguiente trasformación:
 
 \begin{verbatim}
 def rgb(r,g,b):
@@ -413,7 +413,7 @@ El algoritmo anterior se consultó en:
 
 Con esto se había solucionado el problema, ya teníamos cada capa con su correspondiente color.
 
-Al cabo de bastantes pruebas apareció un detalle que en un principio me había pasado inadvertido, los colores que seleccionaba el usuario para crear el archivo DXF en la aplicación , no se correspondían con los que realmente se visualizaban en el dibujo, una vez abierto con un programa de CAD.
+Al cabo de bastantes pruebas, apareció un detalle que en un principio me había pasado inadvertido, los colores que seleccionaba el usuario para crear el archivo DXF en la aplicación , no se correspondían con los que realmente se visualizaban en el dibujo, una vez abierto con un programa de CAD.
 
 Investigando, se averiguó que los programas de CAD tienen su propia paleta de colores, que fue creada por AutoCAD, donde a cada color se le asigna un número entero entre 0 y 255. En el siguiente enlace se puede consultar:
 
@@ -422,7 +422,7 @@ Investigando, se averiguó que los programas de CAD tienen su propia paleta de c
 
 Esta parte se solucionó incluyendo en la aplicación, una lista con estos colores, donde se comparaba el RGB definido por el usuario con el de la lista, y si existía, devolvía el número entero correspondiente a la paleta de CAD.
 
-Cuando los colores estaban definidos en el archivo de configuración, no había problema, era una conversión directa usando la lista anterior, pero si el usuario deseaba asignar o modificar el color a través de la interfaz, el color que el había seleccionado debería ser igual al que apareciera en el dibujo. Para ello se utilizó la biblioteca de JavaScript , \texttt{TinyColor}, que nos permite personalizar la paleta de colores con cualquier lista que le proporcionemos.
+Cuando los colores estaban definidos en el archivo de configuración, no había problema, era una conversión directa usando la lista anterior, pero si el usuario deseaba asignar o modificar el color a través de la interfaz, el color que él había seleccionado debería ser igual al que apareciera en el dibujo. Para ello se utilizó la biblioteca de JavaScript, \texttt{TinyColor}, que nos permite personalizar la paleta de colores con cualquier lista que le proporcionemos.
 
 \imagen{colores_cad}{Ejemplo diez primeros colores en la paleta de colores CAD}
 
@@ -444,7 +444,7 @@ En los prototipos iniciales, con los ejemplos de archivos de campo que veníamos
 \item \texttt{TEXT}
 \end{itemize}
 
-Que permitían esta compatibilidad, con las versiones mas antiguas.   
+Que permitían esta compatibilidad, con las versiones más antiguas.   
 
 La aplicación en un principio estaba pensada para que el usuario pudiera asociar   a determinados códigos de puntos, un símbolo. Por ejemplo, en un punto que tuviera el código AR, debía dibujar un árbol.(Véase un ejemplo de distintos símbolos en la Figura~\ref{fig:Simbolos}).
 
@@ -462,7 +462,13 @@ Y el nuevo tipo de elemento añadido \texttt{BLOCK}, hizo que versiones mas anti
 Valorando este problema, se determinó que era mejor desechar el poder trabajar con versiones más antiguas de CAD, en favor, de que el usuario pudiera asignar símbolos al dibujo. Sin esta posibilidad, la aplicación perdería mucho valor.
 
 
-\imagen{cad_versions_ok}{Versiones de CAD aceptadas por \emph{SurveyingPointCode}}
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=0.6\textwidth]{cad_versions_ok}
+	\caption{Versiones de CAD aceptadas por \emph{SurveyingPointCode}.}
+	\label{fig:cad_versions_ok}
+\end{figure}
+
 
 En la Figura~\ref{fig:cad_versions_ok}, podemos ver las versiones de archivos DXF
 compatibles en \emph{SurveyingPointCode}
@@ -534,7 +540,7 @@ services:
     restart: always  
 \end{verbatim}
 
-\texttt{postgis}, \texttt{pgadmin} y \texttt{flask}, son los tres servicios que vamos a utilizar. Con el parámetro \texttt{container\_name}, definimos el nombre de los contenedores y con el parámetro \texttt{image}, la imagen que queremos usar para crear ese contenedor. Los parámetros \texttt{depends\_on} y \texttt{links}, indican las relaciones y dependencias entre los contenedores. Otros parámetros importantes son: \texttt{ports},\texttt{ networks},\texttt{ environment},\texttt{ volumes}, etc.
+\noindent\texttt{postgis}, \texttt{pgadmin} y \texttt{flask}, son los tres servicios que vamos a utilizar. Con el parámetro \texttt{container\_name}, definimos el nombre de los contenedores y con el parámetro \texttt{image}, la imagen que queremos usar para crear ese contenedor. Los parámetros \texttt{depends\_on} y \texttt{links}, indican las relaciones y dependencias entre los contenedores. Otros parámetros importantes son: \texttt{ports},\texttt{ networks},\texttt{ environment},\texttt{ volumes}, etc.
 
 \tablaSmall{Servicios incluidos en \texttt{docker-compose.yml}}{l c c c
 }{dockercompose}
@@ -569,7 +575,7 @@ A continuación, vemos este archivo:
 
 Si nos fijamos en el archivo \texttt{docker-compose.yml}, el servicio \texttt{flask} no tiene el parámetro \texttt{image}, en su defecto tiene el parámetro  \texttt{build} y el valor del parámetro es un punto, <<\texttt{build: .}>>. Con esto le estamos indicado que construya ese contenedor, con el archivo \texttt{Dockerfile} que encuentre en ese directorio.
 
-Por último,y gracias a la utilización de \textbf{Docker Compose} toda la aplicación se despliega con con solo comando, \texttt{docker-compose up}, este comando descarga las imágenes, construye los contenedores y los arranca.
+Por último, y gracias a la utilización de \textbf{Docker Compose} toda la aplicación se despliega con con solo comando, \texttt{docker-compose up}, este comando descarga las imágenes, construye los contenedores y los arranca.
 
 Para facilitar el despliegue, en este proyecto se han implementado dos \texttt{scripts}.
 
@@ -609,12 +615,12 @@ El segundo \texttt{script}, \textbf{\texttt{app\_install\_pgadmin.sh}}:
 Este otro \texttt{script} arranca aplicación con los contenedores \texttt{surveying\_point\_code}, \texttt{postgis} y \texttt{pgadmin}.
 
 La razón de implementar estos \texttt{scripts}, es que se ha comprobado que al ejecutar la aplicación en diferentes equipos, en algunos casos, el contenedor \textbf{surveying\_point\_code} intentaba la conexión con la base de datos alojada en el contenedor \textbf{postgis}, antes de que estuviera creada, por lo que si se ejecutaba solamente \texttt{docker-compose up}, había que comprobar si estaba el contenedor 
-\texttt{surveying\_point\_code} arrancado y si no lo estaba, había que arrancarlo manualmente mediante este comando, \texttt{docker start surveying\_point\_code} . El uso de cualquiera de los dos \texttt{scripts} anteriores previene este caso, pues comprueba que esté creada la base de datos y después crea el contenedor \texttt{surveying\_point\_code}, que establece está conexión y permanecerá arrancado.
+\texttt{surveying\_point\_code} arrancado y si no lo estaba, había que arrancarlo manualmente mediante este comando, \texttt{docker start surveying\_point\_code}.  El uso de cualquiera de los dos \texttt{scripts} anteriores previene este caso, pues comprueba que esté creada la base de datos y después crea el contenedor \texttt{surveying\_point\_code}, que establece está conexión y permanecerá arrancado.
 
 Aunque anteriormente se han enumerado algunas ventajas de usar Docker, aquí vamos 
 a destacar la portabilidad y el despliegue rápido.
 \begin{itemize}
-\item Portabilidad: Una vez configurados los contenedores los podremos desplegar en fácilmente cualquier equipo solo contener instalado Docker. Los principales proveedores de computación en nube, incluidos Amazon Web Services (AWS)\footnote{\textsl{AWS}: \url{https://aws.amazon.com/es/}} y Google Compute Platform (GCP)\footnote{\textsl{GCP}: \url{https://cloud.google.com/?hl=es}},han adoptado la disponibilidad de utilizar Docker. Docker también funciona muy bien con otros proveedores como Microsoft Azure\footnote{\textsl{Microsoft Azure}: \url{https://azure.microsoft.com/es-es/}} y OpenStack\footnote{\textsl{OpenStack}: \url{https://www.openstack.org/}}.
+\item Portabilidad: Una vez configurados los contenedores los podremos desplegar en fácilmente cualquier equipo solo contener instalado Docker. Los principales proveedores de computación en nube, incluidos Amazon Web Services (AWS)\footnote{\textsl{AWS}: \url{https://aws.amazon.com/es/}} y Google Compute Platform (GCP)\footnote{\textsl{GCP}: \url{https://cloud.google.com/?hl=es}}, han adoptado la disponibilidad de utilizar Docker. Docker también funciona muy bien con otros proveedores como Microsoft Azure\footnote{\textsl{Microsoft Azure}: \url{https://azure.microsoft.com/es-es/}} y OpenStack\footnote{\textsl{OpenStack}: \url{https://www.openstack.org/}}.
 \item Despliegue rápido: Docker logra reducir la implementación a segundos. Esto se debe al hecho de que crea un contenedor para cada proceso y no arranca un sistema operativo. Los datos se pueden crear y destruir sin preocuparse del coste de volver a hacerlo.
 \end{itemize}
 

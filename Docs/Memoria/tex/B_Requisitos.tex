@@ -92,7 +92,13 @@ En este sistema, existe un actor que interactuará con el sistema, y el propio s
 
 
 \subsection{Casos de uso}
-\imagen{CU-0}{Diagrama de general de casos de uso }
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\textwidth]{CU-0}
+	\caption{Diagrama de general de casos de uso.}
+	\label{fig:CU-0}
+\end{figure}
+
 
 \imagen{CU-1}{Diagrama de caso de uso CU-01}
 \strut
@@ -179,9 +185,16 @@ Alta\strut
 \caption{CU-01 Registro de usuarios.}
 \end{longtable}
 
-\strut
+\strut\strut
 \
-\imagen{CU-2}{Diagrama de caso de uso CU-02}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\textwidth]{CU-2}
+	\caption{Diagrama de caso de uso CU-02.}
+	\label{fig:CU-2}
+\end{figure}
+
 \strut
 \begin{longtable}[H]{@{}ll@{}}
 \toprule
@@ -258,7 +271,7 @@ Alta\strut
 \end{longtable}
 \strut
 
-%\imagen{CU-3}{Diagrama de caso de uso CU-03}
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth]{CU-3}
@@ -298,7 +311,7 @@ Permite al usuario cargar un archivo de campo.\strut
 \textbf{Precondición}\strut
 \end{minipage} & \begin{minipage}[t]{0.71\columnwidth}\raggedright\strut
 El usuario debe estar logeado.\\
-El archivo debe tener extensión txt o csv.
+El archivo debe tener extensión \texttt{txt} o \texttt{txt}.
 
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.23\columnwidth}\raggedright\strut
@@ -380,7 +393,7 @@ Permite al usuario cargar un archivo de configuración de la conversión.\strut
 \textbf{Precondición}\strut
 \end{minipage} & \begin{minipage}[t]{0.71\columnwidth}\raggedright\strut
 El usuario debe estar logeado.\\
-El archivo debe tener extensión txt o csv.\\
+El archivo debe tener extensión \texttt{txt} o \texttt{txt}.\\
 El archivo de campo debe estar seleccionado
 
 \end{minipage}\tabularnewline
@@ -491,7 +504,7 @@ Permite al usuario cargar un archivo DXF con símbolos.\strut
 \textbf{Precondición}\strut
 \end{minipage} & \begin{minipage}[t]{0.71\columnwidth}\raggedright\strut
 El usuario debe estar logeado.\\
-El archivo debe tener extensión dxf.\\
+El archivo debe tener extensión \texttt{dxf}.\\
 El archivo de campo debe estar seleccionado
 
 \end{minipage}\tabularnewline
@@ -673,14 +686,15 @@ Alta\strut
 \bottomrule
 \caption{CU-07 Asociar símbolos.}
 \end{longtable}
+\newpage
 
-\strut
-\\
-\\
-\\
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\textwidth]{CU-8}
+	\caption{Diagrama de caso de uso CU-08.}
+	\label{fig:CU-8}
+\end{figure}
 
-
-\imagen{CU-8}{Diagrama de caso de uso CU-08}
 
 \strut
 
@@ -747,9 +761,14 @@ Alta\strut
 \bottomrule
 \caption{CU-08 Elegir versión de CAD.}
 \end{longtable}
-\strut
 
-\imagen{CU-9}{Diagrama de caso de uso CU-09}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\textwidth]{CU-9}
+	\caption{Diagrama de caso de uso CU-09.}
+	\label{fig:CU-9}
+\end{figure}
 
 \strut
 \begin{longtable}[H]{@{}ll@{}}
@@ -817,18 +836,15 @@ Media\strut
 \bottomrule
 \caption{CU-09 Dar nombre al archivo DXF generado.}
 \end{longtable}
-\strut
-\\
-\\
-\\
-\\
+
+\newpage
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth]{CU-10}
 	\caption{Diagrama de caso de uso CU-10.}
 	\label{fig:CU-10}
 \end{figure}
-%\imagen{CU-10}{Diagrama de caso de uso CU-10}
 
 
 \begin{longtable}[H]{@{}ll@{}}
@@ -903,8 +919,8 @@ Alta\strut
 \caption{CU-10 Conversión a DXF.}
 \end{longtable}
 
+\newpage
 
-%\imagen{CU-11}{Diagrama de caso de uso CU-11}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth]{CU-11}
@@ -990,7 +1006,8 @@ Alta\strut
 \bottomrule
 \caption{CU-11 Descargar archivos.}
 \end{longtable}
-\strut
+
+\newpage
 
 
 \imagen{CU-12}{Diagrama de caso de uso CU-12}
@@ -1060,7 +1077,8 @@ Alta\strut
 \bottomrule
 \caption{CU-12 \emph{Logout}.}
 \end{longtable}
-\strut
+
+\newpage
 
 \imagen{CU-13}{Diagrama de caso de uso CU-13}
 

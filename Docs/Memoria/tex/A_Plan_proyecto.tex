@@ -2,17 +2,17 @@
 
 \section{Introducción}
 
-En este apartado se va a detallar como se ha llevado a acabo la planificación del proyecto. En la planificación es donde se estudia el coste tanto en tiempo, como en recursos y también, aunque sea un proyecto educacional, el coste económico y sus posibles beneficios.
+En este apartado se va a detallar como se ha llevado a cabo la planificación del proyecto. En la planificación es donde se estudia el coste tanto en tiempo, como en recursos y también, aunque sea un proyecto educacional, el coste económico y sus posibles beneficios.
 
 Con los resultados obtenidos realizaremos la planificación temporal del proyecto y el estudio de viabilidad del mismo. 
 
 \section{Planificación temporal}
 
-Como ya se ha mencionado en el inicio del proyecto se ha optado por seguir la metodología ágil \emph{Scrum}. Se ha intentado seguir fielmente, con la salvedad de que normalmente en este tipo de proyectos participan varias personas y en este ha participado solo una persona, con la supervisión del tutor.
+Como ya se ha mencionado en el inicio del proyecto, se ha optado por seguir la metodología ágil \emph{Scrum}. Se ha intentado seguirla fielmente, con la salvedad de que normalmente en este tipo de proyectos participan varias personas y en este ha participado solo una persona, con la supervisión del tutor.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\textwidth]{Scrum}
+	\includegraphics[width=0.6\textwidth]{Scrum}
 	\caption{Diagrama del ciclo iterativo \emph{Scrum}.}
 	\label{fig:Scrum}
 \end{figure}
@@ -51,13 +51,13 @@ En este primer \emph{sprint} y como primera toma de contacto con el proyecto, lo
 
 \item Formación en \emph{PEPs}. Para conocer bien las guías de estilo y la convenciones de \emph{Python}, se consultaron las guías PEP 8 y PEP 257, mencionadas en la memoria.
 
-\item Formación en \LaTeX. Se consulto como guía principal, el libro Edición de Textos Científicos LaTEX\cite{latex}. Y como herramientas para realizar la memoria se instalaron las aplicaciones :\emph{Texmaker 5.0.3} y \emph{MikTex 2.9}.
+\item Formación en \LaTeX. Se consulto como guía principal, el libro Edición de Textos Científicos \LaTeX{}~\cite{latex}. Y como herramientas para realizar la memoria se instalaron las aplicaciones:\emph{Texmaker 5.0.3} y \emph{MikTex 2.9}.
 
 \item Diseño del logotipo de la aplicación.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.5\textwidth]{SPC}
+	\includegraphics[width=0.3\textwidth]{SPC}
 	\caption{Logo de \emph{SurveyingPointCode}.}
 	\label{fig:SPC}
 \end{figure}
@@ -71,12 +71,12 @@ Los objetivos planteados fueron los siguientes:
 
 \begin{itemize}
 \item Formalización de la entrada de datos: Se procede a formalizar la gramática que debe tener el archivo de entrada y se determina que:
-El archivo de entrada será un archivo de texto, compuesto por una o múltiples lineas. Estas lineas serán los puntos medidos en campo y cada linea tendrá la siguiente estructura:
+el archivo de entrada será un archivo de texto, compuesto por una o múltiples líneas. Estas líneas serán los puntos medidos en campo y cada línea tendrá la siguiente estructura:
 
-número de punto, coordenada x, coordenada y, coordenada z, código
+número de punto, coordenada $x$, coordenada $y$, coordenada $z$, código
 \begin{itemize}
 \item El numero de punto debe ser de tipo \emph{integer}
-\item Las coordenadas x,y,z de tipo \emph{float} o \emph{integer}
+\item Las coordenadas $x$, $y$, $z$ de tipo \emph{float} o \emph{integer}
 \item El código de tipo string, pudiendo estar formado por letras, números y los signos '-' y '+'
 \end{itemize}
 
@@ -99,14 +99,21 @@ en \emph{Python} y encaja perfectamente con la filosofía de realizar la mayor p
 Como objetivo se planteó seguir con el desarrollo de este primer prototipo, ampliando sus funcionalidades. Se definieron las siguientes tareas:
 
 \begin{itemize}
-\item Organizar elementos en listas de capas: Se leerán las lineas del fichero de entrada (puntos medidos en campo) y se organizarán en una estructura de datos en forma de lista , donde cada lista contendrá los elementos (puntos) correspondientes a una misma capa. Se obtuvo un resultado correcto.
+\item Organizar elementos en listas de capas: Se leerán las líneas del fichero de entrada (puntos medidos en campo) y se organizarán en una estructura de datos en forma de lista, donde cada lista contendrá los elementos (puntos) correspondientes a una misma capa. Se obtuvo un resultado correcto.
 
-\item Identificar y organizar los diferentes tipos de lineas: Se pretende identificar todos los puntos que forman unas linea, y almacenar todas las lineas existentes en estructuras de datos. Se obtuvo un resultado correcto.
+\item Identificar y organizar los diferentes tipos de líneas: Se pretende identificar todos los puntos que forman unas línea, y almacenar todas las líneas existentes en estructuras de datos. Se obtuvo un resultado correcto.
 
 \item Comenzando con biblioteca \texttt{ezdxf}: Se comienza a estudiar la biblioteca \texttt{ezdxf} y a realizar pequeñas pruebas, incluyendo estas en el prototipo. Dibujar las líneas y \emph{splines} de un fichero de entrada.
 
 El resultado fue correcto, lo podemos ver en la siguiente imagen.
-\imagen{proto_1}{Dibujo con líneas y \emph{splines}}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.6\textwidth]{proto_1}
+	\caption{Logo de \emph{Dibujo con líneas y \emph{splines}.}}
+	\label{fig:proto_1}
+\end{figure}
+
 
 \end{itemize}
 
@@ -115,7 +122,7 @@ El resultado fue correcto, lo podemos ver en la siguiente imagen.
 
 \subsection{\emph{Sprint} 4 (14/02/2019 - 20/02/2019)}
 
-Una vez acabado el primer prototipo funcional que podía validar un archivo, diferenciar las diferentes lineas y curvas, y generar un archivo DXF, el objetivo de este \emph{sprint} fue comenzar a crear un prototipo  basado en una aplicación Web, utilizando el \emph{micro framework} \texttt{Flask}. Para ello se definieron las siguientes tareas:
+Una vez acabado el primer prototipo funcional que podía validar un archivo, diferenciar las diferentes líneas y curvas, y generar un archivo DXF, el objetivo de este \emph{sprint} fue comenzar a crear un prototipo  basado en una aplicación Web, utilizando el \emph{micro framework} \texttt{Flask}. Para ello se definieron las siguientes tareas:
 
 \begin{itemize}
 \item Formación en \texttt{Flask}: Se consultó la documentación de \texttt{Flask} mencionada en la memoria.
@@ -134,9 +141,9 @@ Aquí empezó a trabajar con un entorno virtual creado en \emph{Anaconda}\footno
 Ya teníamos la aplicación Web funcionando, el siguiente paso sería la validación de usuarios, el uso de una base de datos y a ser posible comenzar a investigar con \emph{Docker} y alojar la base de datos en un contenedor. Para ello se definieron las siguientes tareas:
 
 \begin{itemize}
-\item Comenzando con \emph{Docker}: Se consultó la documentación de \\emph{Docker} mencionada en la memoria,y se configuró un contenedor\emph{PostGIS} para alojar la base de datos. También se configuró otro contenedor \emph{PgAdmin4} para poder administrar y ver las modificaciones en la base de datos más fácilmente. También serviría para probar como conectar dos contenedores entre sí.
+\item Comenzando con \emph{Docker}: Se consultó la documentación de \\emph{Docker} mencionada en la memoria (ver apartado 5.3 Formación), y se configuró un contenedor \emph{PostGIS} para alojar la base de datos. También se configuró otro contenedor \emph{PgAdmin4} para poder administrar y ver las modificaciones en la base de datos más fácilmente. También serviría para probar como conectar dos contenedores entre sí.
 
-\item Validación de usuarios: Se implementó la aplicación para que un usuario pudiera logearse y registrarse. Se diseño el modelo de la base datos y la base de datos se crearía automáticamente al arrancar la aplicación. Se utilizaron  las librerías \texttt{SQLAlchemy} y \texttt{Flask-Login} ,mencionadas en la memoria, de las cuales se estudió su documentación. Se obtuvo un resultado correcto.
+\item Validación de usuarios: Se implementó la aplicación para que un usuario pudiera logearse y registrarse. Se diseño el modelo de la base datos y la base de datos se crearía automáticamente al arrancar la aplicación. Se utilizaron  las librerías \texttt{SQLAlchemy} y \texttt{Flask-Login}, mencionadas en la memoria, de las cuales se estudió su documentación. Se obtuvo un resultado correcto.
 \end{itemize} 
 
 
@@ -149,7 +156,7 @@ También se estudió como incorporar un visor en el navegador, para poder visual
 \begin{itemize}
 \item Convertir el archivo a formato SVG: Se convirtió el archivo DXF a SVG, con un conversor online\footnote{\textsl{convertio}: \url{https://convertio.co/es/dxf-svg/}}, pero el resultado obtenido no era lo esperado. Se probó con otros conversores siendo el resultado igual de malo, por lo que se descartó esta opción.
   
-\item Usar el visor \emph{Three-Dxf}: \emph{Three-Dxf}\footnote{\textsl{Three-Dxf}: \url{https://github.com/gdsestimating/three-dxf}} en un visor en \emph{JavaScript}, para archivos DXF, que se podría incorporar a cualquier aplicación Web. En su documentación indicaba que soportaba los elementos que usábamos en nuestros DXF, como los tipos de lineas, tipos de símbolos, etc. Pero comprobándolo resultó que no era así, daba errores. Conseguía visualizar archivos muy simples, pero no los que necesitábamos en este proyecto.
+\item Usar el visor \emph{Three-Dxf}: \emph{Three-Dxf}\footnote{\textsl{Three-Dxf}: \url{https://github.com/gdsestimating/three-dxf}} en un visor en \emph{JavaScript}, para archivos DXF, que se podría incorporar a cualquier aplicación Web. En su documentación indicaba que soportaba los elementos que usábamos en nuestros DXF, como los tipos de líneas, tipos de símbolos, etc. Pero comprobándolo resultó que no era así, daba errores. Conseguía visualizar archivos muy simples, pero no los que necesitábamos en este proyecto.
 \end{itemize}
 
 Al final se descartó la idea de que la aplicación tuviera un visor incorporado.
@@ -167,27 +174,27 @@ Este \emph{sprint} se basó en implementar funciones que crearan los elementos d
 \end{itemize}
 Se obtuvo un resultado correcto.
 
-\item Inserción de puntos en el modelo: Se insertan todos los puntos del archivo de campo en el modelo del dibujo. Se dibujan también , los textos correspondientes al código y a la elevación del punto, cada uno en su correspondiente capa, todo ello interpretando la codificación. Se obtuvo un resultado correcto.
+\item Inserción de puntos en el modelo: Se insertan todos los puntos del archivo de campo en el modelo del dibujo. Se dibujan también, los textos correspondientes al código y a la elevación del punto, cada uno en su correspondiente capa, todo ello interpretando la codificación. Se obtuvo un resultado correcto.
 
 \item Creación de circunferencias: Se crearían círculos, a partir de un punto y un radio, y se guardaría en su correspondiente capa, todo ello interpretando la codificación. Se obtuvo un resultado correcto.  
 
 \item Creación de líneas: Se crearían líneas, a partir de una serie de puntos, y se guardarían en su correspondiente capa, todo ello interpretando la codificación. Se obtuvo un resultado correcto. 
 
-\item Creación de cuadrados: Se crearían cuadrados, a partir de dos puntos, y se guardarían en su correspondiente capa, todo ello interpretando la codificación. El cuadrado siempre se dibujaría a la derecha de la alineación definida por estos dos puntos. Se obtuvo un resultado correcto.   
+\item Creación de cuadrados: Se crearían cuadrados, a partir de dos puntos, y se guardarían en su correspondiente capa, todo ello interpretando la codificación. El cuadrado siempre se dibujaría a la derecha de la alíneación definida por estos dos puntos. Se obtuvo un resultado correcto.   
 
 \item Creación de rectángulos: Se crearían rectángulos, a partir de tres puntos, y se guardarían en su correspondiente capa, todo ello interpretando la codificación. Se obtuvo un resultado correcto.   
 
-\item Uso de puntos no medidos en campo: Se utilizarían puntos no medidos en campo para la generación de lineas y se guardarían en su correspondiente capa, todo ello interpretando la codificación. Se obtuvo un resultado correcto.
+\item Uso de puntos no medidos en campo: Se utilizarían puntos no medidos en campo para la generación de líneas y se guardarían en su correspondiente capa, todo ello interpretando la codificación. Se obtuvo un resultado correcto.
 \end{itemize}
 
-Una vez dibujados los elementos, se mejoró estéticamente el dibujo,modificando el tamaño de los textos y su posición respecto a los puntos.
+Una vez dibujados los elementos, se mejoró estéticamente el dibujo, modificando el tamaño de los textos y su posición respecto a los puntos.
 
 \subsection{\emph{Sprint} 8 (21/03/2019 - 27/03/2019)}
 
-En este \emph{sprint} se comenzó con la realización de test unitarios, estudiando las diferentes opciones. También como se podría  leer un archivo DXF proporcionado por el usuario, que contuviera símbolos en forma de bloques y una vez , incorporarlos al modelo de dibujo que queríamos generar. Para ello se definieron las siguientes tareas:
+En este \emph{sprint} se comenzó con la realización de test unitarios, estudiando las diferentes opciones. También como se podría  leer un archivo DXF proporcionado por el usuario, que contuviera símbolos en forma de bloques y una vez, incorporarlos al modelo de dibujo que queríamos generar. Para ello se definieron las siguientes tareas:
 
 \begin{itemize}
-\item Estudio de una biblioteca de Python para la realización de los test unitarios : Se consideraron las bibliotecas: \texttt{unittest}\cite{unittest} y \texttt{pytest}\cite{pytest}. La opción elegida fue \texttt{unittest}\, esta biblioteca ya se había usado durante la realización del grado.
+\item Estudio de una biblioteca de Python para la realización de los test unitarios: Se consideraron las bibliotecas: \texttt{unittest}~\cite{unittest} y \texttt{pytest}~\cite{pytest}. La opción elegida fue \texttt{unittest}\, esta biblioteca ya se había usado durante la realización del grado.
 
 \item Comienzo con los test unitarios.
 
@@ -205,10 +212,10 @@ Se obtuvo un resultado correcto.
  
 \subsection{\emph{Sprint} 8 (28/03/2019 - 03/04/2019)}
 
-En este \emph{sprint} se comenzó a trabajar con la posibles versiones de CAD que podría generar la aplicación. También se comenzó a trabajar con el archivo de configuración de usuario, definiendo como seria su gramática e implementando un \emph{parser} para poder validarlo. Para ello se definieron las siguientes tareas:
+En este \emph{sprint} se comenzó a trabajar con la posibles versiones de CAD que podría generar la aplicación. También se comenzó a trabajar con el archivo de configuración de usuario, definiendo como sería su gramática e implementando un \emph{parser} para poder validarlo. Para ello se definieron las siguientes tareas:
 
 \begin{itemize}
-\item Versiones de CAD válidas : Se comprobaría la generación del archivo DXF en diferentes versiones y su validez. 
+\item Versiones de CAD válidas: Se comprobaría la generación del archivo DXF en diferentes versiones y su validez. 
 
 \item  Definición de gramática para el archivo de configuración de usuario.
 
@@ -234,40 +241,53 @@ En este \emph{sprint} se comenzó a trabajar con las sesiones de \texttt{Flask} 
 
 \subsection{\emph{Sprint} 10 (11/04/2019 - 24/04/2019)}
 
-Este \emph{sprint} se consideró más largo, había una semana de vacaciones en medio. Básicamente se basó en completar las funcionalidades Web, el diseño de la Web , y el tratamiento de los mensajes de aviso. Para ello se definieron las siguientes tareas: 
+Este \emph{sprint} se consideró más largo, había una semana de vacaciones en medio. Básicamente se basó en completar las funcionalidades Web, el diseño de la Web, y el tratamiento de los mensajes de aviso. Para ello se definieron las siguientes tareas: 
  
 \begin{itemize}
-\item Añadir funcionalidades a al Web: Añadir o quitar botones, menús, etc.
+\item Añadir funcionalidades a la Web: Añadir o quitar botones, menús, etc.
 
 \item  Mejorar el diseño de la Web: Página de inicio, barra de navegación superior, página de login, etc.
 
-\item Tratamiento de errores: Ver e implementar las distintas formas , en que se presentaran los errores o mensajes de aviso al usuario.
+\item Tratamiento de errores: Ver e implementar las distintas formas, en que se presentaran los errores o mensajes de aviso al usuario.
 
 \end{itemize}
 
-Se solucionaron errores como, el surgido al añadir la letra <<ñ>> y la tildes, a la gramática del archivo de configuración (se puede ver la solución en la memoria \textit{ Codificación UTF-8 }). También un error no detectado anteriormente en la función  \texttt{calculate\_azimut\_distance}, con un error de división por 0.
+Se solucionaron errores como, el surgido al añadir la letra <<ñ>> y la tildes, a la gramática del archivo de configuración (se puede ver la solución en la memoria \textit{ Codificación UTF-8}). También un error no detectado anteriormente en la función  \texttt{calculate\_azimut\_distance}, con un error de división por 0.
 Además se comprobó que la paleta de colores de los programas CAD, no era la habitual (se puede ver la solución en la memoria \textit{ Paleta de colores en CAD})
 
 \subsection{\emph{Sprint} 11 (25/04/2019 - 01/05/2019)}
 
-En este \emph{sprint} y como parte final de la aplicación, el objetivo era que la aplicación se desplegara en \emph{Docker}. En un principio integrar la aplicación \texttt{Flask} y por último ejecutar todos los contenedores a la vez, con el uso de la herramienta \emph{Docker Compose}. Se obtuvo un resultado correcto.
+En este \emph{sprint} y como parte final de la aplicación, el objetivo era facilitar su posterior despliegue en explotación mediante la utilización de contenedores \emph{Docker}. En un principio integrar la aplicación \texttt{Flask} y por último ejecutar todos los contenedores a la vez, con el uso de la herramienta \emph{Docker Compose}. Se obtuvo un resultado correcto.
 
 \subsection{\emph{Sprint} 12 (02/05/2019 - 15/05/2019)}
 
-En este \emph{sprint} se tratará de redactar la documentación del proyecto.
+En este \emph{sprint} se redacta la documentación del proyecto.
 
 \subsection{\emph{Sprint} 13 (16/05/2019 - 22/05/2019)}
 
-En este \emph{sprint} se continuará con la redacción de la documentación del proyecto. Además se añadirán las siguientes funcionalidades:
+En este \emph{sprint} se continua con la redacción de la documentación del proyecto. Además se añaden las siguientes funcionalidades:
 
 \begin{itemize}
 \item Mensaje de \emph{Cookies}.
 
 \item Tiempo de caducidad de la sesión de usuario
 
-\item ...................
+\item Mejora de la barra de navegación, incluyendo más funcionalidades.
 \end{itemize}
+Se consiguieron los objetivos.
 
+\subsection{\emph{Sprint} 14 (23/05/2019 - 29/05/2019)}
+
+En este \emph{sprint} se continuará con la redacción de la documentación del proyecto. Además se añadirán las siguientes funcionalidades:
+
+\begin{itemize}
+\item Ampliación de la base de datos para recoger estadísticas sobre el uso que hace de la aplicación cada usuario.
+
+\item Revisión de las licencias.
+
+\item Realización de un manual en vídeo.
+\end{itemize}
+Se consiguieron los objetivos.
 
 \section{Estudio de viabilidad}
 
@@ -320,9 +340,9 @@ Salario mensual bruto\strut
 \caption{Costes de personal.}
 \end{longtable}
 
-La retribución\cite{SEG} a la Seguridad Social se ha calculado como un 23,60\% por contingencias comunes, más un 5,50\% por desempleo de tipo general, más un 0,20\% para el Fondo de Garantía Salarial y más un 0,60\% de formación profesional. En total un 29,9\% que se aplica al salario bruto.
+La retribución~\cite{SEG} a la Seguridad Social se ha calculado como un 23,60\% por contingencias comunes, más un 5,50\% por desempleo de tipo general, más un 0,20\% para el Fondo de Garantía Salarial y más un 0,60\% de formación profesional. En total un 29,9\% que se aplica al salario bruto.
 
-El porcentaje de IRPF\cite{IRPF} se ha establecido en el 15\% ya que es el considerado como rendimientos de trabajo para la elaboración de obras científicas.
+El porcentaje de IRPF~\cite{IRPF} se ha establecido en el 15\% ya que es el considerado como rendimientos de trabajo para la elaboración de obras científicas.
 
 \textbf{Costes de \emph{hardware} y \emph{software}:}
 
@@ -367,7 +387,9 @@ Windows 10 Home\strut
 
 \textbf{Costes de varios:}
 
-El resto de costes del proyecto son:
+Se considera un coste adicional de asesoría técnica, proporcionada en este caso por el tutor en cada \emph{sprint}. Consultando varias fuentes~\cite{asesoria_1}~\cite{asesoria_2}, el precio/hora de consultoría o asesoría técnica ronda los 60 \euro{}/hora. En este proyecto se han realizado 14 \emph{sprints}, por lo que el coste de asesoramiento técnico asciende a 840 \euro{}.
+
+Además, se han considerado también los costes de alquiler de una oficina y el servicio de conexión a Internet.
 
 \begin{longtable}[]{@{}lr@{}}
 \toprule
@@ -378,6 +400,11 @@ El resto de costes del proyecto son:
 \end{minipage}\tabularnewline
 \midrule
 \endhead
+\begin{minipage}[t]{0.3\columnwidth}\raggedright\strut
+Asesoría técnica\strut
+\end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\raggedright\strut
+840 \euro{}\strut
+\end{minipage}\tabularnewline
 \begin{minipage}[t]{0.3\columnwidth}\raggedright\strut
 Alquiler de oficina\strut
 \end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\raggedright\strut
@@ -392,7 +419,7 @@ Internet\strut
 \begin{minipage}[t]{0.3\columnwidth}\raggedright\strut
 \textbf{Total}\strut
 \end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\raggedright\strut
-370 \euro{}\strut
+1.210 \euro{}\strut
 \end{minipage}\tabularnewline
 \bottomrule
 \caption{Costes varios.}
@@ -424,13 +451,13 @@ Personal\strut
 \begin{minipage}[t]{0.4\columnwidth}\raggedright\strut
 Varios\strut
 \end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
-370 \euro{}\strut
+1.210 \euro{}\strut
 \end{minipage}\tabularnewline
 \midrule
 \begin{minipage}[t]{0.4\columnwidth}\raggedright\strut
 Total\strut
 \end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
- 6.362,61 \euro{}\strut
+7.202,61 \euro{}\strut
 \end{minipage}\tabularnewline
 \bottomrule
 \caption{Costes totales.}
@@ -617,7 +644,7 @@ MIT\strut
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\textwidth]{c_licencias}
-	\caption{Compatibilidad entre licencias\cite{licencias}.}
+	\caption[Compatibilidad entre licencias]{Compatibilidad entre licencias~\cite{licencias}.}
 	\label{fig:c_licencias}
 \end{figure}
 
@@ -628,13 +655,13 @@ Se ha optado por:
 \textbf{GNU General Public License v3.0}\
 
 <<Exige la publicación del código fuente y que todos los trabajos derivados del original conserven la misma licencia GPL, no permite enlaces con módulos privativos (de código cerrado) y requiere que todos los cambios realizados a la versión original sean reflejados en el código fuente con sus respectivos autores.
-Los derechos de autor deben conservarse tanto en el código fuente como en los binarios.>>\cite{GNU}
+Los derechos de autor deben conservarse tanto en el código fuente como en los binarios.>>~\cite{GNU}
 
 \subsubsection{Política de \emph{Cookies}}
 
 El desarrollo de la aplicación ha implicado el uso de sesiones y por consiguiente, el uso de \emph{Cookies}. 
 
-Las obligaciones legales de las \emph{cookies} se encuentran en: el artículo 22.2 LSSI, este sentido el Grupo de Trabajo del Artículo 29 en su Dictamen 4/2012, indica que, quedan exceptuadas las que tienen por finalidad:
+Las obligaciones legales de las \emph{cookies} se encuentran en: el artículo 22.2 LSSI (Ley de Servicios de la Sociedad de la Información y de Comercio Electrónico), este sentido el Grupo de Trabajo del Artículo 29 en su Dictamen 4/2012, indica que, quedan exceptuadas las que tienen por finalidad:
 
 \begin{itemize}
 
@@ -648,7 +675,7 @@ Las obligaciones legales de las \emph{cookies} se encuentran en: el artículo 22
 
 \end{itemize}
 
-En este caso, no estamos obligados a informar\cite{cookies}, las que usa \emph{SurveyingPointCode} son de tipo:
+En este caso, no es necesario informar, las que usa la aplicación \emph{SurveyingPointCode} son de tipo:
 
 <<\emph{Cookies} de autenticación o identificación de usuario (únicamente de sesión).>>
 
@@ -663,12 +690,18 @@ El mensaje es el siguiente:
 	\label{fig:Scrum}
 \end{figure}
 
+\subsubsection{Uso de la dirección de e-mail}
+
+En la aplicación se ha utilizado y registrado el dato del e-mail, para poder registrar y permitir el acceso del usuario. Este dato se considera de carácter personal, ya que hay ocasiones en que este se puede rastrear hasta conocer la identidad de la persona. Todo esto está regulado el la nueva Ley Orgánica de Protección de Datos de Carácter Personal 2018 \cite{LOPD}, donde se indica que el usuario debe aceptar el uso de su e-mail, debiendo ser el consentimiento explícito, específico y verificable y ese consentimiento ha de ser revocable en cualquier momento.
+
+En este proyecto, al ser educacional no se han implementado esas opciones. Con este apartado se desea dejar claro que se está en conocimiento de la ley y de como aplicarla.
+
 
 \subsubsection{Licencia en la documentación}
 
 Con respecto a la documentación se ha optado por una licencia de tipo \emph{Creative Commons} y se ha elegido la siguiente:
 
-\textbf{CC BY-NC-SA 4.0}\cite{creativec}
+\textbf{CC BY-NC-SA 4.0}~\cite{creativec}
 
 Esta licencia permite a otros entremezclar, ajustar y construir a partir de su obra con fines no comerciales, siempre y cuando le reconozcan la autoría y sus nuevas creaciones estén bajo una licencia con los mismos términos.
 

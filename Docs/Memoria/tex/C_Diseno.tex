@@ -15,7 +15,7 @@ Las entidades de esta aplicación están enfocadas a la generación de un dibujo
 
 \item \textbf{Capa:} Todos los elementos del dibujo se guardan en capas. Está compuesto por: un nombre y un color.
 
-\item \textbf{Punto:} Elemento básico del dibujo. Está compuesto por: un número, una coordenada $X$, una coordenada $Y$, una coordenada $Z$, un código y una capa.
+\item \textbf{Punto:} Elemento básico del dibujo. Está compuesto por: un número, una coordenada $X$, una coordenada $Y\!$, una coordenada $Z$, un código y una capa.
 
 \item \textbf{Línea:} Formada por una lista de puntos. Está compuesto por: una lista de puntos y una capa.
 
@@ -33,7 +33,7 @@ Aunque no se ha implementado como una base de datos, la relación entre los elem
 
 A continuación se puede ver el diagrama relacional. Se ha representado en dos diagramas para facilitar su comprensión (en un mismo diagrama saldrían líneas superpuestas y sería muy confuso de interpretar).
 
-En la Figura~\ref{fig:DR-1}, se ven las relaciones de todos los elementos con el elemento principal , el dibujo.
+En la Figura~\ref{fig:DR-1}, se ven las relaciones de todos los elementos con el elemento principal, el dibujo.
 
 \begin{figure}[H]
 	\centering
@@ -53,17 +53,17 @@ En la Figura~\ref{fig:DR-2}, se ven las relaciones entre sí, del resto de eleme
 
 \section{Diseño arquitectónico}
 
-Como se ha detallado en la memoria (ver apartado 4.2. Patrones de diseño), para el diseño de la aplicación se ha utilizado el patrón arquitectónico \textbf{MTV}, que es similar al MCV, pero con alguna diferencia. \textbf{T} significa \emph{Template}, plantilla , que son los datos que se presentan al usuario y \textbf{V}significa vista, la capa de la lógica de negocios.
+Como se ha detallado en la memoria (ver apartado 4.2. Patrones de diseño), para el diseño de la aplicación se ha utilizado el patrón arquitectónico \textbf{MTV}, que es similar al MCV, pero con alguna diferencia. \textbf{T} significa \emph{Template}, plantilla, que son los datos que se presentan al usuario y \textbf{V} significa vista, la capa de la lógica de negocios.
 \textbf{MTV} es la arquitectura usada por \texttt{Flask}. 
 
-%\imagen{MTV}{Esquema de un patrón MTV}
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.5\textwidth]{MTV}
 	\caption{Esquema de un patrón MTV.}
 	\label{fig:MTV}
 \end{figure}
-Como sistema de base de datos se ha utilizado \textbf{PostGIS}. Para tener más independencia de la base de datos se ha optado por usar un \textbf{ORM}, \emph{SQLALchemy}. El uso de un ORM, nos simplificará el desarrollo si en un futuro se decide cambiar de base de datos.
+Como sistema de base de datos se ha utilizado \textbf{PostGIS}. Para tener más independencia de la base de datos se ha optado por usar un \textbf{ORM}, \emph{SQLALchemy}. El uso de un ORM,  simplificará el desarrollo y si en un futuro se decide cambiar de base de datos, será mas sencilla la adaptación de la aplicación.
 
 
 \begin{figure}[H]
@@ -79,11 +79,11 @@ La aplicación se ha terminado de construir utilizando el sistema de contenedore
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth]{Arq_docker}
-	\caption{Arquitectura de \emph{Docker}\cite{arq_dock}.}
+	\caption[Arquitectura de \emph{Docker}]{Arquitectura de \emph{Docker}~\cite{arq_dock}.}
 	\label{fig:Arq_docker}
 \end{figure}
 
-como se puede ver en la imagen anterior, \emph{Docker} está compuesto por tres partes:
+\noindent como se puede ver en la imagen anterior, \emph{Docker} está compuesto por tres partes:
 
 \begin{itemize}
 \item \emph{Docker client}: herramienta en línea de comandos, responsable para comunicarnos con el servidor \emph{Docker}. La comunicación se lleva a cabo mediante una \emph{RESTful API} a la cual solicitamos operaciones.
@@ -108,17 +108,25 @@ La arquitectura final basada en \emph{Docker} que se ha implementado, queda de l
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\textwidth]{Arq_SPC}
-	\caption{Arquitectura final de la aplicación con \emph{Docker}}.
+	\caption{Arquitectura final de la aplicación con \emph{Docker}}
 	\label{fig:Arq_SPC}
 \end{figure}
 
 \section{Diseño procedimental}
 
+En este apartado se presenta la especificación procedimental del algoritmo utilizado en forma de diagrama de flujo y diagrama de secuencia de la aplicación.
 
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{D_Flujo}
+	\caption{Diagrama de flujo de la aplicación}
+	\label{fig:D_Flujo}
+\end{figure}
 
-
-
-
-
-
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\textwidth]{DS_4}
+	\caption{Diagrama de secuencia general}
+	\label{fig:DS_4}
+\end{figure}
