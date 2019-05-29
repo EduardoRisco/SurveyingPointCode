@@ -1,28 +1,44 @@
-![Logo](https://github.com/EduardoRisco/SurveyingPointCode/blob/master/Docs/Logo/Logo_spc.png)
+<p align="center">
+  <img src="https://github.com/EduardoRisco/SurveyingPointCode/blob/master/Docs/Logo/Logo_spc.png">
+</p>   
 
-# Surveying Point Code
-Allows to automate the delineation process in CAD, by coding points in a topographic survey.
+[![License](https://flat.badgen.net/badge/license/GPL%203/cyan)](https://github.com/EduardoRisco/SurveyingPointCode/blob/master/LICENSE.txt)
+[![Docker1](https://flat.badgen.net/badge/docker-python/3.7Alpine/blue?icon=docker)](https://hub.docker.com/_/python)
+[![Docker2](https://flat.badgen.net/badge/docker-postgis/mdillon\postgis/blue?icon=docker)](https://hub.docker.com/r/mdillon/postgis/)
+[![Docker3](https://flat.badgen.net/badge/docker-pgadmin4/dpage\pgadmin4/blue?icon=docker)](https://hub.docker.com/r/dpage/pgadmin4/)
+[![CodeBEAT](https://flat.badgen.net/badge/codebeat/3,80%20GPA/green)](https://codebeat.co/projects/github-com-eduardorisco-surveyingpointcode-master)
 
+
+# Surveying Point Code      
 ![Iconos](https://github.com/EduardoRisco/SurveyingPointCode/blob/master/Docs/Logo/Transf_opt.png)
+## Allows to automate the delineation process in CAD, by coding points in a topographic survey.
 
-------
 
-Instrucciones configuración entorno:
 
-- Instalación de Docker.
-- Instalación de Docker Compose.
-- Clonar el repositorio.
-- Ejecutar en el directorio SurveyingPointCode/ :
+### Key features:
 
+- Topographic coding customized by the user.
+- It links topographic codes to : layers, colours and CAD blocks.
+- Automatic drawing of lines and splines.
+- Simplified and automatic drawing of squares, rectangles and circles.
+- Automatic insertion of symbols and CAD blocks.
+- It generates different versions of DXF: DXF 2018  DXF 2013, DXF 2010, DXF 2007 and DXF 2004
+
+![Iconos](https://github.com/EduardoRisco/SurveyingPointCode/blob/master/Docs/Logo/portada2.png)
+
+### Environment setup instructions:
+
+- Docker installation.
+- Docker Compose installation.
+- Cloning the main repository.
+- Run in the SurveyingPointCode/ directory:
    ```
    sh app_install.sh
    ```
-- Para instalar con PgAdmin4, ejecutar en el directorio SurveyingPointCode/ :
-
+- In order to install  with PgAdmin4, run in the SurveyingPointCode/ directory: 
    ```
    sh app_install_pgadmin.sh
    ```
-   
 - URL  SurveyingPointCode  http://0.0.0.0:5000 
 - URL  PgAdmin4  http://0.0.0.0:80
 
@@ -39,4 +55,3 @@ This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
-
