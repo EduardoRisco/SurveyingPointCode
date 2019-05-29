@@ -1,69 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <meta charset="UTF-8">
-      <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
-      <link rel="stylesheet" href="{{ url_for('static', filename='css/all.min.css') }}" />
-      <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.colorpickersliders.min.css') }}" />
-      <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
-      <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo_spc.png') }}" />
-      <meta
-         name="viewport"
-         content="width=device-width, initial-scale=1, shrink-to-fit=no"
-      />
-      <meta name="theme-color" content="#000000" />
-      <title>Surveying Point Code</title>
-   </head>
-   <body>
-      <img class="background-image fixed-bottom" src="{{ url_for('static', filename='images/logo_background.svg') }}" alt="Surveying Point Code Logo">
-      {% if not request.cookies.get('spc_visited'): %}
-      <div class="modal fade" id="cookies-advise" tabindex="-1" role="dialog" aria-labelledby="cookies-advise" aria-hidden="true">
-         <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
-         <div class="modal-content">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/all.min.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.colorpickersliders.min.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo_spc.png') }}"/>
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="theme-color" content="#000000"/>
+    <title>Surveying Point Code</title>
+</head>
+<body>
+<img class="background-image fixed-bottom" src="{{ url_for('static', filename='images/logo_background.svg') }}"
+     alt="Surveying Point Code Logo">
+{% if not request.cookies.get('spc_visited'): %}
+<div class="modal fade" id="cookies-advise" tabindex="-1" role="dialog" aria-labelledby="cookies-advise"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
             <div class="modal-header text-white bg-secondary">
-               <h5 class="modal-title font-weight-bolder" id="cookies-advise"><i class="fas fa-cookie-bite"></i> Cookies advise</h5>
-               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-               <span aria-hidden="true">&times;</span>
-               </button>
+                <h5 class="modal-title font-weight-bolder" id="cookies-advise"><i class="fas fa-cookie-bite"></i>
+                    Cookies advise</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
-               <p>This <strong>website</strong> uses cookies to ensure you get the best experience on our <strong>website</strong>.</p>
-               <p>
-                  These cookies are essential to allow <strong>Users</strong> to move within the <strong>website</strong> and use its functionalities, for example,
-                  to access the reserved areas of the <strong>website</strong> (authentication cookies). Without these cookies, the required services cannot be provided,
-                  for example, access to the reserved area of <strong>Registered Users</strong>.
-               </p>
-               <p>
-                  The cookies strictly necessary to memorize a unique identifier are used to administer and identify the <strong>User</strong> as unique with respect to
-                  other <strong>Users</strong> who are currently visiting the <strong>website</strong>, in order to provide the <strong>User</strong> with a coherent and
-                  accurate service.
-               </p>
-               <p>
-                  These cookies are necessary for the functioning of the <strong>website</strong>, therefore, by continuing to use this <strong>website</strong> you are
-                  giving consent to cookies being used.
-               </p>
+                <p>This <strong>website</strong> uses cookies to ensure you get the best experience on our <strong>website</strong>.
+                </p>
+                <p>
+                    These cookies are essential to allow <strong>Users</strong> to move within the
+                    <strong>website</strong> and use its functionalities, for example,
+                    to access the reserved areas of the <strong>website</strong> (authentication cookies). Without these
+                    cookies, the required services cannot be provided,
+                    for example, access to the reserved area of <strong>Registered Users</strong>.
+                </p>
+                <p>
+                    The cookies strictly necessary to memorize a unique identifier are used to administer and identify
+                    the <strong>User</strong> as unique with respect to
+                    other <strong>Users</strong> who are currently visiting the <strong>website</strong>, in order to
+                    provide the <strong>User</strong> with a coherent and
+                    accurate service.
+                </p>
+                <p>
+                    These cookies are necessary for the functioning of the <strong>website</strong>, therefore, by
+                    continuing to use this <strong>website</strong> you are
+                    giving consent to cookies being used.
+                </p>
             </div>
             <div class="modal-footer text-white bg-secondary">
-               <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fas fa-cookie-bite"></i> Got it!</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fas fa-cookie-bite"></i>
+                    Got it!
+                </button>
             </div>
-         </div>
-         </div>
-      </div>
-      {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
 
-      {% block header %}{% endblock %}
+{% block header %}{% endblock %}
 
-      {% block content %}{% endblock %}
+{% block content %}{% endblock %}
 
-      {% block footer %}{% endblock %}
+{% block footer %}{% endblock %}
 
-      <script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
-      <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
-      <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-      <script src="{{ url_for('static', filename='js/jquery.cookie.js') }}"></script>
-      <script src="{{ url_for('static', filename='js/bs-custom-file-input.min.js') }}"></script>
-      <script src="{{ url_for('static', filename='js/tinycolor-min.js') }}"></script>
-      <script src="{{ url_for('static', filename='js/bootstrap.colorpickersliders.min.js') }}"></script>
-      <script src="{{ url_for('static', filename='js/spc.js') }}"></script>
-   </body>
+<script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.cookie.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bs-custom-file-input.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/tinycolor-min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.colorpickersliders.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/spc.js') }}"></script>
+</body>
 </html>

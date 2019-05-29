@@ -5,251 +5,277 @@
 {% endblock %}
 
 {% block content %}
-   <div class="container">
-      <div class="row mb-3">
-         <div class="col-12">
+<div class="container">
+    <div class="row mb-3">
+        <div class="col-12">
             <div class="row justify-content-center">
-                  <h1 class="display-4 d-none d-md-block text-center">Convert File to DXF</h1>
-                  <h2 class="d-md-none text-center">Convert File to DXF</h2>
+                <h1 class="display-4 d-none d-md-block text-center">Convert File to DXF</h1>
+                <h2 class="d-md-none text-center">Convert File to DXF</h2>
             </div>
-         </div>
-      </div>
+        </div>
+    </div>
 
-      {% if errors %}
-      <div class="row justify-content-center">
-         <div class="col-12">
+    {% if errors %}
+    <div class="row justify-content-center">
+        <div class="col-12">
             <div class="alert alert-danger" role="alert">
-               {% for error in errors %}
-               {% for i in range(error|length): %}
-               <h5 class="alert-heading font-weight-bold"><i class="fas fa-times"></i>&nbsp;&nbsp;Error:</h5>
-               <h5>{{ error[i]['message'] }}</h5>
-               {% if error[i]['errors'] %}
-               <hr>
-               <p>Error in lines:</p>
-               {% for err in error[i]['errors'] %}
-               <p class="mb-0"><strong>{{ err[0] }}</strong> - {{ err[1] }}</p>
-               {% endfor %}
-               {% endif %}
-               <hr>
-               {% endfor %}
-               {% endfor %}
-               <p class="font-weight-bold mb-2">Please, check the files and upload them again.</p>
-               <div class="text-center">
-                  <a href="{{ url_for('upload_file') }}" class="btn btn-info mt-2" role="button">Reload Files</a>
-               </div>
+                {% for error in errors %}
+                {% for i in range(error|length): %}
+                <h5 class="alert-heading font-weight-bold"><i class="fas fa-times"></i>&nbsp;&nbsp;Error:</h5>
+                <h5>{{ error[i]['message'] }}</h5>
+                {% if error[i]['errors'] %}
+                <hr>
+                <p>Error in lines:</p>
+                {% for err in error[i]['errors'] %}
+                <p class="mb-0"><strong>{{ err[0] }}</strong> - {{ err[1] }}</p>
+                {% endfor %}
+                {% endif %}
+                <hr>
+                {% endfor %}
+                {% endfor %}
+                <p class="font-weight-bold mb-2">Please, check the files and upload them again.</p>
+                <div class="text-center">
+                    <a href="{{ url_for('upload_file') }}" class="btn btn-info mt-2" role="button">Reload Files</a>
+                </div>
             </div>
-         </div>
-      </div>
-      {% else %}
+        </div>
+    </div>
+    {% else %}
 
-      {% if duplicate_color_errors or cad_color_errors: %}
-      <div class="row justify-content-center">
-         <div class="col-12">
+    {% if duplicate_color_errors or cad_color_errors: %}
+    <div class="row justify-content-center">
+        <div class="col-12">
             <div class="alert alert-danger mb-4" role="alert">
-               {% if duplicate_color_errors: %}
-               <h5 class="alert-heading font-weight-bold"><i class="fas fa-times"></i>&nbsp;&nbsp;Error:</h5>
-               <h5>{{ duplicate_color_errors['message'] }}</h5>
-               <hr>
-               {% for error in duplicate_color_errors['errors'] %}
-               <p class="mb-0">{{ error }}</p>
-               {% endfor %}
-               <hr>
-               {% endif %}
-               {% if cad_color_errors: %}
-               <h5 class="alert-heading font-weight-bold"><i class="fas fa-times"></i>&nbsp;&nbsp;Error:</h5>
-               <h5>{{ cad_color_errors['message'] }}</h5>
-               <hr>
-               {% for error in cad_color_errors['errors'] %}
-               <p class="mb-0">{{ error }}</p>
-               {% endfor %}
-               <hr>
-               {% endif %}
-               <p class="font-weight-bold mb-2">Please, correct them in the table below.</p>
+                {% if duplicate_color_errors: %}
+                <h5 class="alert-heading font-weight-bold"><i class="fas fa-times"></i>&nbsp;&nbsp;Error:</h5>
+                <h5>{{ duplicate_color_errors['message'] }}</h5>
+                <hr>
+                {% for error in duplicate_color_errors['errors'] %}
+                <p class="mb-0">{{ error }}</p>
+                {% endfor %}
+                <hr>
+                {% endif %}
+                {% if cad_color_errors: %}
+                <h5 class="alert-heading font-weight-bold"><i class="fas fa-times"></i>&nbsp;&nbsp;Error:</h5>
+                <h5>{{ cad_color_errors['message'] }}</h5>
+                <hr>
+                {% for error in cad_color_errors['errors'] %}
+                <p class="mb-0">{{ error }}</p>
+                {% endfor %}
+                <hr>
+                {% endif %}
+                <p class="font-weight-bold mb-2">Please, correct them in the table below.</p>
             </div>
-         </div>
-      </div>
-      {% endif %}
+        </div>
+    </div>
+    {% endif %}
 
-      <div class="row justify-content-center">
-         <div class="col-12 d-none d-md-block"> <!-- Hide on screens smaller than md -->
+    <div class="row justify-content-center">
+        <div class="col-12 d-none d-md-block"> <!-- Hide on screens smaller than md -->
             <div class="card border-secondary form-card">
-               <div class="card-header bg-light">
-                  <div class="row align-items-center">
-                     <div class="col-md-2">
-                        <h5 class="mb-0 font-weight-bold text-center text-primary">Point Code</h5>
-                     </div>
-                     <div class="col-md-4">
-                        <h5 class="mb-0 font-weight-bold text-center text-primary">CAD Layer</h5>
-                     </div>
-                     <div class="col-md-2">
-                        <h5 class="mb-0 font-weight-bold text-center text-primary">Layer Color</h5>
-                     </div>
-                     <div class="col-md-4">
-                        <h5 class="mb-0 font-weight-bold text-center text-primary">Symbol</h5>
-                     </div>
-                  </div>
-               </div>
-               <div class="card-body">
-                  <form action="" method="post" role="form" novalidate autocomplete="off">
-                     {% for i in range(layers|length): -%}
-                     <div class="form-row horizontal-form">
+                <div class="card-header bg-light">
+                    <div class="row align-items-center">
                         <div class="col-md-2">
-                           <input type="text" name="code-{{ i }}" class="form-control-plaintext font-weight-bold text-center" readonly value="{{ layers[i]['code'] }}">
+                            <h5 class="mb-0 font-weight-bold text-center text-primary">Point Code</h5>
                         </div>
                         <div class="col-md-4">
-                           <input type="text" name="layer-{{ i }}" class="form-control form-control-sm" placeholder="Default Layer 0" pattern="[^\s]+" value="{{ layers[i]['layer'] if layers[i]['layer'] }}">
+                            <h5 class="mb-0 font-weight-bold text-center text-primary">CAD Layer</h5>
                         </div>
                         <div class="col-md-2">
-                           <input type="text" name="color-{{ i }}" class="form-control form-control-sm color-picker" value="rgb{{ layers[i]['color'] }}">
+                            <h5 class="mb-0 font-weight-bold text-center text-primary">Layer Color</h5>
                         </div>
                         <div class="col-md-4">
-                           {% if symbols %}
-                           <select class="custom-select custom-select-sm" name="symbol-{{ i }}">
-                              {% for s in symbols %}
-                              <option {{ 'selected' if layers[i]['symbol'] == s }} value="{{ s }}">{{ s }}</option>
-                              {% endfor -%}
-                              {% if layers[i]['symbol'] not in symbols %}
-                              <option selected value="No symbol found">No symbol found</option>
-                              {% else %}
-                              <option value="No symbol found">No symbol found</option>
-                              {% endif %}
-                           </select>
-                           {% else %}
-                              <input type="text" name="symbol-{{ i }}" class="form-control form-control-sm" value="No symbol found" readonly>
-                           {% endif %}
+                            <h5 class="mb-0 font-weight-bold text-center text-primary">Symbol</h5>
                         </div>
-                     </div>
-                     {% endfor -%}
-                     <hr>
-                     <div class="form-row d-flex align-items-center mt-3">
-                        <label for="dxf_filename" class="col-md-2 col-form-label font-weight-bold text-center">File name</label>
-                        <div class="col-md-4">
-                           <input type="text" name="dxf_filename" id ="dxf_filename1" class="form-control form-control-sm" placeholder="Default: {{ session['topographical_file'] }}.dxf" value="{{ dxf_filename if errors or duplicate_color_errors or cad_color_errors }}">
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form action="" method="post" role="form" novalidate autocomplete="off">
+                        {% for i in range(layers|length): -%}
+                        <div class="form-row horizontal-form">
+                            <div class="col-md-2">
+                                <input type="text" name="code-{{ i }}"
+                                       class="form-control-plaintext font-weight-bold text-center" readonly
+                                       value="{{ layers[i]['code'] }}">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" name="layer-{{ i }}" class="form-control form-control-sm"
+                                       placeholder="Default Layer 0" pattern="[^\s]+"
+                                       value="{{ layers[i]['layer'] if layers[i]['layer'] }}">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" name="color-{{ i }}"
+                                       class="form-control form-control-sm color-picker"
+                                       value="rgb{{ layers[i]['color'] }}">
+                            </div>
+                            <div class="col-md-4">
+                                {% if symbols %}
+                                <select class="custom-select custom-select-sm" name="symbol-{{ i }}">
+                                    {% for s in symbols %}
+                                    <option {{
+                                    'selected' if layers[i]['symbol'] == s }} value="{{ s }}">{{ s }}</option>
+                                    {% endfor -%}
+                                    {% if layers[i]['symbol'] not in symbols %}
+                                    <option selected value="No symbol found">No symbol found</option>
+                                    {% endif %}
+                                </select>
+                                {% else %}
+                                <input type="text" name="symbol-{{ i }}" class="form-control form-control-sm"
+                                       value="No symbol found" readonly>
+                                {% endif %}
+                            </div>
                         </div>
-                        <label for="cad-versions" class="col-md-2 col-form-label font-weight-bold text-center">CAD version</label>
-                        <div class="col-md-4">
-                           <select class="custom-select custom-select-sm" name="cadversion" id="cad-versions">
-                              {% for version, internal_version in cad_versions.items() %}
-                              {% if (errors or duplicate_color_errors or cad_color_errors) and (internal_version == cad_version) %}
-                              <option value="{{ internal_version }}" selected>{{ version }}</option>
-                              {% else %}
-                              <option value="{{ internal_version }}">{{ version }}</option>
-                              {% endif %}
-                              {% endfor -%}
-                           </select>
+                        {% endfor -%}
+                        <hr>
+                        <div class="form-row d-flex align-items-center mt-3">
+                            <label for="dxf_filename" class="col-md-2 col-form-label font-weight-bold text-center">File
+                                name</label>
+                            <div class="col-md-4">
+                                <input type="text" name="dxf_filename" id="dxf_filename1"
+                                       class="form-control form-control-sm"
+                                       placeholder="Default: {{ session['topographical_file'] }}.dxf"
+                                       value="{{ dxf_filename if errors or duplicate_color_errors or cad_color_errors }}">
+                            </div>
+                            <label for="cad-versions" class="col-md-2 col-form-label font-weight-bold text-center">CAD
+                                version</label>
+                            <div class="col-md-4">
+                                <select class="custom-select custom-select-sm" name="cadversion" id="cad-versions">
+                                    {% for version, internal_version in cad_versions.items() %}
+                                    {% if (errors or duplicate_color_errors or cad_color_errors) and (internal_version
+                                    == cad_version) %}
+                                    <option value="{{ internal_version }}" selected>{{ version }}</option>
+                                    {% else %}
+                                    <option value="{{ internal_version }}">{{ version }}</option>
+                                    {% endif %}
+                                    {% endfor -%}
+                                </select>
+                            </div>
                         </div>
-                     </div>
-                     <div class="form-row d-flex align-items-center justify-content-center mt-3">
-                        <div class="col-md-6 px-3">
-                           <button type="submit" class="btn btn-success btn-block" onclick="modal();"><i class="fas fa-magic"></i> Convert</button>
+                        <div class="form-row d-flex align-items-center justify-content-center mt-3">
+                            <div class="col-md-6 px-3">
+                                <button type="submit" class="btn btn-success btn-block" onclick="modal();"><i
+                                        class="fas fa-magic"></i> Convert
+                                </button>
+                            </div>
                         </div>
-                     </div>
-                  </form>
-               </div>
+                    </form>
+                </div>
             </div>
-         </div>
+        </div>
 
-         <div class="col-12 d-md-none"> <!-- Hide on screens wider than md -->
+        <div class="col-12 d-md-none"> <!-- Hide on screens wider than md -->
             <form action="" method="post" role="form" novalidate autocomplete="off">
-               <div class="card border-secondary">
-                  {% for i in range(layers|length): -%}
-                  <div class="card border-secondary m-2 shadow-sm">
-                     <div class="card-header bg-light my-0 py-1 px-2">
-                        <div class="form-group row my-0">
-                           <label for="code" class="col-5 col-sm-3 col-form-label">Point Code</label>
-                           <div class="col-7 col-sm-9">
-                              <input type="text" name="code-{{ i }}" id="code" class="form-control-plaintext font-weight-bold" readonly value="{{ layers[i]['code'] }}">
-                           </div>
+                <div class="card border-secondary">
+                    {% for i in range(layers|length): -%}
+                    <div class="card border-secondary m-2 shadow-sm">
+                        <div class="card-header bg-light my-0 py-1 px-2">
+                            <div class="form-group row my-0">
+                                <label for="code" class="col-5 col-sm-3 col-form-label">Point Code</label>
+                                <div class="col-7 col-sm-9">
+                                    <input type="text" name="code-{{ i }}" id="code"
+                                           class="form-control-plaintext font-weight-bold" readonly
+                                           value="{{ layers[i]['code'] }}">
+                                </div>
+                            </div>
                         </div>
-                     </div>
-                     <div class="card-body px-2 pt-0 pb-2 mt-3">
-                        <div class="form-group row mb-0">
-                           <label for="layer" class="col-sm-3 col-form-label">CAD Layer</label>
-                           <div class="col-sm-9">
-                              <input type="text" name="layer-{{ i }}" id="layer" class="form-control form-control-sm" placeholder="Default Layer 0" value="{{ layers[i]['layer'] if layers[i]['layer'] }}">
-                           </div>
+                        <div class="card-body px-2 pt-0 pb-2 mt-3">
+                            <div class="form-group row mb-0">
+                                <label for="layer" class="col-sm-3 col-form-label">CAD Layer</label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="layer-{{ i }}" id="layer"
+                                           class="form-control form-control-sm" placeholder="Default Layer 0"
+                                           value="{{ layers[i]['layer'] if layers[i]['layer'] }}">
+                                </div>
+                            </div>
+                            <div class="form-group row mb-0">
+                                <label for="color" class="col-sm-3 col-form-label">Layer Color</label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="color-{{ i }}"
+                                           class="form-control form-control-sm color-picker"
+                                           value="rgb{{ layers[i]['color'] }}">
+                                </div>
+                            </div>
+                            <div class="form-group row mb-0">
+                                <label for="symbol" class="col-sm-3 col-form-label">Symbol</label>
+                                <div class="col-sm-9">
+                                    {% if symbols %}
+                                    <select class="custom-select custom-select-sm" name="symbol-{{ i }}" id="symbol">
+                                        {% for s in symbols %}
+                                        <option {{
+                                        'selected' if layers[i]['symbol'] == s }} value="{{ s }}">{{ s }}</option>
+                                        {% endfor -%}
+                                        {% if layers[i]['symbol'] not in symbols %}
+                                        <option selected value="No symbol found">No symbol found</option>
+                                        {% endif %}
+                                    </select>
+                                    {% else %}
+                                    <input type="text" name="symbol-{{ i }}" class="form-control form-control-sm"
+                                           value="No symbol found" readonly>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group row mb-0">
-                           <label for="color" class="col-sm-3 col-form-label">Layer Color</label>
-                           <div class="col-sm-9">
-                              <input type="text" name="color-{{ i }}" class="form-control form-control-sm color-picker" value="rgb{{ layers[i]['color'] }}">
-                           </div>
-                        </div>
-                        <div class="form-group row mb-0">
-                           <label for="symbol" class="col-sm-3 col-form-label">Symbol</label>
-                           <div class="col-sm-9">
-                              {% if symbols %}
-                              <select class="custom-select custom-select-sm" name="symbol-{{ i }}" id="symbol">
-                                 {% for s in symbols %}
-                                 <option {{ 'selected' if layers[i]['symbol'] == s }} value="{{ s }}">{{ s }}</option>
-                                 {% endfor -%}
-                                 {% if layers[i]['symbol'] not in symbols %}
-                                 <option selected value="No symbol found">No symbol found</option>
-                                 {% else %}
-                                 <option value="No symbol found">No symbol found</option>
-                                 {% endif %}
-                              </select>
-                              {% else %}
-                                 <input type="text" name="symbol-{{ i }}" class="form-control form-control-sm" value="No symbol found" readonly>
-                              {% endif %}
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-                  {% endfor -%}
+                    </div>
+                    {% endfor -%}
 
-                  <div class="card border-secondary m-2 shadow-sm">
-                     <div class="card-body px-2 pt-0 pb-2 mt-3">
-                        <div class="form-group row mb-0">
-                           <label for="dxf_filename" class="col-sm-3 col-form-label">File name</label>
-                           <div class="col-sm-9">
-                              <input type="text" name="dxf_filename" id ="dxf_filename" class="form-control form-control-sm" placeholder="Default: {{ session['topographical_file'] }}.dxf" value="{{ dxf_filename if errors or duplicate_color_errors or cad_color_errors }}">
-                           </div>
+                    <div class="card border-secondary m-2 shadow-sm">
+                        <div class="card-body px-2 pt-0 pb-2 mt-3">
+                            <div class="form-group row mb-0">
+                                <label for="dxf_filename" class="col-sm-3 col-form-label">File name</label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="dxf_filename" id="dxf_filename"
+                                           class="form-control form-control-sm"
+                                           placeholder="Default: {{ session['topographical_file'] }}.dxf"
+                                           value="{{ dxf_filename if errors or duplicate_color_errors or cad_color_errors }}">
+                                </div>
+                            </div>
+                            <div class="form-group row mb-0">
+                                <label for="cad-versions" class="col-sm-3 col-form-label">CAD version</label>
+                                <div class="col-sm-9">
+                                    <select class="custom-select custom-select-sm" name="cadversion" id="cad-versions">
+                                        {% for version, internal_version in cad_versions.items() %}
+                                        {% if (errors or duplicate_color_errors or cad_color_errors) and
+                                        (internal_version == cad_version) %}
+                                        <option value="{{ internal_version }}" selected>{{ version }}</option>
+                                        {% else %}
+                                        <option value="{{ internal_version }}">{{ version }}</option>
+                                        {% endif %}
+                                        {% endfor -%}
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group row mb-0">
-                           <label for="cad-versions" class="col-sm-3 col-form-label">CAD version</label>
-                           <div class="col-sm-9">
-                              <select class="custom-select custom-select-sm" name="cadversion" id="cad-versions">
-                                 {% for version, internal_version in cad_versions.items() %}
-                                 {% if (errors or duplicate_color_errors or cad_color_errors) and (internal_version == cad_version) %}
-                                 <option value="{{ internal_version }}" selected>{{ version }}</option>
-                                 {% else %}
-                                 <option value="{{ internal_version }}">{{ version }}</option>
-                                 {% endif %}
-                                 {% endfor -%}
-                              </select>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="form-row d-flex align-items-center justify-content-center mt-2">
-                     <button type="submit" class="btn btn-success mb-3" onclick="modal();"><i class="fas fa-magic"></i> Convert</button>
-                  </div>
-               </div>
+                    </div>
+                    <div class="form-row d-flex align-items-center justify-content-center mt-2">
+                        <button type="submit" class="btn btn-success mb-3" onclick="modal();"><i
+                                class="fas fa-magic"></i> Convert
+                        </button>
+                    </div>
+                </div>
             </form>
-         </div>
-      </div>
-      {% endif %}
-   </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
 
-   <div class="modal fade load-spinner" data-backdrop="static" data-keyboard="false" tabindex="-1">
-      <div class="modal-dialog modal-sm">
-         <div class="modal-content">
+<div class="modal fade load-spinner" data-backdrop="static" data-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
             <div class="multi-spinner-container">
-               <div class="multi-spinner">
-                  <div class="multi-spinner">
-                     <div class="multi-spinner">
+                <div class="multi-spinner">
+                    <div class="multi-spinner">
                         <div class="multi-spinner">
-                           <div class="multi-spinner"></div>
+                            <div class="multi-spinner">
+                                <div class="multi-spinner"></div>
+                            </div>
                         </div>
-                     </div>
-                  </div>
-               </div>
+                    </div>
+                </div>
             </div>
             <h2 class="text-center font-weight-bolder">Generating DXF...</h2>
-         </div>
-      </div>
-   </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block footer %}

@@ -1,18 +1,30 @@
-# -*- coding: utf-8 -*-
-# route_helper.py
-# Copyright (C) 2018,2019 J. Eduardo Risco
-# version 1.0
-#
-# Module containing auxilary functions associated with route.py
+"""
+ SurveyingPointCode
+ Copyright © 2018-2019 J. Eduardo Risco
 
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program. If not, see <https://www.gnu.org/licenses/gpl-3.0.txt>.
+"""
+
+# route_helper.py
+# Module containing auxilary functions associated with route.py
+#
+# Required flask-login . MIT Licence. Copyright © 2011 Matthew Frazier
+# Required Flask . BSD Licence. Copyright © 2010 by the Pallets team
 
 import os
 import time
 from datetime import date
-
-from flask import session
-from flask_login import logout_user
-from werkzeug.utils import secure_filename
 
 from app import app
 from app.conversor import (get_code_layers, get_errors_upload_topographical_file,
@@ -21,6 +33,9 @@ from app.upload_optional_files import (file_empty, get_errors_config_file,
                                        get_errors_config_file_duplicate_elements,
                                        get_errors_config_file_duplicate_color,
                                        get_errors_cad_color_palette, error_symbols)
+from flask import session
+from flask_login import logout_user
+from werkzeug.utils import secure_filename
 
 TOPOGRAPHIC_PARSER_ERROR = 'Topographic data file has the following errors.'
 EMPTY_TOPOGRAPHIC_FILE = 'Topographic data file is empty.'

@@ -5,26 +5,31 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="row d-flex align-items-center" style="height: calc(90vh - 75px)">
-            <div class="col-12">
-                <div class="row justify-content-center">
-                    <h1 class="display-2 d-none d-md-block text-center">Welcome to</br>Surveying Point Code!</h1>
-                    <h2 class="d-md-none text-center">Welcome to SurveyingPointCode!</h2>
-                </div>
-                <div class="row justify-content-center">
-                    <h1 class="display-4 d-none d-md-block text-primary text-center">We allow you to automate the delineation process in CAD, by coding points in a topographic survey.</h1>
-                    <h3 class="d-md-none text-primary text-center">We allow you to automate the delineation process in CAD, by coding points in a topographic survey.</h3>
-                </div>
-                <div class="row justify-content-center">
-                    <a class="btn btn-primary btn-lg shadow" href="{{ url_for('upload_file') if current_user and 'username' in session else url_for('login') }}" role="button">
-                        <img src="{{ url_for('static', filename='images/Transf_opt.png') }}" class="mx-auto d-block my-4 d-none d-md-block">
-                        <span class="text-uppercase font-weight-bolder">Generate DXF</span>
-                    </a>
-                </div>
+<div class="container">
+    <div class="row d-flex align-items-center" style="height: calc(90vh - 75px)">
+        <div class="col-12">
+            <div class="row justify-content-center">
+                <h1 class="display-2 d-none d-md-block text-center">Welcome to</br>Surveying Point Code!</h1>
+                <h2 class="d-md-none text-center">Welcome to SurveyingPointCode!</h2>
+            </div>
+            <div class="row justify-content-center">
+                <h1 class="display-4 d-none d-md-block text-primary text-center">We allow you to automate the
+                    delineation process in CAD, by coding points in a topographic survey.</h1>
+                <h3 class="d-md-none text-primary text-center">We allow you to automate the delineation process in CAD,
+                    by coding points in a topographic survey.</h3>
+            </div>
+            <div class="row justify-content-center">
+                <a class="btn btn-primary btn-lg shadow"
+                   href="{{ url_for('upload_file') if current_user and 'username' in session else url_for('login') }}"
+                   role="button">
+                    <img src="{{ url_for('static', filename='images/Transf_opt.png') }}"
+                         class="mx-auto d-block my-4 d-none d-md-block">
+                    <span class="text-uppercase font-weight-bolder">Generate DXF</span>
+                </a>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
 
 {% block footer %}

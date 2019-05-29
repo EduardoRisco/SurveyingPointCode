@@ -1,20 +1,33 @@
-# -*- coding: utf-8 -*-
+"""
+ SurveyingPointCode
+ Copyright © 2018-2019 J. Eduardo Risco
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program. If not, see <https://www.gnu.org/licenses/gpl-3.0.txt>.
+"""
+
+# upload_optional_files.py
+# Module for uploading optional files. Config_user and dxf_symbols
 #
-# Module for uploading optional files.
-# config_user and dxf_symbols
-#
-# Required PLY (Python Lex-Yacc).
-# Required ezdxf.
-#
-# J. Eduardo Risco 27-03-2019
-#
+# Required PLY . BSD Licence. Copyright © 2001-2019 David M. Beazley
+# Required ezdxf. MIT Licence. Copyright © 2011-2018, Manfred Moitzi
+
 
 import os
 
 import ezdxf
 import ply.lex as lex
 import ply.yacc as yacc
-
 from app import app
 
 config_file_init = []
@@ -64,6 +77,7 @@ def t_error(t):
 
 
 lexer_config = lex.lex()
+
 
 # Parser part
 
@@ -134,7 +148,7 @@ def upload_config_file(input_file):
                     if conf[0] in codes:
                         # Capturing errors duplicate elements
                         error = 'Topographic code ' + \
-                            conf[0] + ' is duplicated'
+                                conf[0] + ' is duplicated'
                         errors_config_file_duplicate_elem.append(
                             [n_line, error])
                     codes.append(conf[0])
@@ -159,9 +173,9 @@ def upload_symbols_file(dxf_symbol_file):
         dwg = ezdxf.readfile(file_symbols_dxf)
 
         for b in dwg.blocks:
-            if b.__getattribute__('name') not in(
-                '_ArchTick',
-                '_Open30') and (
+            if b.__getattribute__('name') not in (
+                    '_ArchTick',
+                    '_Open30') and (
                     b.__getattribute__('name').find('A$') == -1) and (
                     b.__getattribute__('name').find('*Paper') == -1) and (
                     b.__getattribute__('name').find('*Model') == -1):
@@ -177,7 +191,7 @@ def get_config_file():
     This function returns a config_user list if it exists, in other case it returns False.
     """
 
-    if  not config_file_init or get_errors_config_file() or (
+    if not config_file_init or get_errors_config_file() or (
             get_errors_config_file()) or get_errors_config_file_duplicate_elements():
         return False
     else:
@@ -226,7 +240,7 @@ def get_errors_config_file_duplicate_color(list_config, code_layers):
                 if (conf[0] in code_layers and conf[1] in layer and (
                         conf[1], conf[2]) not in layer_color):
                     error = 'The Layer ' + layer_name + \
-                        ' has different colors assigned to it '
+                            ' has different colors assigned to it '
                     errors.add(error)
                 layer.append(conf[1])
                 layer_color.append((conf[1], conf[2]))
@@ -285,7 +299,7 @@ def get_errors_cad_color_palette(list_config, code_layers):
         errors = set()
         for conf in list_config:
             if conf[2] not in app.config['CAD_COLORS'] and conf[0] in code_layers:
-                error = 'Layer '+conf[1] + ': rgb' + str(conf[2]) + \
+                error = 'Layer ' + conf[1] + ': rgb' + str(conf[2]) + \
                         ' color is not defined in the cad color palette '
                 errors.add(error)
         return errors

@@ -1,38 +1,57 @@
-# -*- coding: utf-8 -*-
+"""
+ SurveyingPointCode
+ Copyright © 2018-2019 J. Eduardo Risco
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program. If not, see <https://www.gnu.org/licenses/gpl-3.0.txt>.
+"""
+
 # route.py
-# Copyright (C) 2018,2019 J. Eduardo Risco
-# version 1.0
-#
 # Module to manage server with Flask.
+#
+# Required flask-login . MIT Licence. Copyright © 2011 Matthew Frazier
+# Required Flask . BSD Licence. Copyright © 2010 by the Pallets team
 
 import os
 import secrets
 import shutil
 import time
-from zipfile import ZipFile, ZIP_DEFLATED
-
 from datetime import date
-from flask import (flash, redirect, render_template, request, send_from_directory, url_for, session)
-from flask_login import (current_user, login_required,
-                         login_user, logout_user)
-from werkzeug.urls import url_parse
-from werkzeug.utils import secure_filename
+from zipfile import ZipFile, ZIP_DEFLATED
 
 from app import app, db, login_manager
 from app.conversor import (generate_dxf, get_errors_upload_topographical_file,
                            errors_rectangle, errors_square, upload_topographical_file,
                            get_layers_table, get_dxf_configuration)
 from app.forms import LoginForm, RegistrationForm, UploadForm
-from app.models import User,Statistic
-from app.route_helper import (add_session, check_files_errors, update_layers, check_DXF_ext,
+from app.models import User, Statistic
+from app.route_helper import (add_session, check_files_errors, update_layers,
+                              check_DXF_ext,
                               user_logout, create_user_folder, save_upload_files)
 from app.upload_optional_files import (upload_symbols_file, get_symbols, upload_config_file,
                                        file_empty, get_errors_config_file, get_config_file,
                                        get_errors_config_file_duplicate_elements,
                                        error_symbols)
+from flask import (flash, redirect, render_template, request, send_from_directory,
+                   url_for, session)
+from flask_login import (current_user, login_required,
+                         login_user, logout_user)
+from werkzeug.urls import url_parse
+from werkzeug.utils import secure_filename
 
 app.secret_key = secrets.token_urlsafe(16)
 db.create_all()
+
 
 # Guarantees callback for login failures
 @login_manager.unauthorized_handler
@@ -40,6 +59,7 @@ def unauthorized_callback():
     user_logout()
     flash('You must be logged in to access this page.')
     return redirect(url_for('login'))
+
 
 # Check downtime (max. 5 min) before making any request
 @app.before_request
@@ -197,7 +217,7 @@ def convert_file_dxf():
 
     # Load possible file errors
     errors, duplicate_color_errors, \
-        cad_color_errors = check_files_errors(get_config_file(), post)
+    cad_color_errors = check_files_errors(get_config_file(), post)
 
     if not errors:
         layers = get_layers_table()
@@ -227,7 +247,7 @@ def convert_file_dxf():
 
         # Load possible file errors
         errors, duplicate_color_errors, \
-            cad_color_errors = check_files_errors(get_dxf_configuration(layers), post)
+        cad_color_errors = check_files_errors(get_dxf_configuration(layers), post)
 
         if duplicate_color_errors or cad_color_errors:
             return render_template('convert.html', title='Conversion DXF', form=form,
@@ -350,5 +370,3 @@ def logout():
     session.clear()
 
     return redirect(url_for('index'))
-
-

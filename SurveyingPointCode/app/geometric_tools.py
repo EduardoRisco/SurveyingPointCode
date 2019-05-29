@@ -1,20 +1,32 @@
-# -*- coding: utf-8 -*-
-#
-# Prototype App, Geometric functions, layers and symbols.
-#
-# Required ezdxf.
-#
-# J. Eduardo Risco 27-03-2019
-#
+"""
+ SurveyingPointCode
+ Copyright © 2018-2019 J. Eduardo Risco
 
-import math
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program. If not, see <https://www.gnu.org/licenses/gpl-3.0.txt>.
+"""
+
+# geometric_tools.py
+# Module containing: Geometric functions, layers and symbols.
+#
+# Required ezdxf. MIT Licence. Copyright © 2011-2018, Manfred Moitzi
 
 import ezdxf
-
+import math
 from app import app
 
-# Layers
 
+# Layers
 
 def create_layers(dwg, file_user):
     """
@@ -27,7 +39,7 @@ def create_layers(dwg, file_user):
         layer_color.add((i[1], i[2]))
 
     for l in layer_color:
-        color = app.config['CAD_COLORS'].index(l[1])        
+        color = app.config['CAD_COLORS'].index(l[1])
         dwg.layers.new(name=l[0], dxfattribs={'color': color})
 
     # Obligatory layers
@@ -35,7 +47,8 @@ def create_layers(dwg, file_user):
     dwg.layers.new('Number_Points', dxfattribs={'color': 0})
     dwg.layers.new('Altitude', dxfattribs={'color': 0})
     dwg.layers.new('Label', dxfattribs={'color': 5})
-    
+
+
 # Geometrical
 
 
@@ -52,22 +65,22 @@ def create_points(dwg, msp, points):
         msp.add_point((p[1][0], p[1][1]), dxfattribs={'layer': 'Points'})
         msp.add_text(p[1][2],
                      dxfattribs={
-            'style': 'elevation',
-            'height': 0.35,
-            'layer': 'Altitude'
-        }).set_pos((p[1][0] + 0.35, p[1][1] + 0.35), align='LEFT')
+                         'style': 'elevation',
+                         'height': 0.35,
+                         'layer': 'Altitude'
+                     }).set_pos((p[1][0] + 0.35, p[1][1] + 0.35), align='LEFT')
         msp.add_text(p[2],
                      dxfattribs={
-            'style': 'label',
-            'height': 0.35,
-            'layer': 'Label'
-        }).set_pos((p[1][0] + 0.35, p[1][1] + 0.90), align='LEFT')
+                         'style': 'label',
+                         'height': 0.35,
+                         'layer': 'Label'
+                     }).set_pos((p[1][0] + 0.35, p[1][1] + 0.90), align='LEFT')
         msp.add_text(p[0],
                      dxfattribs={
-            'style': 'elevation',
-            'height': 0.40,
-            'layer': 'Number_Points'
-        }).set_pos((p[1][0] - 0.35, p[1][1] - 0.35), align='RIGHT')
+                         'style': 'elevation',
+                         'height': 0.40,
+                         'layer': 'Number_Points'
+                     }).set_pos((p[1][0] - 0.35, p[1][1] - 0.35), align='RIGHT')
 
 
 def create_circles(msp, circles, file_user):
@@ -236,7 +249,7 @@ def insert_symbols(msp, points, file_user):
     layer = ''
     for p in points:
         if len(p) == 4:
-            if p[2]in('TC', 'TR'):
+            if p[2] in ('TC', 'TR'):
                 code_point = p[3]
             elif p[2] == 'TX':
                 code_point = p[3][1]
@@ -247,10 +260,10 @@ def insert_symbols(msp, points, file_user):
 
         for l in file_user:
             if code_point == l[0]:
-                code_point=l[3]
-                layer=l[1]
-        msp.add_blockref(code_point, (p[1][0], p[1][1]),dxfattribs={'layer': layer})
-          
+                code_point = l[3]
+                layer = l[1]
+        msp.add_blockref(code_point, (p[1][0], p[1][1]), dxfattribs={'layer': layer})
+
 
 # Mathematical
 
@@ -272,9 +285,9 @@ def calculate_azimut_distance(a, b):
             angle = 90
         else:
             angle = 180
-    else:          
+    else:
         angle = math.atan(inc_x / inc_y)
-    distance = math.sqrt(inc_x**2 + inc_y**2)
+    distance = math.sqrt(inc_x ** 2 + inc_y ** 2)
 
     if inc_x > 0 and inc_y > 0:
         azimut = math.degrees(angle)

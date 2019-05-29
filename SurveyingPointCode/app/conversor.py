@@ -1,12 +1,28 @@
-# -*- coding: utf-8 -*-
+"""
+ SurveyingPointCode
+ Copyright © 2018-2019 J. Eduardo Risco
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program. If not, see <https://www.gnu.org/licenses/gpl-3.0.txt>.
+"""
+
+# conversor.py
+# Module containing:
+# topographic file loading, conversion management and DXF file generation.
 #
-# Prototype App, converter to dxf
-#
-# Required PLY (Python Lex-Yacc).
-# Required ezdxf.
-#
-# J. Eduardo Risco 21-03-2019
-#
+# Required PLY . BSD Licence. Copyright © 2001-2019 David M. Beazley
+# Required ezdxf. MIT Licence. Copyright © 2011-2018, Manfred Moitzi
+
 
 import ezdxf
 import ply.lex as lex
@@ -29,7 +45,6 @@ rectangles = []
 lines = []
 curves = []
 points = []
-
 
 # Lexer part
 
@@ -85,6 +100,7 @@ def t_error(t):
 
 
 lexer_topographycal = lex.lex()
+
 
 # Parser part
 
@@ -202,7 +218,7 @@ def upload_topographical_file(input_file):
             # Using the parser
             punto = parser.parse(line, lexer=lexer_topographycal)
             # Detection of incorrect input file
-            if not punto or punto == None:
+            if not punto or punto is None:
                 # Capturing Errors
                 error_upload.append([n_line, line])
             else:
@@ -229,7 +245,7 @@ def upload_topographical_file(input_file):
             line = f.readline()
         f.close()
 
-        if get_errors_upload_topographical_file() :
+        if get_errors_upload_topographical_file():
             return False
         else:
             # Decoding of lines, curves and other elements
@@ -297,7 +313,7 @@ def upload_topographical_file(input_file):
                     curve = []
     except (IOError, NameError) as e:
         print(e)
-        
+
 
 def get_layers_table():
     """
@@ -309,7 +325,7 @@ def get_layers_table():
 
     if not get_code_layers():
         return False
-    else:    
+    else:
         table_config = []
         for layer_topog in get_code_layers():
             line = dict()
@@ -362,13 +378,13 @@ def generate_dxf(download_folder, dxf_filename, form_web,
     try:
         if not get_errors_upload_topographical_file() and not errors_square() and (
                 not errors_rectangle()):
-        
+
             file_user = get_dxf_configuration(form_web)
             dwg = ezdxf.new(version)
 
             # Create the model space.
             msp = dwg.modelspace()
-            
+
             if get_symbols():
                 source_drawing = ezdxf.readfile(get_symbols_dxf_file())
                 importer = ezdxf.Importer(source_drawing, dwg)
@@ -396,12 +412,12 @@ def generate_dxf(download_folder, dxf_filename, form_web,
             if get_rectangles():
                 create_rectangles(msp, get_rectangles(), file_user)
 
-            if dwg.saveas(download_folder+'/'+dxf_filename)==None:
+            if dwg.saveas(download_folder + '/' + dxf_filename) is None:
                 return True
-    
+
     except (IOError, NameError) as e:
         return False
-                
+
 
 def get_errors_upload_topographical_file():
     """

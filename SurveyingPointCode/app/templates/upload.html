@@ -5,74 +5,61 @@
 {% endblock %}
 
 {% block content %}
-   <div class="container">
-      <div class="row mb-3">
-         <div class="col-12">
+<div class="container">
+    <div class="row mb-3">
+        <div class="col-12">
             <div class="row justify-content-center">
-                  <h1 class="display-4 d-none d-md-block text-center">Upload File</h1>
-                  <h2 class="d-md-none text-center">Upload File</h2>
+                <h1 class="display-4 d-none d-md-block text-center">Upload File</h1>
+                <h2 class="d-md-none text-center">Upload File</h2>
             </div>
-         </div>
-      </div>
-      <div class="row justify-content-center">
-         <div class="col-md-6">
-            <form action="" class="mb-3" method="post" enctype="multipart/form-data" role="form" novalidate autocomplete="off">
-               <div class="card border-secondary p-3">
-                  {{ form.hidden_tag() }}
-                  <div class="form-group">
-                     <strong>{{ form.topographical_file.label }}</strong>
-                     <div class="custom-file">
-                        <input type="file" class="custom-file-input {{ 'is-invalid' if post and form.topographical_file.errors }}" id="topographical_file" name="topographical_file" required>
-                        <label class="custom-file-label" for="topographical_file">Choose file (File type: 'txt' or 'csv')</label>
-                        <div class="invalid-feedback font-weight-bold">{{ form.topographical_file.errors[0] }}</div>
-                     </div>
-                  </div>
-                  <div class="form-group">
-                     <strong>{{ form.config_file.label }}</strong>
-                     <div class="custom-file">
-                        <input type="file" class="custom-file-input {{ 'is-invalid' if post and form.config_file.errors }}" id="config_file" name="config_file">
-                        <label class="custom-file-label" for="config_file">Choose file (File type: 'txt' or 'csv')</label>
-                        <div class="invalid-feedback font-weight-bold">{{ form.config_file.errors[0] }}</div>
-                     </div>
-                  </div>
-                  <div class="form-group">
-                     <strong>{{ form.symbols_file.label }}</strong>
-                     <div class="custom-file">
-                        <input type="file" class="custom-file-input {{ 'is-invalid' if post and form.symbols_file.errors }}" id="symbols_file" name="symbols_file">
-                           <label class="custom-file-label" for="symbols_file">Choose file (File type: 'dxf')</label>
-                        <div class="invalid-feedback font-weight-bold">{{ form.symbols_file.errors[0] }}</div>
-                     </div>
-                  </div>
-                  <div class="row d-flex align-items-center justify-content-center mt-3">
-                     <button type="submit" class="btn btn-success"><i class="fas fa-upload"></i> Upload</button>
-                  </div>
-               </div>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form action="" class="mb-3" method="post" enctype="multipart/form-data" role="form" novalidate
+                  autocomplete="off">
+                <div class="card border-secondary p-3">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        <strong>{{ form.topographical_file.label }}</strong>
+                        <div class="custom-file">
+                            <input type="file"
+                                   class="custom-file-input {{ 'is-invalid' if post and form.topographical_file.errors }}"
+                                   id="topographical_file" name="topographical_file" required>
+                            <label class="custom-file-label" for="topographical_file">Choose file (File type: 'txt' or
+                                'csv')</label>
+                            <div class="invalid-feedback font-weight-bold">{{ form.topographical_file.errors[0] }}</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <strong>{{ form.config_file.label }}</strong>
+                        <div class="custom-file">
+                            <input type="file"
+                                   class="custom-file-input {{ 'is-invalid' if post and form.config_file.errors }}"
+                                   id="config_file" name="config_file">
+                            <label class="custom-file-label" for="config_file">Choose file (File type: 'txt' or
+                                'csv')</label>
+                            <div class="invalid-feedback font-weight-bold">{{ form.config_file.errors[0] }}</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <strong>{{ form.symbols_file.label }}</strong>
+                        <div class="custom-file">
+                            <input type="file"
+                                   class="custom-file-input {{ 'is-invalid' if post and form.symbols_file.errors }}"
+                                   id="symbols_file" name="symbols_file">
+                            <label class="custom-file-label" for="symbols_file">Choose file (File type: 'dxf')</label>
+                            <div class="invalid-feedback font-weight-bold">{{ form.symbols_file.errors[0] }}</div>
+                        </div>
+                    </div>
+                    <div class="row d-flex align-items-center justify-content-center mt-3">
+                        <button type="submit" class="btn btn-success"><i class="fas fa-upload"></i> Upload</button>
+                    </div>
+                </div>
             </form>
-
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            {% for message in messages %}
-            {% if "Error" not in message[1]: %}
-            <div class="alert alert-dismissible alert-success fade show" role="alert" id="alert">
-               <i class="fas fa-check-circle"></i>&nbsp;&nbsp;<strong>Success!</strong> {{ message[1] }}
-               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-               </button>
-            </div>
-            {% else %}
-            <div class="alert alert-dismissible alert-danger fade show" role="alert" id="alert">
-               <i class="fas fa-times"></i>&nbsp;&nbsp;<strong>Error!</strong> {{ message[1].strip('Error:') }}
-               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-               </button>
-            </div>
-            {% endif %}
-            {% endfor %}
-            {% endif %}
-            {% endwith %}
-         </div>
-      </div>
-   </div>
+       </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block footer %}
