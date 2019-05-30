@@ -186,27 +186,13 @@ def upload_topographical_file(input_file):
     try:
 
         global error_upload
-        global lines
-        global curves
         global topo_layers
-        global points
-        global circles
-        global squares
-        global rectangles
         global dict_layers
 
         parser = yacc.yacc()
         topo_layers = set()
         dict_layers = {}
-        lines = []
-        curves = []
-        points = []
-        line = []
-        curve = []
         error_upload = []
-        circles = []
-        squares = []
-        rectangles = []
         layer_code = ""
 
         f = open(input_file)
@@ -248,71 +234,94 @@ def upload_topographical_file(input_file):
         if get_errors_upload_topographical_file():
             return False
         else:
-            # Decoding of lines, curves and other elements
-            for ptos in dict_layers:
-                line_started = False
-                curve_started = False
-                for pto in dict_layers.get(ptos):
-                    points.append(pto)
-                    if pto[2] not in ('TC', 'TR', 'TX'):
-                        if len(pto) > 3 and not isinstance(
-                                pto[3], (tuple, int, float)):
-                            if pto[3] == 'I':
-                                if line_started:
-                                    # If another 'I' is found, the line closes
-                                    # and another line begins.
-                                    lines.append(line)
-                                    line = []
-                                    line.append(pto)
-                                    line_started = True
-                                # If there is no line in that layer,
-                                # the first line will be created.
-                                else:
-                                    line = []
-                                    line.append(pto)
-                                    line_started = True
-                            elif pto[3] == 'IC':
-                                if curve_started:
-                                    # If another 'IC' is found, the curve closes
-                                    # and another curve begins.
-                                    curves.append(curve)
-                                    curve = []
-                                    curve.append(pto)
-                                    curve_started = True
-                                # If there is no curve in that layer,
-                                # the first curve will be created.
-                                else:
-                                    curve = []
-                                    curve.append(pto)
-                                    curve_started = True
-                            # Add points to the curve
-                            elif pto[3] == 'C' and curve_started:
-                                curve.append(pto)
-                        elif len(pto) == 4 and line_started:
-                            line.append(pto)
-                        # Add points to the line
-                        elif line_started:
-                            line.append(pto)
-                    # Save existing circles
-                    elif pto[2] == 'TX':
-                        circles.append(pto)
-                    # Save existing squares
-                    elif pto[2] == 'TC':
-                        squares.append(pto)
-                    # Save existing rectangles
-                    elif pto[2] == 'TR':
-                        rectangles.append(pto)
-
-                # If there are no more elements in the layer,
-                # lines and curves are closed.
-                if line:
-                    lines.append(line)
-                    line = []
-                if curve:
-                    curves.append(curve)
-                    curve = []
+            decode_elements(dict_layers)
     except (IOError, NameError) as e:
         print(e)
+
+
+def decode_elements(d_layers):
+    """
+    This function decodes the elements of the drawing
+    """
+
+    global points
+    global circles
+    global squares
+    global rectangles
+    global lines
+    global curves
+    lines = []
+    curves = []
+    points = []
+    line = []
+    curve = []
+    circles = []
+    squares = []
+    rectangles = []
+
+    # Decoding of lines, curves and other elements
+    for ptos in d_layers:
+        line_started = False
+        curve_started = False
+        for pto in dict_layers.get(ptos):
+            points.append(pto)
+            if pto[2] not in ('TC', 'TR', 'TX'):
+                if len(pto) > 3 and not isinstance(
+                        pto[3], (tuple, int, float)):
+                    if pto[3] == 'I':
+                        if line_started:
+                            # If another 'I' is found, the line closes
+                            # and another line begins.
+                            lines.append(line)
+                            line = []
+                            line.append(pto)
+                            line_started = True
+                        # If there is no line in that layer,
+                        # the first line will be created.
+                        else:
+                            line = []
+                            line.append(pto)
+                            line_started = True
+                    elif pto[3] == 'IC':
+                        if curve_started:
+                            # If another 'IC' is found, the curve closes
+                            # and another curve begins.
+                            curves.append(curve)
+                            curve = []
+                            curve.append(pto)
+                            curve_started = True
+                        # If there is no curve in that layer,
+                        # the first curve will be created.
+                        else:
+                            curve = []
+                            curve.append(pto)
+                            curve_started = True
+                    # Add points to the curve
+                    elif pto[3] == 'C' and curve_started:
+                        curve.append(pto)
+                elif len(pto) == 4 and line_started:
+                    line.append(pto)
+                # Add points to the line
+                elif line_started:
+                    line.append(pto)
+            # Save existing circles
+            elif pto[2] == 'TX':
+                circles.append(pto)
+            # Save existing squares
+            elif pto[2] == 'TC':
+                squares.append(pto)
+            # Save existing rectangles
+            elif pto[2] == 'TR':
+                rectangles.append(pto)
+
+        # If there are no more elements in the layer,
+        # lines and curves are closed.
+        if line:
+            lines.append(line)
+            line = []
+        if curve:
+            curves.append(curve)
+            curve = []
 
 
 def get_layers_table():
@@ -322,29 +331,37 @@ def get_layers_table():
     creating an automatic configuration.
     Return a list
     """
-
+    table_config = []
     if not get_code_layers():
         return False
     else:
-        table_config = []
         for layer_topog in get_code_layers():
             line = dict()
             line['code'] = layer_topog
             if get_config_file():
-                for conf in get_config_file():
-                    if conf[0] == layer_topog:
-                        line['layer'] = conf[1]
-                        line['color'] = conf[2]
-                        if get_symbols() and len(conf) > 3:
-                            line['symbol'] = conf[3]
-                        else:
-                            line['symbol'] = ''
+                config_layer_table(get_config_file(), layer_topog, line)
             else:
                 line['layer'] = ''
                 line['color'] = (0, 0, 0)
                 line['symbol'] = ''
             table_config.append(line)
+
         return table_config
+
+
+def config_layer_table(conf_file, layer, line):
+    """
+    This is a function that simplifies the complexity of get_layers_table()
+    """
+
+    for conf in conf_file:
+        if conf[0] == layer:
+            line['layer'] = conf[1]
+            line['color'] = conf[2]
+            if get_symbols() and len(conf) > 3:
+                line['symbol'] = conf[3]
+            else:
+                line['symbol'] = ''
 
 
 def get_dxf_configuration(conf_user_web):
