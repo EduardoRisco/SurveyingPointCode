@@ -682,7 +682,7 @@ Una vez desarrollada la aplicación se ha procedido a analizar la calidad del c�
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=1\textwidth]{CB_1}
-	\caption{Resultado del análisis con \emph{Codebeat}.}
+	\caption{Resultado del 1º análisis con \emph{Codebeat}.}
 	\label{fig:CB_1}
 \end{figure}
 
@@ -700,10 +700,30 @@ Sobre un total de 1.092 líneas de código (estás solo son las  líneas impleme
 localizados en dos funciones:
 \begin{enumerate}
 
-\item \texttt{upload\_topographical\_file()}: En esta función \emph{Codebeat} indica que la profundidad máxima que alcanzan los bucles y condicionales es de 8, y también, que la longitud de la función es de 95 líneas. Como en el resto del código, se podía haber dividido está función en otras más pequeñas, pero en esté caso se ha primado leer una sola ver los datos y crear todos los elementos interpretados en un solo recorrido. Será interesante en el futuro corregir está indicación subdividiendo en funciones más pequeñas está función.
+\item \texttt{upload\_topographical\_file()}: En esta función \emph{Codebeat} indica que la profundidad máxima que alcanzan los bucles y condicionales es de 8, y también, que la longitud de la función es de 95 líneas. Como en el resto del código, se podía haber dividido está función en otras más pequeñas, pero en esté caso se ha primado leer una sola ver los datos y crear todos los elementos interpretados en un solo recorrido.
 
-\item \texttt{get\_layer\_table()}: En esta función \emph{Codebeat} indica que la profundidad máxima que alcanzan los bucles y condicionales es de 8. Como en el caso anterior, se podía haber dividido está función en otras más pequeñas, pero en esté caso se ha primado también  leer una sola ver los datos y crear todos los elementos interpretados en un solo recorrido. Será interesante, en el futuro corregir está indicación subdividiendo en funciones más pequeñas está función.
+\item \texttt{get\_layer\_table()}: En esta función \emph{Codebeat} indica que la profundidad máxima que alcanzan los bucles y condicionales es de 8. Como en el caso anterior, se podía haber dividido está función en otras más pequeñas, pero en esté caso se ha primado también  leer una sola ver los datos y crear todos los elementos interpretados en un solo recorrido.
 \end{enumerate}
+
+Se han realizado cambios en el código para intentar reducir estos puntos críticos, quedando en análisis finalmente:
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1\textwidth]{CB_3}
+	\caption{Resultado del 2º análisis con \emph{Codebeat}.}
+	\label{fig:CB_3}
+\end{figure}
+
+La puntuación final se ha mejorado poco, 0.01, pero se han logrado evitar dos puntos críticos:
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1\textwidth]{CB_4}
+	\caption{Reducción de 2 puntos críticos del código.}
+	\label{fig:CB_4}
+\end{figure}
+
+El resultado del análisis de la calidad del código es muy bueno, se ha puesto mucho interés durante el proyecto en desarrollar un código de calidad que sea fácilmente entendible, extensible y reusable.
 
 Por último, hay que indicar que el informe con la calidad del código se encuentra disponible en el siguiente enlace:\\
  \url{https://codebeat.co/projects/github-com-eduardorisco-surveyingpointcode-master}
