@@ -125,6 +125,8 @@ El primer prototipo, tenía que conseguir leer un archivo de campo y darlo por v
 
 A continuación, vemos un ejemplo, con todas las posibilidades de codificación que aceptará la aplicación: 
 \begin{verbatim}
+
+
 1,355776.180,4611015.011,691.055,E I
 2,355773.203,4611028.546,691.055,E
 3,355781.359,4611129.076,691.055,TR REG
@@ -135,9 +137,11 @@ A continuación, vemos un ejemplo, con todas las posibilidades de codificación 
 8,355857.822,4611095.993,691.055,E -14.1 20.5 -25.75
 \end{verbatim}
 
+
+
 Se estudió detenidamente esta sintaxis y la formalización de la gramática quedó de la siguiente forma:
 
-\begin{verbatim}[frame=single]
+\begin{verbatim}
 entrada: líneas
 
 líneas: línea | líneas '\n' línea
@@ -158,8 +162,8 @@ código: código_capa CÓDIGO_GEOMÉTRICO
       | CÓDIGO_ELEMENTO_SINGULAR código_valor_texto
       | código_capa código_no_accesible
       | código_elemento_singular
-      | código_capa
-
+      | código_capa      
+      
 código_capa: ID
 
 CÓDIGO_GEOMÉTRICO: "I" | "IC" | "C"
@@ -170,8 +174,8 @@ código_valor_texto: FLOAT ID
                   | INT ID
                   | FLOAT
                   | INT
-                  | ID
-    
+                  | ID       
+                                 
 código_no_accesible: (FLOAT | INT)+
 \end{verbatim}
 
@@ -205,6 +209,7 @@ Por último, para poder tener un prototipo básico que cumpliera los objetivos, 
 Con estos datos de entrada:
 
 \begin{verbatim}
+
 1,355776.180,4611015.011,691.055,E I
 2,355773.203,4611028.546,691.055,E
 3,355761.305,4611083.365,691.055,E
@@ -234,6 +239,7 @@ Con estos datos de entrada:
 El resultado fue:
 
 \imagen{proto_1}{Dibujo obtenido con el prototipo inicial}
+
 
 Es resultado fue el esperado, por lo que se concluyó esta primera etapa del desarrollo con un pequeño prototipo que cumplía las funcionalidades previstas inicialmente:
 
@@ -280,16 +286,16 @@ P & Saneamiento & Amarillo & Pozo \\
 
 Para ello se formalizó otra gramática para validar este tipo de archivos y detectar sus errores. La gramática elegida fue la siguiente:
 
-\newpage
 
 \begin{verbatim}
+
 entrada: líneas
 
 líneas: línea | líneas '\n' línea
 
 línea: TEXT COMA TEXT COMA color COMA TEXT
      | TEXT COMA TEXT COMA color
-
+     
 color: LPAREN INT COMA INT COMA INT RPAREN
 
 TEXT: [a-zA-Z0-9_]+
@@ -299,37 +305,39 @@ INT: [0-9]+
 LPAREN = '\('
 
 RPAREN = '\)'
+
 \end{verbatim}
 
 Los \emph{parsers} estaban definidos en diferentes módulos, el \emph{parser} para el archivo del campo estaba en módulo \ruta{conversor.py} y el del archivo de configuración en el módulo \ruta{upload\_optional\_files.py}. Cuando se ejecutan, se crean los archivos \ruta{parser.out} y \ruta{parsetab.py}. Probando a cargar los dos archivos a la vez, se pudo comprobar que se parseaba un archivo con el \emph{parser} que no le correspondía. Esto no sucedía siempre, si no que pasaba  de una forma aleatoria, como si en algún momento se cruzara la información entre \emph{parsers}.
 
 Se solucionó esta parte añadiendo un parámetro personalizado para cada tipo de \emph{parser}. En un principio estaba definido de esta forma para ambos casos:
+\
 
-\begin{verbatim}
+\begin{lstlisting}
 lex.lex() # lexer part
 ...
 punto = parser.parse(line) # parser part
-\end{verbatim}
+\end{lstlisting}
 
 Definiendo parámetros independientes en cada caso, quedó de la siguiente forma.
 
 Para el archivo de campo:
 
-\begin{verbatim}
+\begin{lstlisting}
 lexer_topographycal=lex.lex() # lexer part
 ...
 # añadiendo el nuevo parámetro
 punto = parser.parse(line,lexer=lexer_topographycal)
-\end{verbatim}
-
+\end{lstlisting}
+\newpage
 Para el archivo de configuración:
 
-\begin{verbatim}
+\begin{lstlisting}
 lexer_config = lex.lex() # lexer part
 ...
 # añadiendo el nuevo parámetro
 c_line = parser.parse(line, lexer=lexer_config)
-\end{verbatim}
+\end{lstlisting}
 Para dar con esta solución, se consultó la documentación de \texttt{Ply}, concretamente el apartado \textbf{Multiple Parsers and Lexers} \cite{Parser}.
 
 
@@ -343,11 +351,12 @@ Simplemente se sustituyó:
 TEXT: [a-zA-Z0-9_]+
 \end{verbatim}
 
-por; 
+por: 
 
 \begin{verbatim}
 TEXT: [a-zA-ZÀ-ÿ0-9ñÑ_]+
 \end{verbatim}
+
 
 Con esto debería funcionar perfectamente, pero no fue así, el archivo que contenía el carácter <<ñ>>, daba errores. Se estaba probando la aplicación simultáneamente en 2 sistemas operativos Windows y Linux, y para mayor sorpresa en Linux funcionaba y en Windows no.
 
@@ -364,14 +373,14 @@ Linux & Correcto & Fallo\\
 La solución encontrada fue añadir en la función que abre el archivo, el parámetro \emph{encoding} indicando el tipo de codificación específicamente , en este caso \texttt{UTF-8}. 
 
 En el código se sustituyó:
-\begin{verbatim}
+\begin{lstlisting}
   with open(input_file) as f:
-\end{verbatim}
+\end{lstlisting}
 
 por:
-\begin{verbatim}
+\begin{lstlisting}
   with open(input_file, encoding='utf-8') as f:
-\end{verbatim}
+\end{lstlisting}
 
 Se comprobó en ambos sistemas operativos, y el resultado fue correcto, así que se dio esta solución como válida.
 
@@ -382,14 +391,14 @@ Una funcionalidad importante de la aplicación es poder asignar un color a una c
 
 La función para crear una nueva capa de la biblioteca \texttt{ezdxf},
 
-\begin{verbatim}
+\begin{lstlisting}
   dwg.layers.new(nombre_capa, dxfattribs={'color': 1})
   # atributo color, en este ejemplo igual a 1
-\end{verbatim}
+\end{lstlisting}
 
 \noindent solo permite colores entre 0 y 255, por lo que en un principio, se pensó en usar esta paleta de colores o si la entrada se producía en formato RGB, tanto en el archivo de configuración o a través de la interfaz, se transformaría de RGB a 256 colores, mediante la siguiente trasformación:
 
-\begin{verbatim}
+\begin{lstlisting}
 def rgb(r,g,b):
     grayP=True
     gray=False
@@ -405,7 +414,7 @@ def rgb(r,g,b):
         return round(232+(r+g+b)/33)
     else:
         return 16+(6*r/256)*36+(6*g/256)*6+(6*b/256
-\end{verbatim}
+\end{lstlisting}
 
 El algoritmo anterior se consultó en:
 
@@ -487,7 +496,7 @@ Para desplegar la aplicación, había que descargar la imagen de cada contenedor
 
 En el archivo \texttt{docker-compose.yml}, se configuran los contenedores y las relaciones que existen entre ellos. A continuación podemos ver el archivo \texttt{docker-compose.yml} utilizado.
 
-\begin{verbatim}
+\begin{lstlisting}
 version: '2.1'
 services:
   postgis:
@@ -517,7 +526,8 @@ services:
       - pgnetwork
     environment:
       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
-      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+      - PGADMIN_DEFAULT_PASSWORD=
+      	${PGADMIN_DEFAULT_PASSWORD}
     depends_on:
       - postgis
   flask:
@@ -538,40 +548,79 @@ services:
     networks:
       - pgnetwork
     restart: always  
-\end{verbatim}
+\end{lstlisting}
 
 \noindent\texttt{postgis}, \texttt{pgadmin} y \texttt{flask}, son los tres servicios que vamos a utilizar. Con el parámetro \texttt{container\_name}, definimos el nombre de los contenedores y con el parámetro \texttt{image}, la imagen que queremos usar para crear ese contenedor. Los parámetros \texttt{depends\_on} y \texttt{links}, indican las relaciones y dependencias entre los contenedores. Otros parámetros importantes son: \texttt{ports},\texttt{ networks},\texttt{ environment},\texttt{ volumes}, etc.
 
-\tablaSmall{Servicios incluidos en \texttt{docker-compose.yml}}{l c c c
-}{dockercompose}
-{ \multicolumn{1}{l}{Servicio} & Imagen & 
-Contenedor & Puerto \\}{ 
-postgis & mdillon/postgis & postgis & 5432\\
-pgadmin & dpage/pgadmin4 & pgadmin4 & 80\\
-flask & python:3.7-alpine & surveying\_point\_code & 5000 \\
-}
-En la Tabla~\ref{tabla:dockercompose} se pueden ver los servicios que se ofrecen en el archivo \texttt{docker-compose.yml}.
+
+En la tabla siguiente se pueden ver los servicios que se ofrecen en el archivo \texttt{docker-compose.yml}.
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.18\columnwidth}\raggedright\strut
+Servicio\strut
+\end{minipage} & \begin{minipage}[b]{0.30\columnwidth}\raggedright\strut
+Imagen\strut
+\end{minipage} & \begin{minipage}[b]{0.30\columnwidth}\raggedright\strut
+Contenedor\strut
+\end{minipage} & \begin{minipage}[b]{0.11\columnwidth}\raggedright\strut
+Puerto\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.18\columnwidth}\raggedright\strut
+\texttt{postgis}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright\strut
+\texttt{mdillon/postgis}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright\strut
+\texttt{postgis}\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+5432\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.18\columnwidth}\raggedright\strut
+\texttt{pgadmin}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright\strut
+\texttt{dpage/pgadmin4}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright\strut
+\texttt{pgadmin4}\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+80\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.18\columnwidth}\raggedright\strut
+\texttt{flask} \strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright\strut
+\texttt{python:3.7-alpine}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright\strut
+\texttt{surveying\_point\_code}\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+5000\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\caption{Servicios incluidos en \texttt{docker-compose.yml}}
+\end{longtable}
+
 El servicio de \texttt{flask} es algo mas complejo, ya que no es solo utilizar un contenedor que permita Python, si no que debemos alojar nuestra aplicación en él. Para ello hemos utilizado el archivo \texttt{Dockerfile}, donde definimos , la version de Python a utilizar, así como la estructura que tendrá dentro del contenedor la aplicación y los requerimientos necesarios para su funcionamiento.
 A continuación, vemos este archivo:
+\newpage
+\begin{lstlisting}
+FROM python:3.7-alpine
 
-\begin{verbatim}
-	FROM python:3.7-alpine
+RUN mkdir /SurveyingPointCode
 
-	RUN mkdir /SurveyingPointCode
+WORKDIR /SurveyingPointCode
 
-	WORKDIR /SurveyingPointCode
+ADD . .
 
-	ADD . .
-
-	RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev
-	RUN pip install -r requirements.txt
+RUN apk update && apk add postgresql /
+		-dev gcc python3-dev musl-dev
+RUN pip install -r requirements.txt
 	
-	EXPOSE 5000
+EXPOSE 5000
 
-	ENV FLASK_APP=surveyingpointcode.py
+ENV FLASK_APP=surveyingpointcode.py
 
-	CMD ["flask", "run", "--host=0.0.0.0"] 
-\end{verbatim}
+CMD ["flask", "run", "--host=0.0.0.0"] 
+\end{lstlisting}
 
 Si nos fijamos en el archivo \texttt{docker-compose.yml}, el servicio \texttt{flask} no tiene el parámetro \texttt{image}, en su defecto tiene el parámetro  \texttt{build} y el valor del parámetro es un punto, <<\texttt{build: .}>>. Con esto le estamos indicado que construya ese contenedor, con el archivo \texttt{Dockerfile} que encuentre en ese directorio.
 
@@ -580,37 +629,39 @@ Por último, y gracias a la utilización de \textbf{Docker Compose} toda la apli
 Para facilitar el despliegue, en este proyecto se han implementado dos \texttt{scripts}.
 
 El primero, \textbf{\texttt{app\_install.sh}}, lo vemos a continuación:
-\begin{verbatim}
-	#!/bin/bash
-	. ./app-env
+\begin{lstlisting}
+#!/bin/bash
+. ./app-env
 
-	docker-compose up -d postgis
-	until docker exec -it postgis psql --username=${POSTGRES_USER}
-	 --dbname=${POSTGRES_DBNAME} -c '\q'; do
-		echo "Postgis is uniavaliable...sleeping "
-		sleep 1
-	done
-	echo "Postgis is up"
-	docker-compose up -d flask
-\end{verbatim}
+docker-compose up -d postgis
+until docker exec -it postgis psql 
+  --username=${POSTGRES_USER}
+  --dbname=${POSTGRES_DBNAME} -c '\q'; do
+	echo "Postgis is uniavaliable...sleeping"
+	sleep 1
+done
+echo "Postgis is up"
+docker-compose up -d flask
+\end{lstlisting}
 
 Este \texttt{script} arranca la aplicación con los contenedores \texttt{surveying\_point\_code} y \texttt{postgis}.
 
 El segundo \texttt{script}, \textbf{\texttt{app\_install\_pgadmin.sh}}:
 
-\begin{verbatim}
-	#!/bin/bash
-	. ./app-env
+\begin{lstlisting}
+#!/bin/bash
+. ./app-env
 
-	docker-compose up -d postgis
-	until docker exec -it postgis psql --username=${POSTGRES_USER}
-	 --dbname=${POSTGRES_DBNAME} -c '\q'; do
-		echo "Postgis is uniavaliable...sleeping "
-		sleep 1
-	done
-	echo "Postgis is up"
-	docker-compose up -d flask pgadmin
-\end{verbatim}
+docker-compose up -d postgis
+until docker exec -it postgis psql
+  --username=$POSTGRES_USER} 
+  --dbname=${POSTGRES_DBNAME} -c '\q'; do
+	  echo "Postgis is uniavaliable...sleeping "
+      sleep 1
+done
+echo "Postgis is up"
+docker-compose up -d flask pgadmin
+\end{lstlisting}
 
 Este otro \texttt{script} arranca aplicación con los contenedores \texttt{surveying\_point\_code}, \texttt{postgis} y \texttt{pgadmin}.
 
@@ -624,3 +675,36 @@ a destacar la portabilidad y el despliegue rápido.
 \item Despliegue rápido: Docker logra reducir la implementación a segundos. Esto se debe al hecho de que crea un contenedor para cada proceso y no arranca un sistema operativo. Los datos se pueden crear y destruir sin preocuparse del coste de volver a hacerlo.
 \end{itemize}
 
+\section{Análisis de la calidad del código generado}
+
+Una vez desarrollada la aplicación se ha procedido a analizar la calidad del código mediante la herramienta \emph{Codebeat}. El resultado obtenido se puede ver en la siguiente imagen:
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1\textwidth]{CB_1}
+	\caption{Resultado del análisis con \emph{Codebeat}.}
+	\label{fig:CB_1}
+\end{figure}
+
+Sobre un total de 1.092 líneas de código (estás solo son las  líneas implementadas en la aplicación, no se tienen en cuenta las librerías externas utilizadas de \emph{JavaScript} o \emph{CSS}, que se han excluido del análisis en el archivo \texttt{.codebeatignore)}, se ha obtenido una puntuación de 3,8 sobre 4. Es una puntuación bastante buena que indica un correcto desarrollo del código.
+
+\emph{Codebeat} nos informa de la existencia de tres puntos críticos en el código que vemos a continuación:
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1\textwidth]{CB_2}
+	\caption{Puntos críticos del código.}
+	\label{fig:CB_2}
+\end{figure}
+
+localizados en dos funciones:
+\begin{enumerate}
+
+\item \texttt{upload\_topographical\_file()}: En esta función \emph{Codebeat} indica que la profundidad máxima que alcanzan los bucles y condicionales es de 8, y también, que la longitud de la función es de 95 líneas. Como en el resto del código, se podía haber dividido está función en otras más pequeñas, pero en esté caso se ha primado leer una sola ver los datos y crear todos los elementos interpretados en un solo recorrido. Será interesante en el futuro corregir está indicación subdividiendo en funciones más pequeñas está función.
+
+\item \texttt{get\_layer\_table()}: En esta función \emph{Codebeat} indica que la profundidad máxima que alcanzan los bucles y condicionales es de 8. Como en el caso anterior, se podía haber dividido está función en otras más pequeñas, pero en esté caso se ha primado también  leer una sola ver los datos y crear todos los elementos interpretados en un solo recorrido. Será interesante, en el futuro corregir está indicación subdividiendo en funciones más pequeñas está función.
+\end{enumerate}
+
+Por último, hay que indicar que el informe con la calidad del código se encuentra disponible en el siguiente enlace:\\
+ \url{https://codebeat.co/projects/github-com-eduardorisco-surveyingpointcode-master}
+ 
