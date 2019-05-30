@@ -6,7 +6,7 @@
 [![Docker1](https://flat.badgen.net/badge/docker-python/3.7Alpine/blue?icon=docker)](https://hub.docker.com/_/python)
 [![Docker2](https://flat.badgen.net/badge/docker-postgis/mdillon\postgis/blue?icon=docker)](https://hub.docker.com/r/mdillon/postgis/)
 [![Docker3](https://flat.badgen.net/badge/docker-pgadmin4/dpage\pgadmin4/blue?icon=docker)](https://hub.docker.com/r/dpage/pgadmin4/)
-[![CodeBEAT](https://flat.badgen.net/badge/codebeat/3,80%20GPA/green)](https://codebeat.co/projects/github-com-eduardorisco-surveyingpointcode-master)
+[![codebeat badge](https://codebeat.co/badges/a604be44-89a1-43f7-9093-247b5109a5e2)](https://codebeat.co/projects/github-com-eduardorisco-surveyingpointcode-master)
 
 
 # Surveying Point Code      
