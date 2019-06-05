@@ -9,33 +9,33 @@ En este apartado se detalla la documentación técnica de programación, estruct
 
 \begin{itemize}
 
-\item \texttt{\textbf{SurveyingPointCode/:}} directorio raíz de la aplicación que contiene archivos como: \texttt{surveyingpointcode.py} y \texttt{config.py}, que son de inicio y configuración de la aplicación, respectivamente. También se encuentra un archivo con los requerimientos necesarios \texttt{requirements.txt} y un archivo con las variables de entorno que se deben cargar al sistema \texttt{app-env}. Por otra parte, se incluyen los archivos necesarios para el despliegue con \emph{Docker}, estos de detallarán más adelante.
+\item \ruta{SurveyingPointCode/:} directorio raíz de la aplicación que contiene archivos como: \texttt{surveyingpointcode.py} y \texttt{config.py}, que son de inicio y configuración de la aplicación, respectivamente. También se encuentra un archivo con los requerimientos necesarios \texttt{requirements.txt} y un archivo con las variables de entorno que se deben cargar al sistema \texttt{app-env}. Por otra parte, se incluyen los archivos necesarios para el despliegue con \emph{Docker}, estos de detallarán más adelante.
 
-\item \texttt{\textbf{SurveyingPointCode/app/:}} contiene todos los archivos que definen la lógica del negocio. 
+\item \ruta{SurveyingPointCode/app/:} contiene todos los archivos que definen la lógica del negocio. 
 
-\item \texttt{\textbf{SurveyingPointCode/app/templates/:}} contiene todos los archivos con las plantillas \emph{ html}. 
+\item \ruta{SurveyingPointCode/app/templates/:} contiene todos los archivos con las plantillas \emph{ html}. 
 
-\item \texttt{\textbf{SurveyingPointCode/app/static/:}} contiene todos los archivos estáticos.
+\item \ruta{SurveyingPointCode/app/static/:} contiene todos los archivos estáticos.
 
-\item \texttt{\textbf{SurveyingPointCode/app/static/css:}} contiene todos los archivos con los estilos.
+\item \ruta{SurveyingPointCode/app/static/css:} contiene todos los archivos con los estilos.
 
-\item \texttt{\textbf{SurveyingPointCode/app/static/js:}} contiene todos los archivos \emph{JavaScript}.
+\item \ruta{SurveyingPointCode/app/static/js:} contiene todos los archivos \emph{JavaScript}.
 
-\item \texttt{\textbf{SurveyingPointCode/app/static/images/:}} contiene todos los archivos con las imágenes de la que se usan en la aplicación Web.
+\item \ruta{SurveyingPointCode/app/static/images/:} contiene todos los archivos con las imágenes de la que se usan en la aplicación Web.
 
-\item \texttt{\textbf{SurveyingPointCode/app/static/webfonts/:}} contiene todos los archivos con las fuentes de la que se usan en la aplicación Web.
+\item \ruta{SurveyingPointCode/app/static/webfonts/:} contiene todos los archivos con las fuentes de la que se usan en la aplicación Web.
 
-\item \texttt{\textbf{SurveyingPointCode/tmp/:}} contiene todos los archivos temporales que se generan en cada sesión, tanto los archivos subidos por el usuario, como las conversiones.
+\item \ruta{SurveyingPointCode/tmp/:} contiene todos los archivos temporales que se generan en cada sesión, tanto los archivos subidos por el usuario, como las conversiones.
 
-\item \texttt{\textbf{Archivos\_Prueba/:}} contiene diferentes archivos de ejemplo para cargar en la aplicación, tanto válidos como con errores.
+\item \ruta{Archivos\_Prueba/:} contiene diferentes archivos de ejemplo para cargar en la aplicación, tanto válidos como con errores.
 
-\item \texttt{\textbf{Archivos\_Prueba/Datos\_de\_campo/:}} contiene diferentes archivos de campo, procedentes de un levantamiento topográfico.
+\item \ruta{Archivos\_Prueba/Datos\_de\_campo/:} contiene diferentes archivos de campo, procedentes de un levantamiento topográfico.
 
-\item \texttt{\textbf{Archivos\_Prueba/Configuración\_usuario/:}} contiene diferentes archivos de configuración de la conversión.
+\item \ruta{Archivos\_Prueba/Configuración\_usuario/:} contiene diferentes archivos de configuración de la conversión.
 
-\item \texttt{\textbf{Archivos\_Prueba/Simbolos/:}} contiene diferentes archivos DXF, algunos válidos con símbolos definidos y otros vacíos.
+\item \ruta{Archivos\_Prueba/Simbolos/:} contiene diferentes archivos DXF, algunos válidos con símbolos definidos y otros vacíos.
 
-\item \texttt{\textbf{Test\_unitarios/:}} contiene diferentes archivos para realizar los test unitarios.
+\item \ruta{Test\_unitarios/:} contiene diferentes archivos para realizar los test unitarios.
 
 \end{itemize}
 
@@ -69,16 +69,18 @@ Esta es la forma más convencional de realizar un desarrollo, instalar  las herr
 
 \item Creación de un entorno virtual en \emph{Anaconda}.
 
-\texttt{conda create -n nombre\_de\_entorno python=3.6 anaconda}
+\texttt{conda create -n \emph{nombre\_de\_entorno} python=3.6 anaconda}
 
 \item Activar el entorno virtual en \emph{Anaconda}.
 
-\texttt{source activate  nombre\_de\_entorno}
+\texttt{source activate  \emph{nombre\_de\_entorno}}
 
-\item Instalar las dependencias dentro del entorno virtual creado. Para ello necesitamos el archivo \texttt{requirements.txt}, mencionado anteriormente.
+\item Instalar las dependencias dentro del entorno virtual creado. Para ello necesitamos el archivo
+
+\texttt{requirements.txt}, mencionado anteriormente.
 \texttt{pip install -r requirements.txt}
 
-\texttt Para trabajar con la base de datos \emph{PostGIS}, se utiliza un contenedor \emph{Docker}. En este punto se debe tener instalado \emph{Docker}. El contenedor de \emph{PostGIS} se crea con este comando:
+ Para trabajar con la base de datos \emph{PostGIS}, se utiliza un contenedor \emph{Docker}. En este punto se debe tener instalado \emph{Docker}. El contenedor de \emph{PostGIS} se crea con este comando:
 
 \begin{verbatim}
 sudo docker run --name=postgis --hostname=postgres --network=pgnetwork
@@ -128,7 +130,7 @@ Cada vez que realicemos un cambio en el código, debemos actualizar este cambio 
 
 \end{enumerate}
 
-Los archivos \texttt{Dockerfile} y \texttt{docker-compose.yml}, ya comentados en el documento de la memoria( ver apartado Despliegue de la aplicación — \emph{Docker Compose}.), son la base para la construcción de los contenedores y por consiguiente, de los servicios ofrecidos. 
+Los archivos \texttt{Dockerfile} y \texttt{docker-compose.yml}, ya comentados en el documento de la memoria (ver apartado Despliegue de la aplicación — \emph{Docker Compose}.), son la base para la construcción de los contenedores y por consiguiente, de los servicios ofrecidos. 
 
 Como contrapunto, se ha encontrado una desventaja al usar \emph{Docker} como entorno de desarrollo, el tiempo invertido en volver a construir el contenedor. A medida que el proyecto crece y se van aumentando las dependencias, el tiempo de creación del contenedor se alarga. Es conveniente seguir investigando sobre como solucionar este problema.
 
@@ -188,13 +190,13 @@ Ok\strut
 \midrule
 \endhead
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
-test\_create\_layers\_number()\strut
+\small{test\_create\_layers\_number()}\strut
 \end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
 ¿Es igual?\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 8\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
 \strut
@@ -203,7 +205,7 @@ Si\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 0\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 
 \bottomrule
@@ -231,13 +233,13 @@ Ok\strut
 \midrule
 \endhead
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
-test\_create\_layers\_types()\strut
+\small{test\_create\_layers\_types()}\strut
 \end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
 ¿Contiene?\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 \bottomrule
 \caption{Caso de prueba CP-02.}
@@ -264,13 +266,13 @@ Ok\strut
 \midrule
 \endhead
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
-test\_create\_points\_number\_file\_correct()\strut
+\small{test\_create\_points\_number\_file\_correct()}\strut
 \end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
 ¿Es igual?\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 42\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
 \strut
@@ -279,7 +281,7 @@ Si\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 0\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 
 \bottomrule
@@ -307,13 +309,13 @@ Ok\strut
 \midrule
 \endhead
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
-test\_create\_points\_texts\_file\_correct()\strut
+\small{test\_create\_points\_texts\_file\_correct()}\strut
 \end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
 ¿Es igual?\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 126\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
 \strut
@@ -322,7 +324,7 @@ Si\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 0\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 
 \bottomrule
@@ -350,13 +352,13 @@ Ok\strut
 \midrule
 \endhead
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
-test\_create\_circles\_number()\strut
+\small{test\_create\_circles\_number()}\strut
 \end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
 ¿Es igual?\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 2\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
 \strut
@@ -365,7 +367,7 @@ Si\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 0\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 
 \bottomrule
@@ -393,13 +395,13 @@ Ok\strut
 \midrule
 \endhead
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
-test\_create\_splines\_number()\strut
+\small{test\_create\_splines\_number()}\strut
 \end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
 ¿Es igual?\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 1\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
 \strut
@@ -408,7 +410,7 @@ Si\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 0\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 
 \bottomrule
@@ -436,13 +438,13 @@ Ok\strut
 \midrule
 \endhead
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
-test\_create\_lines\_number()\strut
+\small{test\_create\_lines\_number()}\strut
 \end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
 ¿Es igual?\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 5\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
 \strut
@@ -451,7 +453,7 @@ Si\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 0\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 
 \bottomrule
@@ -479,13 +481,13 @@ Ok\strut
 \midrule
 \endhead
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
-test\_create\_squares\_number()\strut
+\small{test\_create\_squares\_number()}\strut
 \end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
 ¿Es igual?\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 5\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
 \strut
@@ -494,7 +496,7 @@ Si\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 0\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 
 \bottomrule
@@ -522,13 +524,13 @@ Ok\strut
 \midrule
 \endhead
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
-test\_create\_squares\_number()\strut
+\small{test\_create\_squares\_number()}\strut
 \end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
 ¿Es igual?\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 1\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
 \strut
@@ -537,7 +539,7 @@ Si\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 0\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 
 \bottomrule
@@ -565,13 +567,13 @@ Ok\strut
 \midrule
 \endhead
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
-test\_not\_create\_circles()\strut
+\small{test\_not\_create\_circles()}\strut
 \end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
 ¿Es igual?\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 0\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 
 \bottomrule
@@ -599,13 +601,13 @@ Ok\strut
 \midrule
 \endhead
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
-test\_not\_create\_splines()\strut
+\small{test\_not\_create\_splines()}\strut
 \end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
 ¿Es igual?\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 0\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 
 \bottomrule
@@ -633,13 +635,13 @@ Ok\strut
 \midrule
 \endhead
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
-test\_not\_create\_lines()\strut
+\small{test\_not\_create\_lines()}\strut
 \end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
 ¿Es igual?\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 0\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 
 \bottomrule
@@ -668,13 +670,13 @@ Ok\strut
 \midrule
 \endhead
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
-test\_not\_create\_squares\_rectangles()\strut
+\small{test\_not\_create\_squares\_rectangles()}\strut
 \end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
 ¿Es igual?\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 0\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 
 \bottomrule
@@ -702,13 +704,13 @@ Ok\strut
 \midrule
 \endhead
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
-test\_azimut\_distance()\strut
+\small{test\_azimut\_distance()}\strut
 \end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
 ¿Es igual?\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 az=45º dist=141.4213\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
 \strut
@@ -717,7 +719,7 @@ Si\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 az=50º dist=145\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 
 \bottomrule
@@ -747,13 +749,13 @@ Ok\strut
 \midrule
 \endhead
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
-test\_increment\_x\_y()\strut
+\small{test\_increment\_x\_y()}\strut
 \end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
 ¿Es igual?\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 In\_x=100 In\_y=100\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
 \strut
@@ -762,7 +764,7 @@ Si\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 In\_x=150 In\_y=145\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 
 \bottomrule
@@ -791,13 +793,13 @@ Ok\strut
 \midrule
 \endhead
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
-test\_angle\_direction()\strut
+\small{test\_angle\_direction()}\strut
 \end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
 ¿Es igual?\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 35º\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
 \strut
@@ -806,7 +808,7 @@ Si\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 215º\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 
 \bottomrule
@@ -834,13 +836,13 @@ Ok\strut
 \midrule
 \endhead
 \begin{minipage}[t]{0.6\columnwidth}\raggedright\strut
-test\_angle\_direction()\strut
+\small{test\_angle\_direction()}\strut
 \end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
 ¿Incluye?\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 'Farola', 'Arbol', 'Vertice'\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.5\columnwidth}\raggedright\strut
 \strut
@@ -849,16 +851,16 @@ Si\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 'Casa', 'Banco'\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.5\columnwidth}\raggedright\strut
-test\_angle\_direction()\strut
+\small{test\_angle\_direction()}\strut
 \end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
 ¿Es igual?\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 3\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.5\columnwidth}\raggedright\strut
 \strut
@@ -867,7 +869,7 @@ Si\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 0\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 \bottomrule
 \caption{Caso de prueba CP-17.}
@@ -894,13 +896,13 @@ Ok\strut
 \midrule
 \endhead
 \begin{minipage}[t]{0.5\columnwidth}\raggedright\strut
-test\_number\_lines\_topographical\_file()\strut
+\small{test\_number\_lines\_topographical\_file()}\strut
 \end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
 ¿Es igual?\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 42\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.5\columnwidth}\raggedright\strut
 \strut
@@ -909,7 +911,7 @@ Si\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 0\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 
 \bottomrule
@@ -937,13 +939,13 @@ Ok\strut
 \midrule
 \endhead
 \begin{minipage}[t]{0.5\columnwidth}\raggedright\strut
-test\_number\_lines\_topographical\_file()\strut
+\small{test\_number\_lines\_topographical\_file()}\strut
 \end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
 ¿Es igual?\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 0\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.5\columnwidth}\raggedright\strut
 \strut
@@ -952,7 +954,7 @@ Si\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 5\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 
 \bottomrule
@@ -980,13 +982,13 @@ Ok\strut
 \midrule
 \endhead
 \begin{minipage}[t]{0.5\columnwidth}\raggedright\strut
-test\_version\_cad()\strut
+\small{test\_version\_cad()}\strut
 \end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
 ¿Es igual?\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 AC1018\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.5\columnwidth}\raggedright\strut
 \strut
@@ -995,7 +997,7 @@ Si\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright\strut
 AC1019\strut
 \end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedright\strut
-Si\strut
+Sí\strut
 \end{minipage}\tabularnewline
 
 \bottomrule
