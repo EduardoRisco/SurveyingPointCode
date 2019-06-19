@@ -13,12 +13,15 @@
 ![Iconos](https://github.com/EduardoRisco/SurveyingPointCode/blob/master/Docs/Logo/Transf_opt.png)
 ## Allows to automate the delineation process in CAD, by coding points in a topographic survey.
 
-
+This application is the result of the final project to obtain the [degree in
+computer engineering](https://www.ubu.es/grado-en-ingenieria-informatica) at
+the [University of Burgos](http://www.ubu.es). It was supervised by Dr. César
+García-Osorio and Dr. Carlos López-Nozal, and defended in June of 2019.
 
 ### Key features:
 
 - Topographic coding customized by the user.
-- It links topographic codes to : layers, colours and CAD blocks.
+- It links topographic codes to: layers, colours and CAD blocks.
 - Automatic drawing of lines and splines.
 - Simplified and automatic drawing of squares, rectangles and circles.
 - Automatic insertion of symbols and CAD blocks.
@@ -28,9 +31,12 @@
 
 ### Environment setup instructions:
 
-- Docker installation.
-- Docker Compose installation.
-- Cloning the main repository.
+- [Docker installation](https://docs.docker.com/v17.12/install/).
+- [Docker Compose installation](https://docs.docker.com/compose/install/).
+- Cloning the main repository:
+  ```
+  git clone https://github.com/EduardoRisco/SurveyingPointCode.git
+  ```
 - Run in the SurveyingPointCode/ directory:
    ```
    sh app_install.sh
